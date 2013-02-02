@@ -49,7 +49,13 @@ module.exports = function(grunt) {
         eqnull: true
       },
       globals: {
-        define: true
+        define: true,
+        requirejs: true,
+        require: true,
+        describe: true,
+        it: true,
+        jasmine: true,
+        expect: true
       }
     },
     uglify: {}
