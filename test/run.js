@@ -2,12 +2,16 @@
     var jasmineStarted;
 
     require.config({
-        baseUrl: '../'
+        baseUrl: '../lib',
+        paths: {
+            tests: "../test/specs/",
+            mocks: "../test/mocks/"
+        }
     });
 
     var testFiles = [
-        "lib/core",
-        "test/specs/core.spec"
+        "core",
+        "tests/core.spec"
     ];
 
     require(testFiles, function () {
