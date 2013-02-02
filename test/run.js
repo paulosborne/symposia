@@ -9,14 +9,21 @@
         }
     });
 
-    var testFiles = [
-        "core",
-        "tests/core.spec"
-    ];
+    var deps = ["core"];
 
-    require(testFiles, function () {
-        jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
-        jasmine.getEnv().execute();
-        jasmineStarted = true;
+    function getSpecs() {
+        var i, specs = [];
+        for ( i = 0; i < deps.length; i++ ) {
+            specs.push("tests/"+ deps[i] +".spec");
+        }
+        return specs;
+    }
+
+    require(deps, function () {
+        require(getSpecs(), function () {
+            jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
+            jasmine.getEnv().execute();
+            jasmineStarted = true;
+        });
     });
 }());
