@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Symposia Test Suites</title>
+    <script type="text/javascript" src="../../vendor/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../../vendor/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../../tools/console-runner.js"></script>
+    <script type="text/javascript" src="../../tools/sinon-1.5.2.js"></script>
+    <script type="text/javascript" src="../../vendor/require.js"></script>
+
+    <script type="text/javascript">
+    requirejs.config({
+        baseUrl: "../../../",
+        enforceDefine: true,
+        shim: {
+            "symposia/dom": {
+                exports: '$',
+                deps: ['jquery','mustache']
+            },
+            'underscore': {
+                exports: '_'
+            },
+            'gmaps': {
+                exports: 'GMaps'
+            },
+            'backbone': {
+                deps: ['underscore'],
+                exports: 'Backbone'
+            }
+        },
+        paths: {
+            jquery              : 'symposia/vendor/jquery-1.7.2',
+            underscore          : 'symposia/vendor/underscore-1.4.3',
+            backbone            : 'symposia/vendor/backbone-0.0.9',
+            localstorage        : 'symposia/vendor/backbone-localStorage',
+            mustache            : 'symposia/vendor/mustache'
+        }
+    });
+    </script>
+    <script type="text/javascript">
+        require([
+                "backbone",
+                "underscore",
+                "symposia/dom",
+                "symposia/env",
+                "symposia/conductor",
+                "symposia/core",
+                "symposia/base",
+                "symposia/xhr"
+            ], function() {
+            require([
+                "symposia/test/specs/core.spec",
+                "symposia/test/specs/xhr.spec",
+                "symposia/test/specs/component.spec"
+                ], function () {
+                jasmine.getEnv().addReporter( new jasmine.TrivialReporter() );
+                jasmine.getEnv().addReporter( new jasmine.ConsoleReporter() );
+                jasmine.getEnv().execute();
+            });
+        });
+    </script>
+</head>
+<body>
+</html>

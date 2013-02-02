@@ -1,0 +1,26 @@
+{
+  "name": "symposia",
+  "preferGlobal": true,
+  "version": "0.0.1",
+  "author": "Paul Osborne",
+  "description": "JavaScript framework for development of large-scale modular applications.",
+  "contributors": [ 
+    {
+      "name": "Paul Osborne",
+      "email": "paul.osborne.uk@gmail.com"
+    } 
+  ],
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/posbo/symposia.git"
+  },
+  "keywords": [],
+  "dependencies" : {},
+  "analyze": false,
+  "devDependencies": {},
+  "bundledDependencies": [],
+  "license": "MIT"
+}
+
