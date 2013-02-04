@@ -1,4 +1,5 @@
 (function () {
+
     var jasmineStarted;
 
     require.config({
@@ -9,21 +10,9 @@
         }
     });
 
-    var deps = ["core"];
-
-    function getSpecs() {
-        var i, specs = [];
-        for ( i = 0; i < deps.length; i++ ) {
-            specs.push("tests/"+ deps[i] +".spec");
-        }
-        return specs;
-    }
-
-    require(deps, function () {
-        require(getSpecs(), function () {
-            jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
-            jasmine.getEnv().execute();
-            jasmineStarted = true;
-        });
+    require(['tests/core.spec','tests/sandbox.spec'], function () {
+        jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
+        jasmine.getEnv().execute();
+        jasmineStarted = true;
     });
 }());
