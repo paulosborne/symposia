@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
     lint: {
-      files: ['grunt.js', 'lib/**/*.js', 'test/**/*.js']
+      files: ['grunt.js', 'lib/*.js', 'test/specs/*.js']
     },
     jasmine: {
       all: ['test/jasmine_runner.html']
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      files: '<config:jasmine.all>',
+      files: '<config:lint.files>',
       tasks: 'test'
     },
     jshint: {
