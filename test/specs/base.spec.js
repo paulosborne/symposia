@@ -35,4 +35,22 @@ define(function(require) {
             expect(base.mod.zombie).toBeDefined();
         });
     });
+
+    describe('events', function () {
+        it("should be able to listen for events", function () {
+            expect(base.events.register).toBeDefined();
+        });
+
+        it("should be able to trigger events", function () {
+            expect(base.events.trigger).toBeDefined();
+        });
+
+        it("should be able to see what events are registered", function () {
+            expect(base.events.audit).toBeDefined();
+        });
+
+        it("should be able to clear all registered events", function () {
+            expect(base.events.clear).toBeDefined();
+        });
+    });
 });
