@@ -4,9 +4,17 @@
 
     require.config({
         baseUrl: '../lib',
+        shim: {
+            backbone: {
+                deps: ['underscore'],
+                exports: 'Backbone'
+            }
+        },
         paths: {
-            tests: "../test/specs/",
-            mocks: "../test/mocks/"
+            backbone: '../vendor/backbone-0.0.9',
+            underscore: '../vendor/underscore-1.4.3',
+            tests: '../test/specs/',
+            mocks: '../test/mocks/'
         }
     });
 

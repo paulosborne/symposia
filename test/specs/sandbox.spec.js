@@ -11,10 +11,13 @@ define(function ( require ) {
             expect(function () { new Sandbox(); }).toThrow("Core must be an object.");
         });
 
-        it("should have module and events on its public interface", function () {
+        it("should be able to access mvc module through core.", function () {
             var instance = new Sandbox( core );
-            expect(instance.events).toBeDefined();
-            expect(instance.modules).toBeDefined();
+            expect(instance.mvc).toBeDefined();
+            expect(typeof instance.mvc.View).toBe('function');
+            expect(typeof instance.mvc.Model).toBe('function');
+            expect(typeof instance.mvc.Collection).toBe('function');
+            expect(typeof instance.mvc.Router).toBe('function');
         });
 
         it("should allow defaults to be augmented", function () {
