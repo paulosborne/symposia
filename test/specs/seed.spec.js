@@ -9,7 +9,7 @@ define(function(require) {
             var Model = seed.mvc.Model();
             var testModel = new Model();
             testModel.set({'test': 'yes this is a test' });
-            expect(testModel.get('test')).toBe('yes this is a testi!');
+            expect(testModel.get('test')).toBe('yes this is a test');
         });
 
         it("should be able to create backbone views", function () {
