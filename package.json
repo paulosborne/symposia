@@ -4,23 +4,32 @@
   "version": "0.0.1",
   "author": "Paul Osborne",
   "description": "JavaScript framework for development of large-scale modular applications.",
-  "contributors": [ 
+  "contributors": [
     {
       "name": "Paul Osborne",
-      "email": "paul.osborne.uk@gmail.com"
-    } 
+      "email": "paul.osborne.uk@gmail.com",
+      "url": "posbo.me"
+    }
   ],
   "scripts": {
+    "test" : "grunt travis -v"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/posbo/symposia.git"
   },
-  "keywords": [],
+  "engines": {
+    "node":">=0.6"
+  },
   "dependencies" : {},
   "analyze": false,
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt":"~0.3.14",
+    "grunt-jasmine-task":"~0.2.3",
+    "grunt-requirejs":"~0.3.1"
+  },
   "bundledDependencies": [],
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": []
 }
 

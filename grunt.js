@@ -63,6 +63,6 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'lint concat min');
-  grunt.registerTask('test','jasmine');
+  grunt.registerTask('travis','jasmine');
 
 };
