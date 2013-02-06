@@ -1,56 +1,56 @@
 define(function(require) {
-    var base = require('base');
-    describe('base - mvc', function () {
+    var seed = require('seed');
+    describe('seed - mvc', function () {
         it("should contain the mvc public interface", function () {
-            expect(base.mvc).toBeDefined();
+            expect(seed.mvc).toBeDefined();
         });
 
         it("should be able to create and populate backbone models", function () {
-            var Model = base.mvc.Model();
+            var Model = seed.mvc.Model();
             var testModel = new Model();
             testModel.set({'test': 'yes this is a test' });
             expect(testModel.get('test')).toBe('yes this is a test');
         });
 
         it("should be able to create backbone views", function () {
-            expect(base.mvc.View).toBeDefined();
+            expect(seed.mvc.View).toBeDefined();
         });
 
         it("should be able to create backone collections", function () {
-            expect(base.mvc.Collection).toBeDefined();
+            expect(seed.mvc.Collection).toBeDefined();
         });
     });
 
     describe('modules', function () {
         it("should be able to create new modules", function () {
-            expect(base.mod.create).toBeDefined();
+            expect(seed.mod.create).toBeDefined();
         });
         it("should be able to start a module", function () {
-            expect(base.mod.start).toBeDefined();
+            expect(seed.mod.start).toBeDefined();
         });
         it("should be able to stop a module", function () {
-            expect(base.mod.stop).toBeDefined();
+            expect(seed.mod.stop).toBeDefined();
         });
         it("should be able to create a zombie module", function () {
-            expect(base.mod.zombie).toBeDefined();
+            expect(seed.mod.zombie).toBeDefined();
         });
     });
 
     describe('events', function () {
         it("should be able to listen for events", function () {
-            expect(base.events.register).toBeDefined();
+            expect(seed.events.register).toBeDefined();
         });
 
         it("should be able to trigger events", function () {
-            expect(base.events.trigger).toBeDefined();
+            expect(seed.events.trigger).toBeDefined();
         });
 
         it("should be able to see what events are registered", function () {
-            expect(base.events.audit).toBeDefined();
+            expect(seed.events.audit).toBeDefined();
         });
 
         it("should be able to clear all registered events", function () {
-            expect(base.events.clear).toBeDefined();
+            expect(seed.events.clear).toBeDefined();
         });
     });
 });
