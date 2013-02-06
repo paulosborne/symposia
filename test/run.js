@@ -3,7 +3,7 @@
     var jasmineStarted;
 
     require.config({
-        Url: '../lib',
+        baseUrl: '../lib',
         shim: {
             backbone: {
                 deps: ['underscore'],
