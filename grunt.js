@@ -17,7 +17,10 @@ module.exports = function(grunt) {
       files: ['grunt.js', 'lib/*.js', 'test/specs/*.js']
     },
     jasmine: {
-      all: ['test/jasmine_runner.html']
+        all: {
+            src: 'test/jasmine_runner.html',
+            errorReporting: true
+        }
     },
     concat: {
       dist: {
@@ -63,6 +66,6 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'lint concat min');
-  grunt.registerTask('travis','jasmine');
+  grunt.registerTask('test','jasmine');
 
 };

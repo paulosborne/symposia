@@ -1,8 +1,6 @@
 define(function ( require ) {
     var core = require('core');
-    describe("core", function () {
-        it("should do something", function () {
-            expect(core).toBeTruthy();
-        });
+    describe("core - public interface", function () {
+        expect(core.bootstrap).toBeTruthy();
     });
 });

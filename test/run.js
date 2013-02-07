@@ -18,7 +18,12 @@
         }
     });
 
-    require(['tests/core.spec','tests/sandbox.spec','tests/seed.spec'], function () {
+    require([
+        'tests/core.spec',
+        'tests/sandbox.spec',
+        'tests/seed.spec',
+        'tests/app.spec'
+        ], function () {
         jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
         jasmine.getEnv().execute();
         jasmineStarted = true;

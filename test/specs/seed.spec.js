@@ -1,6 +1,8 @@
 define(function(require) {
     var seed = require('seed');
+
     describe('seed - mvc', function () {
+
         it("should contain the mvc public interface", function () {
             expect(seed.mvc).toBeDefined();
         });
@@ -19,6 +21,7 @@ define(function(require) {
         it("should be able to create backone collections", function () {
             expect(seed.mvc.Collection).toBeDefined();
         });
+
     });
 
     describe('modules', function () {
@@ -53,4 +56,5 @@ define(function(require) {
             expect(seed.events.clear).toBeDefined();
         });
     });
+
 });
