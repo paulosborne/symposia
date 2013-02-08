@@ -26,8 +26,7 @@
   "devDependencies": {
     "grunt":"~0.3.14",
     "grunt-jasmine-task":"~0.2.3",
-    "grunt-requirejs":"~0.3.1",
-    "grunt-contrib-jshint":"~0.1.0"
+    "grunt-requirejs":"~0.3.1"
   },
   "bundledDependencies": [],
   "license": "MIT",
