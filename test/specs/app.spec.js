@@ -27,8 +27,6 @@ define(["core","./stubs/testmodule"],function ( symposia, test_module ) {
             }, function ( moduleData ) {
                 expect(typeof moduleData).toBe('object');
             });
-
-
         });
     });
 });
