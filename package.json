@@ -12,7 +12,7 @@
     }
   ],
   "scripts": {
-    "test" : "grunt travis -v"
+    "test" : "grunt test -v"
   },
   "repository": {
     "type": "git",
