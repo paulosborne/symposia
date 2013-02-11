@@ -61,9 +61,15 @@ module.exports = function(grunt) {
         expect: true
       }
     },
-    uglify: {}
+    uglify: {},
+    dependencygraph: {
+        targetPath: './lib',
+        outputPath: '../symposia_app/webroot/webroot/graph',
+        format: 'amd'
+    }
   });
 
+    grunt.loadNpmTasks('grunt-dependencygraph');
   // Default task.
   grunt.registerTask('default', 'lint concat min');
   grunt.registerTask('test','jasmine');
