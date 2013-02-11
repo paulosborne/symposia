@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
     lint: {
-      files: ['grunt.js', 'lib/*.js', 'test/specs/*.js']
+      files: ['lib/*.js']
     },
     jasmine: {
         all: {
@@ -61,15 +61,9 @@ module.exports = function(grunt) {
         expect: true
       }
     },
-    uglify: {},
-    dependencygraph: {
-        targetPath: './lib',
-        outputPath: '../symposia_app/webroot/webroot/graph',
-        format: 'amd'
-    }
+    uglify: {}
   });
 
-    grunt.loadNpmTasks('grunt-dependencygraph');
   // Default task.
   grunt.registerTask('default', 'lint concat min');
   grunt.registerTask('test','jasmine');

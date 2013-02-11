@@ -14,7 +14,6 @@ define(["core","./stubs/testmodule"],function ( core, test_module ) {
         });
 
         it("should be able to create & start multiple modules", function () {
-
             core.bootstrap([
                 {
                     id: 'notes',
@@ -32,13 +31,15 @@ define(["core","./stubs/testmodule"],function ( core, test_module ) {
                 for ( id in moduleData ) {
                     if ( moduleData.hasOwnProperty(id) ) {
                         moduleIds.push(id);
+                        expect(typeof moduleData[id].instance).toBe('object');
+                        expect(typeof moduleData[id].instance.init).toBe('function');
+                        expect(typeof moduleData[id].instance.destroy).toBe('function');
                     }
                 }
                 expect(moduleIds).toContain('notes');
                 expect(moduleIds).toContain('history');
                 expect(typeof moduleData).toBe('object');
             });
-
         });
     });
 });

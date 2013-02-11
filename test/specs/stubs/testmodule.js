@@ -3,6 +3,9 @@ define(function () {
         return {
             init: function () {
                 return true;
+            },
+            destroy: function() {
+                return 200;
             }
         };
     };
