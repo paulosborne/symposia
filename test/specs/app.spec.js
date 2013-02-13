@@ -2,44 +2,41 @@ define(["core","./stubs/testmodule"],function ( core, test_module ) {
     describe("core - public interface", function () {
 
         it("should be able to bootstrap an application", function () {
-            expect(typeof core.bootstrap).toBe("function");
+            expect(typeof core.modules.create).toBe("function");
         });
 
         it("should throw an exceptiontion", function  () {
-            var spy = sinon.spy(core,'bootstrap');
+            var spy = sinon.spy(core.modules,'create');
 
             expect(function () {
-                core.bootstrap('this should throw exception');
+                core.modules.create('this should throw exception');
             }).toThrow();
         });
 
+        it("should throw an exception if the creator doesn't return an object", function () {
+
+            expect(function () {
+                core.modules.create({
+                    'notes': {
+                        creator: function () {}
+                    }
+                });
+            }).toThrow('creator should return a public interface');
+
+        });
+
+
         it("should be able to create & start multiple modules", function () {
-            core.bootstrap([
-                {
-                    id: 'notes',
-                    element: '#notes',
+
+            core.modules.create({
+                'notes': {
                     creator: test_module
                 },
-                {
-                    id: 'history',
-                    element: '#history',
+                'history': {
                     creator: test_module
                 }
-            ],
-            function ( moduleData ) {
-                var id, moduleIds = [];
-                for ( id in moduleData ) {
-                    if ( moduleData.hasOwnProperty(id) ) {
-                        moduleIds.push(id);
-                        expect(typeof moduleData[id].instance).toBe('object');
-                        expect(typeof moduleData[id].instance.init).toBe('function');
-                        expect(typeof moduleData[id].instance.destroy).toBe('function');
-                    }
-                }
-                expect(moduleIds).toContain('notes');
-                expect(moduleIds).toContain('history');
-                expect(typeof moduleData).toBe('object');
             });
+
         });
     });
 });

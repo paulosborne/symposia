@@ -1,7 +1,6 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-jasmine-task');
 
   // Project configuration.
   grunt.initConfig({
@@ -14,7 +13,7 @@ module.exports = function(grunt) {
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
     lint: {
-      files: ['lib/*.js']
+      files: ['lib/*.js','test/specs/*.js','test/webroot/js/app/*.js']
     },
     jasmine: {
         all: {
@@ -36,7 +35,7 @@ module.exports = function(grunt) {
     },
     watch: {
       files: '<config:lint.files>',
-      tasks: 'test'
+      tasks: 'save build'
     },
     jshint: {
       options: {
@@ -61,11 +60,20 @@ module.exports = function(grunt) {
         expect: true
       }
     },
-    uglify: {}
+    uglify: {},
+    shell: {
+        phantom: {
+            command: 'casperjs ~/dev/symposia/test/casper/customlogging.js',
+            stdout: true
+        }
+    }
   });
 
+    grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-jasmine-task');
   // Default task.
-  grunt.registerTask('default', 'lint concat min');
-  grunt.registerTask('test','jasmine');
+  grunt.registerTask('default','lint concat min');
+  grunt.registerTask('build','jasmine');
+  grunt.registerTask('save','shell');
 
 };
