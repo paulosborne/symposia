@@ -12,24 +12,24 @@
     }
   ],
   "scripts": {
-    "test" : "grunt test -v"
+    "test": "grunt test -v"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/posbo/symposia.git"
   },
   "engines": {
-    "node":">=0.6"
+    "node": ">=0.6"
   },
-  "dependencies" : {},
+  "dependencies": {},
   "analyze": false,
   "devDependencies": {
-    "grunt":"~0.3.14",
-    "grunt-jasmine-task":"~0.2.3",
-    "grunt-requirejs":"~0.3.1"
+    "grunt": "~0.3.14",
+    "grunt-jasmine-task": "~0.2.3",
+    "grunt-requirejs": "~0.3.1",
+    "grunt-shell": "~0.1.4"
   },
   "bundledDependencies": [],
   "license": "MIT",
   "keywords": []
 }
-
