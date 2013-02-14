@@ -1,30 +1,21 @@
 define(["core"], function ( symposia ) {
 
-    var TEST_MODULE = function ( sandbox ) {
+    // spy - international man of mystery.
+    var austin = function ( sandbox ) {
         return {
-            init: function () {
+            init: sinon.spy(function() {
                 sandbox.listen({
-                    "test.event" : this.testOne,
-                    "another.event" : this.testTwo,
-                    "yet.another" : 'hi'
+                    "catchphrase": function () {
+                        return 'yeah baby!';
+                    }
                 });
-
-                return 200;
-            },
-            destroy: function () {
-                return 300;
-            },
-            testOne: function () {
-                return 'one';
-            },
-            testTwo: function() {
-                return 'two';
-            },
-            addRandomListener: function () {
+            }),
+            add: sinon.spy(function() {
                 sandbox.listen({
-                    "random.event": function () { return 200; }
+                    "groovy": true
                 });
-            }
+            }),
+            destroy: sinon.spy()
         };
     };
 
@@ -35,7 +26,7 @@ define(["core"], function ( symposia ) {
             symposia.modules.reset();
             symposia.modules.create({
                 'test': {
-                    creator: TEST_MODULE,
+                    creator: austin,
                     options: {
                         init: false
                     }
@@ -45,33 +36,15 @@ define(["core"], function ( symposia ) {
         });
 
         it("should be able to start a stopped module", function () {
-
-            // test pre-start state
             expect(module.instance).toBe(null);
-            expect(module.id).toBe('test');
-            expect(typeof module.creator).toBe('function');
-
-            // start module
             symposia.modules.start(module.id);
-
-            // test post-start state
-            expect(module.instance).not.toBe(null);
-            expect(module.id).toBe('test');
-            expect(typeof module.creator).toBe('function');
-
-            // test init
-            expect(typeof module.instance.init).toBe('function');
-            expect(module.instance.init()).toBe(200);
-
-            // test destroy
-            expect(typeof module.instance.destroy).toBe('function');
-            expect(module.instance.destroy()).toBe(300);
-
+            expect(module.instance.init.called).toBeTruthy();
         });
 
         it("should not be able to start a module twice", function () {
-            expect(symposia.modules.start(module.id)).toBeTruthy();
-            expect(symposia.modules.start(module.id)).toBeFalsy();
+            symposia.modules.start(module.id);
+            symposia.modules.start(module.id);
+            expect(module.instance.init.callCount).toBe(1);
         });
     });
 
