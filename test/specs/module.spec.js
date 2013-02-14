@@ -1,12 +1,34 @@
 define(["core"], function ( symposia ) {
 
+    var austin_powers = {
+        init: sinon.spy(),
+        destroy: sinon.spy()
+    };
+
     var TEST_MODULE = function ( sandbox ) {
         return {
             init: function () {
+                sandbox.listen({
+                    "test.event" : this.testOne,
+                    "another.event" : this.testTwo,
+                    "yet.another" : 'hi'
+                });
+
                 return 200;
             },
             destroy: function () {
                 return 300;
+            },
+            testOne: function () {
+                return 'one';
+            },
+            testTwo: function() {
+                return 'two';
+            },
+            addRandomListener: function () {
+                sandbox.listen({
+                    "random.event": function () { return 200; }
+                });
             }
         };
     };
@@ -55,6 +77,29 @@ define(["core"], function ( symposia ) {
         it("should not be able to start a module twice", function () {
             expect(symposia.modules.start(module.id)).toBeTruthy();
             expect(symposia.modules.start(module.id)).toBeFalsy();
+        });
+    });
+
+    describe("events", function () {
+        var module;
+        beforeEach(function() {
+            symposia.modules.reset();
+            symposia.modules.create({
+                'test_events': {
+                    creator: TEST_MODULE
+                }
+            });
+            module = symposia.modules.get.one('test_events');
+        });
+
+        it("should be able to register a new event listener", function () {
+            var events = _.keys(module.events);
+
+            // inspect the module event object.
+            expect(_.has(module,'events')).toBeTruthy();
+            expect(events.length).toBe(3);
+            module.instance.addRandomListener();
+            expect(_.keys(module.events).length).toBe(4);
         });
 
     });
