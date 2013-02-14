@@ -51,25 +51,6 @@ define(["core"], function ( symposia ) {
     describe("events", function () {
         var module;
 
-        // spy - international man of mystery.
-        var austin = function ( sandbox ) {
-            return {
-                init: sinon.spy(function() {
-                    sandbox.listen({
-                        "catchphrase": function () {
-                            return 'yeah baby!';
-                        }
-                    });
-                }),
-                add: sinon.spy(function() {
-                    sandbox.listen({
-                        "groovy": true
-                    });
-                }),
-                destroy: sinon.spy()
-            };
-        };
-
         beforeEach(function() {
             symposia.modules.reset();
             symposia.modules.create({
