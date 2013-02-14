@@ -111,9 +111,11 @@ define(["core"], function ( symposia ) {
                     creator: austin
                 }
             });
-
             module = symposia.modules.get.one('test_events');
-            expect(module.instance.init.callCount).toBe(1);
+        });
+
+        it("should have been called", function () {
+            expect(module.instance.init.called).toBeTruthy();
         });
 
         it("should be able to register a new event listener", function () {
