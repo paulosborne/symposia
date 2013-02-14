@@ -1,12 +1,5 @@
 define(["core"], function ( symposia ) {
 
-    var austin = {
-        init: sinon.spy(),
-        destroy: sinon.spy()
-    };
-
-    var james = {};
-
     var TEST_MODULE = function ( sandbox ) {
         return {
             init: function () {

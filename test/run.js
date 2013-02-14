@@ -24,7 +24,6 @@
     });
 
     require([
-        'tests/app.spec',
         'tests/module.spec'
         ], function () {
         jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
