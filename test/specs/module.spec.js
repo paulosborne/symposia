@@ -1,9 +1,11 @@
 define(["core"], function ( symposia ) {
 
-    var austin_powers = {
+    var austin = {
         init: sinon.spy(),
         destroy: sinon.spy()
     };
+
+    var james = {};
 
     var TEST_MODULE = function ( sandbox ) {
         return {
@@ -82,24 +84,41 @@ define(["core"], function ( symposia ) {
 
     describe("events", function () {
         var module;
+
+        // spy - international man of mystery.
+        var austin = function ( sandbox ) {
+            return {
+                init: sinon.spy(function() {
+                    sandbox.listen({
+                        "catchphrase": function () {
+                            return 'yeah baby!';
+                        }
+                    });
+                }),
+                add: sinon.spy(function() {
+                    sandbox.listen({
+                        "groovy": true
+                    });
+                }),
+                destroy: sinon.spy()
+            };
+        };
+
         beforeEach(function() {
             symposia.modules.reset();
             symposia.modules.create({
                 'test_events': {
-                    creator: TEST_MODULE
+                    creator: austin
                 }
             });
+
             module = symposia.modules.get.one('test_events');
+            expect(module.instance.init.callCount).toBe(1);
         });
 
         it("should be able to register a new event listener", function () {
-            var events = _.keys(module.events);
-
-            // inspect the module event object.
-            expect(_.has(module,'events')).toBeTruthy();
-            expect(events.length).toBe(3);
-            module.instance.addRandomListener();
-            expect(_.keys(module.events).length).toBe(4);
+            module.instance.add();
+            expect(_.keys(module.events).length).toBe(2);
         });
 
     });
