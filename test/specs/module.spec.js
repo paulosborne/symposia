@@ -1,6 +1,6 @@
 define(["core"], function ( symposia ) {
 
-    var TEST_MODULE = function () {
+    var TEST_MODULE = function ( sandbox ) {
         return {
             init: function () {
                 return 200;
@@ -11,14 +11,11 @@ define(["core"], function ( symposia ) {
         };
     };
 
-    describe("Modules", function () {
+    describe("stopped modules", function () {
+        var module;
 
         beforeEach(function() {
             symposia.modules.reset();
-        });
-
-        it("should be able to find all stopped modules", function () {
-
             symposia.modules.create({
                 'test': {
                     creator: TEST_MODULE,
@@ -27,9 +24,38 @@ define(["core"], function ( symposia ) {
                     }
                 }
             });
-
-            var stopped = symposia.modules.search({ instance: null });
-            expect( stopped.length ).toBe(1);
+            module = symposia.modules.get.one('test');
         });
+
+        it("should be able to start a stopped module", function () {
+
+            // test pre-start state
+            expect(module.instance).toBe(null);
+            expect(module.id).toBe('test');
+            expect(typeof module.creator).toBe('function');
+
+            // start module
+            symposia.modules.start(module.id);
+
+            // test post-start state
+            expect(module.instance).not.toBe(null);
+            expect(module.id).toBe('test');
+            expect(typeof module.creator).toBe('function');
+
+            // test init
+            expect(typeof module.instance.init).toBe('function');
+            expect(module.instance.init()).toBe(200);
+
+            // test destroy
+            expect(typeof module.instance.destroy).toBe('function');
+            expect(module.instance.destroy()).toBe(300);
+
+        });
+
+        it("should not be able to start a module twice", function () {
+            expect(symposia.modules.start(module.id)).toBeTruthy();
+            expect(symposia.modules.start(module.id)).toBeFalsy();
+        });
+
     });
 });
