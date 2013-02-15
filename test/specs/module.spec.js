@@ -1,73 +1,120 @@
 define(["core"], function ( symposia ) {
 
-    // spy - international man of mystery.
-    var austin = function ( sandbox ) {
+    // spy - an international man of mystery.
+    var Austin = function ( sandbox ) {
         return {
             init: sinon.spy(function() {
-                sandbox.listen({
-                    "catchphrase": function () {
-                        return 'yeah baby!';
-                    }
-                });
+                sandbox.listen({"all": this.receive });
             }),
             add: sinon.spy(function() {
-                sandbox.listen({
-                    "groovy": true
-                });
+                sandbox.listen({'austin.stop': this.destroy });
             }),
+            send: sinon.spy(function (e) {
+                sandbox.notify(e);
+            }),
+            receive: sinon.spy(),
             destroy: sinon.spy()
         };
     };
 
+    // spy - completes impossible missions
+    var Ethan = function ( sandbox ) {
+        return {
+            init: sinon.spy(function() {
+                sandbox.listen({
+                    'all': this.receive.bind(this)
+                });
+            }),
+            destroy: sinon.spy(),
+            receive: sinon.spy()
+        };
+    };
+
+    // spy - shaken, not stirred.
+    var James = function ( sandbox ) {
+        return {
+            init: sinon.spy( function () {
+                sandbox.listen({
+                    "all": this.receive.bind(this),
+                    "james.stop": this.destroy
+                });
+            }),
+            destroy: sinon.spy( function () {
+            }),
+            receive: sinon.spy( function () {
+            })
+        };
+    };
+
     describe("stopped modules", function () {
-        var module;
+        var austin, ethan;
 
         beforeEach(function() {
-            symposia.modules.reset();
             symposia.modules.create({
-                'test': {
-                    creator: austin,
+                'austin': {
+                    creator: Austin,
                     options: {
+                        // prevent austin from getting his groove on.
                         init: false
                     }
+                },
+                'ethan': {
+                    creator: Ethan
                 }
             });
-            module = symposia.modules.get.one('test');
+            austin = symposia.modules.get.one('austin');
+            ethan = symposia.modules.get.one('ethan');
         });
 
         it("should be able to start a stopped module", function () {
-            expect(module.instance).toBe(null);
-            symposia.modules.start(module.id);
-            expect(module.instance.init.called).toBeTruthy();
+            expect(austin.instance).toBe(null);
+            symposia.modules.start(austin.id);
+            expect(austin.instance.init.called).toBeTruthy();
         });
 
         it("should not be able to start a module twice", function () {
-            symposia.modules.start(module.id);
-            symposia.modules.start(module.id);
-            expect(module.instance.init.callCount).toBe(1);
+            symposia.modules.start(austin.id);
+            symposia.modules.start(austin.id);
+            expect(austin.instance.init.callCount).toBe(1);
+        });
+
+
+        afterEach(function () {
+            symposia.modules.reset();
         });
     });
 
     describe("events", function () {
-        var module;
+        var austin, ethan, james;
 
         beforeEach(function() {
-            symposia.modules.reset();
             symposia.modules.create({
-                'test_events': {
-                    creator: austin
-                }
+                'austin': { creator: Austin },
+                'ethan': { creator: Ethan },
+                'james': { creator: James }
             });
-            module = symposia.modules.get.one('test_events');
+            austin = symposia.modules.get.one('austin');
+            ethan  = symposia.modules.get.one('ethan');
+            james  = symposia.modules.get.one('james');
         });
 
         it("should have been called", function () {
-            expect(module.instance.init.called).toBeTruthy();
+            expect(austin.instance.init.called).toBeTruthy();
         });
 
         it("should be able to register a new event listener", function () {
-            module.instance.add();
-            expect(_.keys(module.events).length).toBe(2);
+            austin.instance.add();
+            expect(_.keys(austin.events).length).toBe(2);
+        });
+
+        it("should be able to receive event notifications", function () {
+            austin.instance.send({ type: 'all', data: { a: 1, b: 2 } });
+            expect(ethan.instance.receive.callCount).toBe(1);
+            expect(james.instance.receive.callCount).toBe(1);
+        });
+
+        afterEach(function() {
+            symposia.modules.reset();
         });
 
     });
