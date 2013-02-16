@@ -24,7 +24,7 @@
     });
 
     require([
-        'tests/module.spec'
+        'tests/symposia.spec'
         ], function () {
         jasmine.getEnv().addReporter(new jasmine.ConsoleReporter());
         jasmine.getEnv().execute();

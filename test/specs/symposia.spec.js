@@ -1,50 +1,19 @@
 define(["core"], function ( symposia ) {
 
-    // spy - an international man of mystery.
-    var Austin = function ( sandbox ) {
+    function Spy ( sandbox ) {
         return {
-            init: sinon.spy(function() {
-                sandbox.listen({"all": this.receive });
+            init: sinon.spy(function () {
+                sandbox.listen({ 'all': this.receive.bind(this) });
             }),
-            add: sinon.spy(function() {
-                sandbox.listen({'austin.stop': this.destroy });
+            add: sinon.spy(function ( name, callback ) {
+                sandbox.listen({ name : this[callback].bind(this) });
             }),
             send: sinon.spy(function (e) {
-                sandbox.notify(e);
             }),
             receive: sinon.spy(),
             destroy: sinon.spy()
         };
-    };
-
-    // spy - completes impossible missions
-    var Ethan = function ( sandbox ) {
-        return {
-            init: sinon.spy(function() {
-                sandbox.listen({
-                    'all': this.receive.bind(this)
-                });
-            }),
-            destroy: sinon.spy(),
-            receive: sinon.spy()
-        };
-    };
-
-    // spy - shaken, not stirred.
-    var James = function ( sandbox ) {
-        return {
-            init: sinon.spy( function () {
-                sandbox.listen({
-                    "all": this.receive.bind(this),
-                    "james.stop": this.destroy
-                });
-            }),
-            destroy: sinon.spy( function () {
-            }),
-            receive: sinon.spy( function () {
-            })
-        };
-    };
+    }
 
     describe("stopped modules", function () {
         var austin, ethan;
@@ -52,14 +21,14 @@ define(["core"], function ( symposia ) {
         beforeEach(function() {
             symposia.modules.create({
                 'austin': {
-                    creator: Austin,
+                    creator: new Spy(),
                     options: {
                         // prevent austin from getting his groove on.
                         init: false
                     }
                 },
                 'ethan': {
-                    creator: Ethan
+                    creator: new Spy()
                 }
             });
             austin = symposia.modules.get.one('austin');
@@ -89,9 +58,9 @@ define(["core"], function ( symposia ) {
 
         beforeEach(function() {
             symposia.modules.create({
-                'austin': { creator: Austin },
-                'ethan': { creator: Ethan },
-                'james': { creator: James }
+                'austin' : { creator: new Spy() },
+                'ethan'  : { creator: new Spy() },
+                'james'  : { creator: new Spy() }
             });
             austin = symposia.modules.get.one('austin');
             ethan  = symposia.modules.get.one('ethan');
