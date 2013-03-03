@@ -1,0 +1,108 @@
+<div class="ui-layout-center bg-textured-grey">
+                <div id="document_toolbar">
+                    <div class="btn-toolbar"></div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span12">
+
+                        <div id="document_viewer">
+                            <div class="pages level-3">
+
+                                <div class="page portrait">
+                                    <div class="outer">
+                                        <div class="inner"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- start:top-->
+        <div class="ui-layout-north" id="header">
+            <img src="/img/logo/symphony-small.png">
+            <div class="user-setting">Logged in as: <a href="#">Paul Osborne</a></div>
+        </div>
+        <!-- end:top-->
+
+        <!-- start:west-->
+        <div class="ui-layout-west ui-nested-west">
+        <div class="ui-layout-center">
+            <div id="metadata">
+                <form class="form-horizontal">
+                    <legend>Metadata</legend>
+
+
+                    <div class="control-group">
+                        <label class="control-label" for="cabinet">Cabinet: <span class="required">*</span></label>
+                        <div class="controls">
+                           <select id="cabinet" class="span2" name="cabinet"><option>Please Select</option></select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="doc_type">Document Type: <span class="required">*</span></label>
+                        <div class="controls">
+                           <select id="cabinet" class="span2" name="doc_type"><option>Please Select</option></select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="control-group">
+                        <label class="control-label" for="site_code">Site Code:</label>
+                        <div class="controls">
+                            <input type="input" class="span2" name="site_code" id="site_code">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="cust_code">Customer Code:</label>
+                        <div class="controls">
+                            <input type="input" class="span2" name="cust_code" id="cust_code">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="order_num">Order Number:</label>
+                        <div class="controls">
+                            <input type="input" class="span2" name="order_num" id="order_num">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="date">Date:</label>
+                        <div class="controls">
+                            <input type="input" class="span2" name="date" id="date">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="select">Select:</label>
+                        <div class="controls">
+                            <input type="input" class="span2" name="select" id="select">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-custom-dark-grey">Save Changes</button>
+                    </div>
+
+                  </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="ui-layout-south">
+            <ul class="nav nav-tabs">
+            <li class="active"><a href="#">History</a><li>
+            <li><a href="#">Notes</a><li>
+            <li><a href="#">Pages</a><li>
+            </ul>
+        </div>
+
+        </div>
+        <!-- end:west-->
