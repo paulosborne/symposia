@@ -1,14 +1,14 @@
-define(['lib/dom'], function ( $ )  {
+define(['jquery'], function ( $ )  {
     return {
         create: function ( core, selector ) {
 
-            var DOMContainer = $('#' + selector);
+            var element = $('#' + selector);
 
             return {
-                container: DOMContainer,
+                container: element,
                 find: function ( query ) {
-                    if ( DOMContainer !== undefined && typeof DOMContainer.find === 'function' ) {
-                       return DOMContainer.find( query );
+                    if ( element !== undefined && typeof element.find === 'function' ) {
+                       return element.find( query );
                     }
                     return $(query);
                 },

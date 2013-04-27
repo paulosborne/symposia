@@ -1,17 +1,8 @@
-define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
-    var moduleData = {}, core = {}, eventQueue = [];
+define(['src/seed','src/sandbox'],function( symposia, sandbox ) {
 
-    (function () {
-        if ( typeof seed.dom !== 'object' ) {
-            throw new Error('Seed must have a dom object');
-        }
-        if ( typeof seed.util !== 'object' ) {
-            throw new Error('Seed must have a util object');
-        }
-        _.extend(core, seed);
-    }());
+    var moduleData = {};
 
-    core.modules = {
+    symposia.modules = {
         create: function ( modules, callback, context ) {
             var id,
                 temp = {},
@@ -24,7 +15,7 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
             }
 
             for ( id in modules ) {
-                if ( _.has(modules,id) ) {
+                if( modules.hasOwnProperty( id ) ) {
 
                     _.extend(options, modules[id].options);
 
@@ -38,7 +29,7 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
                         throw new Error('creator should return a public interface');
                     }
 
-                    temp = modules[id].creator( sandbox.create( core, id) );
+                    temp = modules[id].creator( sandbox.create( symposia, id) );
                     if ( typeof temp !== 'object' ) {
                         throw new Error('failed to created temporary module instance');
                     }
@@ -52,12 +43,11 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
                     moduleData[id] = {
                         id: id,
                         creator: modules[id].creator,
-                        instance: null,
-                        events: {}
+                        instance: null
                     };
 
                     if ( options.init ) {
-                        core.modules.start( id );
+                        symposia.modules.start( id );
                     }
                 }
             }
@@ -72,7 +62,7 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
             }
 
             if ( moduleData[id] && _.isNull(moduleData[id].instance)) {
-                moduleData[id].instance = moduleData[id].creator(sandbox.create( core, id ));
+                moduleData[id].instance = moduleData[id].creator( sandbox.create( symposia, id ) );
                 moduleData[id].instance.init();
                 return true;
             }
@@ -82,7 +72,7 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
             var id;
             if ( arguments.length === 0 ) {
                 for ( id in moduleData ) {
-                    if ( _.has(moduleData,id) && _.isNull(moduleData[id].instance) === false ) {
+                    if ( moduleData.hasOwnProperty( id ) && _.isNull(moduleData[id].instance) === false ) {
                         moduleData[id].instance.destroy();
                     }
                 }
@@ -104,62 +94,6 @@ define(['lib/seed','lib/sandbox'],function( seed, sandbox ) {
         }
     };
 
-    core.events = {
-        subscribe: function ( obj, id ) {
-            _.extend(moduleData[id].events,obj);
-        },
-        publish: function ( ev ) {
-            var i;
-            if (_.has( ev,'type') === false ) {
-                throw new Error('emit expects eventObject to have a type property');
-            }
-            for ( i in moduleData ) {
-                // check to see if the current module has an event that matches
-                // the value of ev.type.
-                if ( moduleData.hasOwnProperty(i) && _.has(moduleData[i].events,ev.type)) {
-                    moduleData[i].events[ev.type](ev.data);
-                }
-            }
-        },
-        unsubscribe: function () {
-
-        }
-    };
-
-    return core;
-/*
-    return {
-        modules: {
-            create: function ( modules, callback ) {
-                return core.modules.create( modules, callback, core);
-            },
-            search: function ( criteria ) {
-                return core.modules.search( criteria );
-            },
-            reset: function () {
-                return core.modules.reset();
-            },
-            start: function ( id ) {
-                return core.modules.start( id );
-            },
-            get: {
-                all: function () {
-                    return moduleData;
-                },
-                one: function ( id ) {
-                    if ( moduleData[id] ) {
-                        return moduleData[id];
-                    }
-                    return false;
-                }
-            }
-        },
-        events: {
-            notify: function ( obj ) {
-                core.events.publish(obj);
-            }
-        }
-    };
-*/
+    return symposia;
 
 });

@@ -1,7 +1,5 @@
 define(["backbone"], function ( Backbone ) {
     return {
-        util: {},
-        dom: {},
         mvc: {
             View: function ( view ) {
                 return Backbone.View.extend(view);
