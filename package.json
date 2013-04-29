@@ -12,7 +12,7 @@
     }
   ],
   "scripts": {
-    "test": "grunt build -v"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -24,10 +24,8 @@
   "dependencies": {},
   "analyze": false,
   "devDependencies": {
-    "grunt": "~0.3.14",
-    "grunt-jasmine-task": "~0.2.3",
-    "grunt-requirejs": "~0.3.1",
-    "grunt-shell": "~0.1.4"
+    "buster":"0.6.12",
+    "buster-amd": "0.3.0"
   },
   "bundledDependencies": [],
   "license": "MIT",

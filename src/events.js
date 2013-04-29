@@ -1,4 +1,4 @@
-defune(['src/seed'], function( symposia ) {
+define(['src/seed'], function( symposia ) {
     symposia.events = {
         subscribe: function ( obj, id ) {
             _.extend(moduleData[id].events,obj);
