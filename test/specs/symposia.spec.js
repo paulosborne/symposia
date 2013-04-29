@@ -1,3 +1,7 @@
 require(['symposia'], function ( symposia ) {
-    console.log( symposia );
+    buster.testCase('bootstrap', {
+        'test the obvious': function () {
+            assert(true).isTrue();
+        }
+    });
 });
