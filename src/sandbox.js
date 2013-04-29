@@ -18,7 +18,8 @@ define(['jquery'], function ( $ )  {
                 },
                 notify: function ( notification ) {
                     core.events.publish( notification );
-                }
+                },
+                events: core.bus
             };
         }
     };

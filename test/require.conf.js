@@ -6,8 +6,9 @@ require.config({
         }
     },
     paths: {
-        backbone: 'lib/backbone/backbone-0.0.9',
-        underscore: 'lib/underscore/underscore-1.4.3',
-        jquery: 'lib/jquery/jquery-1.8.3'
+        backbone: 'lib/backbone-0.0.9',
+        underscore: 'lib/underscore-1.4.3',
+        jquery: 'lib/jquery-1.8.3',
+        sinon: 'test/lib/sinon/sinon-1.5.2'
     }
 });
