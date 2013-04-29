@@ -12,7 +12,7 @@
     }
   ],
   "scripts": {
-    "test": ""
+    "test": "buster test"
   },
   "repository": {
     "type": "git",
