@@ -1,7 +1,7 @@
-buster.testCase('symposia', function ( run ) {
+buster.testCase('symposia.modules', function ( run ) {
     require(['symposia'], function ( symposia ) {
         run({
-            'pass the obvious test': function () {
+            'can create a module': function () {
                 assert(true);
             }
         });

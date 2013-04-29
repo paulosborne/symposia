@@ -1,4 +1,5 @@
-define(['src/seed'], function( symposia ) {
+define(['lib/eventemitter2','src/seed'], function( EventEmitter, symposia ) {
+
     symposia.events = {
         subscribe: function ( obj, id ) {
             _.extend(moduleData[id].events,obj);
@@ -20,5 +21,12 @@ define(['src/seed'], function( symposia ) {
 
         }
     };
+
+    symposia.bus = new EventEmitter({
+        wildcard: true,
+        maxListeners: 20,
+        verbose: true
+    });
+
     return symposia;
-})
+});
