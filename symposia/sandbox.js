@@ -1,4 +1,4 @@
-define(['symposia/lib/jquery'], function ( $ )  {
+define(['jquery'], function ( $ )  {
     return {
         create: function ( symposia, selector ) {
             var element = $('#' + selector);
