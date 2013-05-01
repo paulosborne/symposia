@@ -1,12 +1,18 @@
 var config = module.exports;
 
 config["symposia"] = {
+    env: 'node',
     rootPath: "../",
     libs: [
         'test/lib/requirejs/require.js',
         'test/require.conf.js'
     ],
-    resources: ['*.js','src/*.js','lib/**/*.js','test/lib/**/*.js'],
+    resources: [
+        '*',
+        'src/*.js',
+        'lib/**/*.js',
+        'test/**/**/*.js'
+    ],
     tests: ['test/specs/*.js'],
     extensions: [
         require("buster-amd")

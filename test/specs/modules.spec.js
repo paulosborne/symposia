@@ -1,51 +1,40 @@
 buster.testCase('symposia.modules', function ( run ) {
-    require(['symposia'], function ( symposia ) {
+    require(['symposia','test/mocks/modules'], function ( symposia, modules ) {
         run({
-            setUp: function () {
-                 this.spies = {};
-
-                 this.spies.austin = function ( sandbox ) {
-                    return {
-                        init: sinon.spy( function() {
-                            sandbox.events.on('ping.austin', function ( value ) {
-                                console.log( value );
-                            });
-                        }),
-                        destroy: sinon.spy(function() {
-                            return true;
-                        })
-                    };
-                };
-
-                this.spies.james = function ( sandbox ) {
-                    return {
-                        init: sinon.spy ( function () {
-                            sandbox.events.on('ping.james', function ( value ) {
-                                console.log( value );
-                            });
-                        }),
-                        destroy: sinon.spy( function () {
-                            sandbox.events.off('ping.james');
-                        })
-                    };
-                };
-            },
             'can create a module': function () {
-                var module = {};
+                var instance = {};
 
                 symposia.modules.create({
                     'module_a': {
-                        creator: this.spies.austin
+                        creator: modules.a
                     },
                     'module_b': {
-                        creator: this.spies.james
+                        creator: modules.b
                     }
                 });
 
-                module.found = symposia.modules.search({ id: 'module_a' });
-                assert.equals( module.found[0].id, 'module_a');
-                assert.equals( symposia.bus.listenerTree.ping.austin._listeners.length, 1 );
-                assert.equals( module.found[0].instance.init.callCount, 1);
+                instance.a = symposia.modules.search({ id: 'module_a' });
+                assert.equals( instance.a[0].id, 'module_a');
+            },
+            'can recieve emitted events': function () {
+                var instance = {};
+
+                symposia.modules.create({
+                    'module_a': {
+                        creator: modules.a
+                    },
+                    'module_b': {
+                        creator: modules.b
+                    },
+                    'module_c': {
+                        creator: modules.c
+                    }
+                });
+
+                instance.a = symposia.modules.search({ id: 'module_a' })[0];
+                instance.b = symposia.modules.search({ id: 'module_b' })[0];
+                instance.c = symposia.modules.search({ id: 'module_c' })[0];
+
             },
             tearDown: function () {
                 symposia.modules.reset();

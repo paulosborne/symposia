@@ -1,3 +1,3 @@
-define(['src/seed','src/modules','src/events','src/mvc'], function ( symposia ) {
+define(['./src/seed','./src/mvc','./src/modules','./src/messages'], function ( symposia ) {
     return symposia;
 });

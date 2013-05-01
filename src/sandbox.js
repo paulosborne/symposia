@@ -1,7 +1,6 @@
 define(['jquery'], function ( $ )  {
     return {
-        create: function ( core, selector ) {
-
+        create: function ( symposia, selector ) {
             var element = $('#' + selector);
 
             return {
@@ -12,15 +11,15 @@ define(['jquery'], function ( $ )  {
                     }
                     return $(query);
                 },
-                mvc: core.mvc,
                 listen: function ( events ) {
-                    core.events.subscribe( events, selector);
+                    symposia.events.subscribe( events, selector);
                 },
                 notify: function ( notification ) {
-                    core.events.publish( notification );
+                    symposia.events.publish( notification );
                 },
-                events: core.bus
+                mvc: symposia.mvc,
+                messageBus: symposia.messageBus
             };
-        }
+        },
     };
 });
