@@ -3,4 +3,16 @@ symposia
 
 <img src="https://travis-ci.org/posbo/symposia.png?branch=master">
 
-JavaScript framework for development of large-scale modular applications.
+AMD based JavaScript framework for development of scalable, modular web applications.
+
+
+### Usage
+
+Symposia has a few dependencies.
+
+- [Installation](#installation)
+- [Dependencies](#dependencies)
+- [Modules](#modules)
+- [Message Bus](#message-bus)
+- [Views](#backbone-views)
+
