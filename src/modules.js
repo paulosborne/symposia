@@ -1,4 +1,4 @@
-define(['src/seed','src/sandbox'],function( symposia, sandbox ) {
+define(['src/core','src/sandbox'], function( symposia, sandbox ) {
 
     var moduleData = {};
 
@@ -95,5 +95,4 @@ define(['src/seed','src/sandbox'],function( symposia, sandbox ) {
     };
 
     return symposia;
-
 });

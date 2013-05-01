@@ -1,8 +1,11 @@
-define(['src/seed','postal','postaldiags'], function ( symposia, Postal, Wiretap ) {
+define(['src/core','postal','postaldiags'], function ( symposia, Postal, Wiretap ) {
 
-    symposia.messageBus = Postal;
+    symposia.bus = Postal;
 
-    symposia.wiretap = new Wiretap({ name: 'console' });
+    if ( symposia.hasOwnProperty('debug') && symposia.debug === true ) {
+        symposia.bus.wiretap = new Wiretap({ name: 'console' });
+    }
 
-    return symposia;
+    return symposia
+
 });

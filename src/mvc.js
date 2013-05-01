@@ -1,4 +1,4 @@
-define(['./seed','backbone'], function ( symposia, Backbone ) {
+define(['src/core','backbone'], function ( symposia, Backbone ) {
 
     symposia.mvc = {
         View: function ( config ) {
