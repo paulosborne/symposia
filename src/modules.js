@@ -57,26 +57,46 @@ define(['src/core','src/sandbox'], function( symposia, sandbox ) {
             }
         },
         start: function ( id ) {
+
             if ( _.isString(id) === false ){
                 throw new Error("start expects id to be an instance of string");
             }
 
             if ( moduleData[id] && _.isNull(moduleData[id].instance)) {
+
+                // create new instance.
                 moduleData[id].instance = moduleData[id].creator( sandbox.create( symposia, id ) );
+
+                // initialize module.
                 moduleData[id].instance.init();
+
+                // announce module initialization
+                symposia.bus.publish({
+                    channel: 'modules',
+                    topic: 'module.started',
+                    data: {
+                        id: id
+                    }
+                });
+
                 return true;
             }
+
             return false;
+
         },
         stop: function ( arg ) {
             var id;
             if ( arguments.length === 0 ) {
+
                 for ( id in moduleData ) {
                     if ( moduleData.hasOwnProperty( id ) && _.isNull(moduleData[id].instance) === false ) {
                         moduleData[id].instance.destroy();
                     }
                 }
+
                 moduleData[id].instance = null;
+
             } else if ( _.isString( arg )) {
                 if ( _.isObject(moduleData[id]) && _.isNull(moduleData[id].instance) === false ) {
                     moduleData[id].instance.destroy();
