@@ -1,4 +1,4 @@
-define(function () {
+define( function () {
 
     var symposia = window.symposia || {};
 

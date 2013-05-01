@@ -1,3 +1,3 @@
-define(['src/mvc','src/bus','src/modules'], function ( symposia ) {
+define(['symposia/mvc','symposia/bus','symposia/modules'], function ( symposia ) {
     return symposia;
 });

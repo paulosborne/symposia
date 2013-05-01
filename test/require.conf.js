@@ -7,17 +7,14 @@ require.config({
     },
     paths: {
         backbone: 'lib/backbone-0.0.9',
-        // underscore doesn't support AMD, lodash does
         underscore: 'lib/lodash',
         jquery: 'lib/jquery-1.8.3',
-        sinon: 'test/lib/sinon/sinon-1.5.2',
-        postal: 'lib/postal',
-        postaldiags: 'lib/postal.diagnostics'
+        sinon: 'test/lib/sinon/sinon-1.5.2'
     }
 });
 
 require( [ 'jquery' ], function ( $ ) {
     $( function () {
         require( [ 'symposia' ] );
-    } );
+    });
 });
