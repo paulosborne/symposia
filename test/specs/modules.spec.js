@@ -2,6 +2,7 @@ buster.testCase('symposia.modules', function ( run ) {
     require(['symposia','test/mocks/modules'], function ( symposia, modules ) {
         run({
             'can create a module': function () {
+
                 var instance = {};
 
                 symposia.modules.create({
