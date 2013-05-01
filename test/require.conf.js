@@ -20,4 +20,4 @@ require( [ 'jquery' ], function ( $ ) {
     $( function () {
         require( [ 'symposia' ] );
     } );
-} );
+});
