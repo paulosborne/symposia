@@ -1,4 +1,4 @@
-define(['src/core','backbone'], function ( symposia, Backbone ) {
+define(['symposia/core','symposia/lib/lodash','symposia/lib/backbone'], function ( symposia, Backbone ) {
 
     symposia.mvc = {
         View: function ( config ) {

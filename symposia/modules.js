@@ -1,4 +1,4 @@
-define(['src/core','src/sandbox'], function( symposia, sandbox ) {
+define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
 
     var moduleData = {};
 

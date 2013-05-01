@@ -1,4 +1,4 @@
-define(['src/core','lib/postal','lib/postal.diagnostics'], function( symposia, Postal, Wiretap ) {
+define(['symposia/core','symposia/lib/postal','symposia/lib/postal.diagnostics'], function( symposia, Postal, Wiretap ) {
 
     symposia.bus = Postal;
 

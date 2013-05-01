@@ -1,7 +1,6 @@
 var config = module.exports;
 
 config["symposia"] = {
-    env: 'node',
     rootPath: "../",
     libs: [
         'test/lib/requirejs/require.js',
@@ -9,8 +8,8 @@ config["symposia"] = {
     ],
     resources: [
         '*',
-        'src/*.js',
-        'lib/**/*.js',
+        'symposia/*.js',
+        'symposia/**/*.js',
         'test/**/**/*.js'
     ],
     tests: ['test/specs/*.js'],

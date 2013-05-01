@@ -6,10 +6,8 @@ require.config({
         }
     },
     paths: {
-        backbone: 'lib/backbone-0.0.9',
-        underscore: 'lib/lodash',
-        jquery: 'lib/jquery-1.8.3',
-        sinon: 'test/lib/sinon/sinon-1.5.2'
+        sinon: 'test/lib/sinon/sinon-1.5.2',
+        symposia: '../symposia'
     }
 });
 
