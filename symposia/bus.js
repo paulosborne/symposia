@@ -1,6 +1,6 @@
-define(['symposia/core','symposia/lib/postal','symposia/lib/postal.diagnostics'], function( symposia, Postal, Wiretap ) {
+define(['symposia/core','postal','diagnostics'], function( symposia, postal, Wiretap ) {
 
-    symposia.bus = Postal;
+    symposia.bus = postal;
 
     if ( symposia.hasOwnProperty('debug') && symposia.debug === true ) {
         symposia.wiretap = new Wiretap({ name: 'console' });

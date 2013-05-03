@@ -1,17 +1,31 @@
 {
-  "name": "symposia",
-  "version": "0.0.1",
-  "main": "symposia.js",
-  "dependencies": {
-      "backbone-amd": "backbone-amd",
-      "underscore-amd": "underscore-amd",
-      "postaljs":"git://github.com/postaljs/postal.js.git",
-      "requirejs":"requirejs",
-      "jquery":"jquery"
-  },
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
-  ]
+    name: "symposia",
+    version: "0.0.1",
+    description: "A JavaScript framework for building modular and scalable web applications.",
+    main: "dist/symposia.js",
+    homepage: "https://github.com/posbo/symposia.js",
+    bugs: "https://github.com/posbo/symposia.js/issues",
+    author: {
+        name: "Paul Osborne",
+        email: "paul.osborne.uk@gmail.com",
+    },
+    repository: {
+        type: "git",
+        url: "git@github.com:posbo/symposia.git"
+    },
+    "dependencies": {
+        "backbone": "backbone-amd",
+        "underscore": "underscore-amd",
+        "postaljs":"git://github.com/postaljs/postal.js.git",
+        "requirejs":"requirejs",
+        "jquery":"1.9.1"
+    },
+    licenses: [
+    {
+        type: "MIT"
+    }
+    ],
+    ignore: [
+        "node_modules"
+    ]
 }
