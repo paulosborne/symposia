@@ -13,12 +13,11 @@
         type: "git",
         url: "git@github.com:posbo/symposia.git"
     },
-    "dependencies": {
+    dependencies: {
         "backbone": "backbone-amd",
         "underscore": "underscore-amd",
         "postaljs":"git://github.com/postaljs/postal.js.git",
-        "requirejs":"requirejs",
-        "jquery":"1.9.0"
+        "requirejs":"requirejs"
     },
     licenses: [
     {
