@@ -18,7 +18,7 @@
         "underscore": "underscore-amd",
         "postaljs":"git://github.com/postaljs/postal.js.git",
         "requirejs":"requirejs",
-        "jquery":"v1.9.1"
+        "jquery":"~1.9.1"
     },
     licenses: [
     {
