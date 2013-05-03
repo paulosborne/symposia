@@ -2,7 +2,7 @@
     "name": "symposia",
     "version": "0.0.1",
     "description": "A JavaScript framework for building modular and scalable web applications.",
-    "main": "dist/symposia.js",
+    "main": "symposia.js",
     "homepage": "https://github.com/posbo/symposia.js",
     "bugs": "https://github.com/posbo/symposia.js/issues",
     "author": {
