@@ -1,0 +1,17 @@
+{
+  "name": "symposia",
+  "version": "0.0.1",
+  "main": "symposia.js",
+  "dependencies": {
+      "backbone-amd": "backbone-amd",
+      "underscore-amd": "underscore-amd",
+      "postaljs":"git://github.com/postaljs/postal.js.git",
+      "requirejs":"requirejs",
+      "jquery":"jquery"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}

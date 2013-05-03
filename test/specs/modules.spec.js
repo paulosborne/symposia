@@ -1,3 +1,7 @@
+if (typeof module == "object" && typeof require == "function") {
+        var buster = require("buster");
+}
+
 buster.testCase('symposia.modules', function ( run ) {
     require(['symposia','test/mocks/modules'], function ( symposia, modules ) {
         run({
