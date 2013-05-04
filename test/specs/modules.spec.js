@@ -1,7 +1,13 @@
-if (typeof module == "object" && typeof require == "function") {
-        var buster = require("buster");
-}
+define(['intern!bdd','intern!chai!expect','symposia'], function ( bdd, expect, symposia ) {
+    with ( bdd ) {
+        describe('symposia.modules', function () {
+            it("should create and initialize multiple modules", function () {
 
+            });
+        })
+    }
+});
+/*
 buster.testCase('symposia.modules', function ( run ) {
     require(['symposia','test/mocks/modules'], function ( symposia, modules ) {
         run({
@@ -47,3 +53,4 @@ buster.testCase('symposia.modules', function ( run ) {
         });
     });
 });
+*/
