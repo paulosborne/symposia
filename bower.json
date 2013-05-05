@@ -17,6 +17,7 @@
         "backbone": "backbone-amd",
         "underscore": "underscore-amd",
         "postaljs": "git://github.com/postaljs/postal.js.git",
+        "postaljs.diagnostics": "git://github.com/postaljs/postal.diagnostics.git",
         "requirejs": "requirejs",
         "jquery": "1.9.1",
         "intern":"intern"
