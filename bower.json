@@ -14,8 +14,8 @@
         "url": "git@github.com:posbo/symposia.git"
     },
     "dependencies": {
-        "backbone": "backbone-amd",
-        "underscore": "underscore-amd",
+        "backbone-amd": "backbone-amd",
+        "lodash": "lodash",
         "postaljs": "git://github.com/postaljs/postal.js.git",
         "postaljs.diagnostics": "git://github.com/postaljs/postal.diagnostics.git",
         "requirejs": "requirejs",
