@@ -12,8 +12,7 @@ define(['symposia/core','backbone'], function ( symposia, Backbone ) {
         },
         Router: function ( router ) {
             return Backbone.Router.extend(router);
-        },
-        Backbone: Backbone
+        }
     };
 
     return symposia;
