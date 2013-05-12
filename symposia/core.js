@@ -11,7 +11,7 @@
             paths: {
                 postal: 'vendor/postal/lib/postal',
                 jquery: 'vendor/jquery/jquery',
-                underscore: 'vendor/lodash',
+                underscore: 'vendor/lodash/lodash',
                 diagnostics: 'vendor/postal.diagnostics/lib/postal.diagnostics'
             }
         },
