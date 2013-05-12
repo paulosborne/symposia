@@ -18,7 +18,7 @@ symposia.config = {
 
 require.config( symposia.config.require );
 
-require([
+define([
     'underscore',
     'jquery',
     'postal',
