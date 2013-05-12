@@ -1,35 +1,33 @@
+(function() {
 
-var symposia = window.symposia || {},
+    var symposia = window.symposia || {};
 
     symposia.config = {
-        shim: {
-            jquery:{
-                exports: '$'
+        require: {
+            shim: {
+                jquery: { exports: '$' },
+                underscore: { exports: '_' }
             },
-            underscore: {
-                exports: '_'
+            paths: {
+                postal: 'vendor/postal/lib/postal',
+                jquery: 'vendor/jquery/jquery',
+                underscore: 'vendor/lodash',
+                diagnostics: 'vendor/postal.diagnostics/lib/postal.diagnostics'
             }
         },
-        paths: {
-            postal: 'vendor/postal/lib/postal',
-            jquery: 'vendor/jquery/jquery',
-            underscore: 'vendor/lodash',
-            diagnostics: 'vendor/postal.diagnostics/lib/postal.diagnostics'
-        }
+        debug: true
     };
 
-require.config( symposia.config );
+    console.log( symposia );
 
-require(['underscore','jquery','postal','diagnostics'], ( _, $, Postal, Diagnostics ) {
-    define(function () {
+    require.config( symposia.config.require );
 
-        var symposia = window.symposia || {};
-
-        symposia.debug = true;
+    define(['underscore','jquery','postal','diagnostics'], function ( _, $, Postal, Diagnostics ) {
 
         if ( typeof window.symposia === 'undefined' ) {
             window.symposia = symposia;
         }
         return symposia;
     });
-});
+
+})();

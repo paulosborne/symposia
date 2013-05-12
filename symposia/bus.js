@@ -2,7 +2,7 @@ define(['symposia/core','postal','diagnostics'], function( symposia, postal, Wir
 
     symposia.bus = postal;
 
-    if ( symposia.hasOwnProperty('debug') && symposia.debug === true ) {
+    if ( symposia.config.hasOwnProperty('debug') && symposia.config.debug === true ) {
         symposia.wiretap = new Wiretap({ name: 'console' });
     }
 
