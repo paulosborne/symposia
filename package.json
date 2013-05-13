@@ -11,9 +11,6 @@
       "url": "posbo.me"
     }
   ],
-  "scripts": {
-    "test": "node_modules/buster/bin/buster-test"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/posbo/symposia.git"
