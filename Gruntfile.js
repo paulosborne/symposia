@@ -11,6 +11,23 @@ module.exports = function(grunt) {
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
     // Task configuration.
+    connect: {
+        server: {
+            options: {
+                port: 8001,
+                base: '.',
+                keepalive: true
+            }
+        }
+    },
+    mocha: {
+        all: {
+            options: {
+                urls: ['http://localhost:<%= connect.server.options.port %>/index.html'],
+                reporter: 'Spec'
+            }
+        }
+    },
     concat: {
       options: {
         banner: '<%= banner %>',
@@ -76,5 +93,6 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint','concat', 'uglify']);
+  grunt.registerTask('test', ['connect','mocha']);
 
 };

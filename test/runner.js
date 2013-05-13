@@ -1,7 +1,7 @@
 require.config({
     baseUrl: '../',
     paths: {
-        'symposia': 'vendor/symposia/symposia',
+        'symposia': 'symposia',
         'chai': 'node_modules/chai/chai',
         'sinonChai': 'node_modules/sinon-chai/lib/sinon-chai'
     }

@@ -27,7 +27,13 @@
     "sinon-chai": "~2.4.0",
     "grunt": "~0.4.1",
     "bower": "~0.9.2",
-    "grunt-contrib-connect": "~0.3.0"
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-mocha": "~0.3.1",
+    "grunt-contrib-jshint": "~0.4.3",
+    "requirejs": "~2.1.6"
   },
   "bundledDependencies": [],
   "license": "MIT",
