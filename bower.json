@@ -16,8 +16,8 @@
     "dependencies": {
         "backbone-amd": "backbone-amd",
         "lodash": "lodash",
-        "postaljs": "git://github.com/postaljs/postal.js.git",
-        "postaljs.diagnostics": "git://github.com/postaljs/postal.diagnostics.git",
+        "postaljs": "git@github.com:posbo/postal.js.git",
+        "postaljs.diagnostics":"git@github.com:posbo/postal.diagnostics.git",
         "requirejs": "requirejs",
         "jquery": "1.9.1"
     },
