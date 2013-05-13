@@ -1,3 +1,5 @@
+var should;
+
 require.config({
     baseUrl: '../',
     paths: {
@@ -18,9 +20,8 @@ require(['chai','sinonChai'], function ( chai, sinonChai ) {
     chai.use(sinonChai);
     mocha.setup('tdd');
 
-    require([
-        'test/specs/symposia.spec'
-    ], function () {
+    require(['test/specs/symposia.spec'], function () {
+        console.log( mocha );
         mocha.run();
     });
 
