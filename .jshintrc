@@ -1,0 +1,30 @@
+{
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "eqnull": true,
+  "browser": true,
+  "nomen": false,
+  "expr": true,
+  "globals": {
+    "console": true,
+    "require": true,
+    "define": true,
+    "_": true,
+    "$": true,
+    "describe": true,
+    "it": true,
+    "assert": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "mocha": true,
+    "test": true,
+    "setup": true,
+    "suite":true
+  }
+}

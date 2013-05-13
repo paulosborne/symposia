@@ -20,8 +20,7 @@ require(['chai','sinonChai'], function ( chai, sinonChai ) {
     chai.use(sinonChai);
     mocha.setup('tdd');
 
-    require(['test/specs/symposia.spec'], function () {
-        console.log( mocha );
+    require(['test/specs/modules.spec'], function () {
         mocha.run();
     });
 
