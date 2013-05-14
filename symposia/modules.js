@@ -82,12 +82,6 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                 return true;
             }
         },
-        isModule: function ( id ) {
-            if ( _.isUndefined( id ) || !_.isString( id ) || !_.has( moduleData, id ) ) {
-                return false;
-            }
-            return true;
-        },
         stop: function ( id ) {
             if ( !this.isModule( id ) ) {
                 throw new Error('Invalid module ID, unable to stop');
@@ -97,28 +91,24 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                 }
 
                 if ( _.isString(id) && _.isObject( moduleData[id] ) ) {
-
                     // announce module has stopped.
                     symposia.bus.publish({
                         channel: "modules",
                         topic: "module.stopped",
                         data: { id: id }
                     });
-
                     // run destroy
                     moduleData[id].instance.destroy();
-
                     // clear the module instance
                     moduleData[id].instance = null;
                 }
             }
         },
         stopAll: function () {
-            var id;
-
-            for ( id in moduleData ) {
-                if ( moduleData.hasOwnProperty(id) ) {
-                    this.stop(id);
+            var moduleId;
+            for ( moduleId in moduleData ) {
+                if ( moduleData.hasOwnProperty( moduleId ) ) {
+                    this.stop( moduleId );
                 }
             }
         },
@@ -126,8 +116,27 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
             var result = _.where( moduleData, criteria );
             return result;
         },
-        reset: function () {
-            moduleData = {};
+        hasModules: function () {
+            return ( moduleData.length !== 0 ) ? true : false;
+        },
+        isStarted: function ( moduleId ) {
+            if ( this.isModule( moduleId ) ) {
+                return _.isObject( moduleData[moduleId].instance );
+            }
+        },
+        isModule: function ( moduleId ) {
+            if ( _.isUndefined( moduleId ) ) {
+                throw new Error('No moduleId supplied');
+            }
+
+            if ( !_.isString( moduleId ) ) {
+                throw new Error('moduleId must be a string, '+ typeof moduleId +' supplied');
+            }
+
+            if ( !_.has( moduleData, moduleId ) ) {
+                throw new Error('Unable to find module ['+ moduleId +']');
+            }
+
             return true;
         }
     };
