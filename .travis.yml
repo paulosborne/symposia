@@ -2,11 +2,8 @@ branches:
   only:
     - master
 
-before_script:
-  - "npm install"
- 
 script:
-  - "npm test"
+  - "make -f Makefile"
  
 language: node_js
  
