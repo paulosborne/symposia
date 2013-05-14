@@ -3,6 +3,10 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         var moduleData = {};
 
         before(function() {
+
+            this.started = [];
+            this.stopped = [];
+
             moduleData = symposia.modules.create({
                 'module_a': {
                     creator: mods.a
@@ -16,32 +20,114 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             }, function ( data ) {
                 return data;
             });
-        });
 
-        it('should create a module', function () {
-            assert.equal(moduleData.hasOwnProperty('module_a'), true);
-        });
-
-        it('should initialize module by default', function () {
-            assert.equal(_.isObject(moduleData.module_a.instance), true);
-        });
-
-        it('should (optionally) prevent modules from being initialized', function () {
-            assert.equal(_.isNull(moduleData.module_b.instance), true);
-        });
-
-        it('should announce when a module starts', function () {
-            var subscription = symposia.bus.subscribe({
+            symposia.bus.subscribe({
                 channel: 'modules',
                 topic: 'module.started',
-                callback: function( data ) {
-                    assert.equal( data.id, 'module_b');
+                callback: function ( data, envelope ) {
+                    this.started.push( data.id );
                 }
-            });
-            // remove subscriber after it has been fired.
-            subscription.once();
-            // start module
-            symposia.modules.start('module_b');
+            }).withContext( this );
+
+            symposia.bus.subscribe({
+                channel: 'modules',
+                topic: 'module.stopped',
+                callback: function ( data, envelope ) {
+                    this.stopped.push( data.id );
+                }
+            }).withContext( this );
+
         });
+
+        afterEach(function () {
+            this.started = [];
+            this.stopped = [];
+            symposia.modules.stopAll();
+        });
+
+        describe('validating modules', function () {
+
+            it('should return FALSE if no name is passed', function () {
+                assert.isFalse( symposia.modules.isModule() );
+            });
+
+            it('should return FALSE if module name is not a string', function () {
+                assert.isFalse( symposia.modules.isModule(12345) );
+            });
+
+            it('should return FALSE if module does not exist', function () {
+                assert.isFalse( symposia.modules.isModule('randomModuleName') );
+            });
+
+            it('should return TRUE if module exists', function () {
+                assert.isTrue( symposia.modules.isModule('module_a') );
+            });
+
+        });
+
+        describe('creating a module', function() {
+
+            it('should create a module', function () {
+                assert.isTrue( moduleData.hasOwnProperty('module_a') );
+            });
+
+            it('should initialize module by default', function () {
+                symposia.modules.start('module_a');
+                assert.includeMembers( this.started, ['module_a'] );
+            });
+
+            it('should (optionally) prevent modules from being initialized', function () {
+                assert.isTrue( _.isNull( moduleData.module_b.instance ));
+            });
+
+        });
+
+        describe('starting a module', function () {
+            it('should announce when a module starts', function () {
+
+                // start module_b
+                symposia.modules.start('module_b');
+
+                // assert module has been started
+                assert.includeMembers(this.started,['module_b']);
+            });
+
+            it('should throw an error if no module id passed', function () {
+                assert.throws( symposia.modules.start, Error, 'Module ID required' );
+            });
+
+            it('should throw an error if no module is found', function () {
+                assert.throws( function () {
+                    symposia.modules.start('randomModuleName');
+                }, Error, 'Module not found');
+            });
+
+            it('should throw an error if module id is not a string', function () {
+                assert.throws(function() {
+                    symposia.modules.start(12345);
+                }, Error, 'Module ID should be an instance of String');
+            });
+
+            it('should return false if attempting to start a running module', function () {
+                symposia.modules.start('module_b');
+                assert.isFalse( symposia.modules.start('module_b') );
+            });
+
+            it('should return true if a module starts successfully', function () {
+
+            });
+        });
+
+        describe('stopping a module', function () {
+            it('should return false if trying to stop an inactive module', function () {
+                assert.isFalse( symposia.modules.stop('module_a') );
+            });
+
+            it('should announce when a module stops', function () {
+                symposia.modules.stop('module_a');
+                assert.includeMembers( this.stopped, ['module_a'] );
+            });
+        });
+
     });
 });

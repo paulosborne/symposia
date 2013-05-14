@@ -43,7 +43,8 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                     moduleData[id] = {
                         id: id,
                         creator: modules[id].creator,
-                        instance: null
+                        instance: null,
+                        subscriptions: []
                     };
 
                     if ( options.init ) {
@@ -53,16 +54,16 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
             }
 
             if ( typeof callback === 'function' ) {
-                return callback(moduleData);
+                return callback( moduleData );
             }
         },
         start: function ( id ) {
-
-            if ( _.isString(id) === false ){
-                throw new Error("start expects id to be an instance of string");
-            }
-
-            if ( moduleData[id] && _.isNull(moduleData[id].instance)) {
+            if ( !this.isModule( id ) ) {
+                throw new Error('Unable to start module ['+ id +']');
+            } else {
+                if ( _.isObject( moduleData[id].instance )) {
+                    return false;
+                }
 
                 // create new instance.
                 moduleData[id].instance = moduleData[id].creator( sandbox.create( symposia, id ) );
@@ -78,30 +79,47 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                         id: id
                     }
                 });
-
                 return true;
             }
-
-            return false;
-
         },
-        stop: function ( arg ) {
-            var id;
-            if ( arguments.length === 0 ) {
-
-                for ( id in moduleData ) {
-                    if ( moduleData.hasOwnProperty( id ) && _.isNull(moduleData[id].instance) === false ) {
-                        moduleData[id].instance.destroy();
-                    }
+        isModule: function ( id ) {
+            if ( _.isUndefined( id ) || !_.isString( id ) || !_.has( moduleData, id ) ) {
+                return false;
+            }
+            return true;
+        },
+        stop: function ( id ) {
+            if ( !this.isModule( id ) ) {
+                throw new Error('Unable to stop module ['+ id +']');
+            } else {
+                if ( _.isNull( moduleData[id].instance ) ) {
+                    return false;
                 }
 
-                moduleData[id].instance = null;
+                if ( _.isString(id) && _.isObject( moduleData[id] ) ) {
 
-            } else if ( _.isString( arg )) {
-                if ( _.isObject(moduleData[id]) && _.isNull(moduleData[id].instance) === false ) {
+                    // announce module has stopped.
+                    symposia.bus.publish({
+                        channel: "modules",
+                        topic: "module.stopped",
+                        data: { id: id }
+                    });
+
+                    // run destroy
                     moduleData[id].instance.destroy();
+
+                    // clear the module instance
+                    moduleData[id].instance = null;
                 }
-                moduleData[id].instance = null;
+            }
+        },
+        stopAll: function () {
+            var id;
+
+            for ( id in moduleData ) {
+                if ( moduleData.hasOwnProperty(id) ) {
+                    this.stop(id);
+                }
             }
         },
         search: function ( criteria ) {

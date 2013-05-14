@@ -17,9 +17,11 @@ define(['jquery'], function ( $ )  {
                 notify: function ( notification ) {
                     symposia.events.publish( notification );
                 },
-                mvc: symposia.mvc,
-                messageBus: symposia.messageBus
+                subscribe: function ( subConfig ) {
+                    var subscription = symposia.bus.subscribe( subConfig );
+
+                }
             };
-        },
+        }
     };
 });
