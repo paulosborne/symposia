@@ -19,7 +19,7 @@
     "node": ">=0.6"
   },
   "script": {
-    "grunt test"
+    "test": "grunt test"
   },
   "dependencies": {},
   "analyze": false,
