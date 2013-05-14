@@ -86,19 +86,19 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 }, Error, 'moduleId must be a string, number supplied' );
             });
 
-            it('should return false if attempting to start a running module', function () {
+            it('should be falsy if attempting to start a running module', function () {
                 symposia.modules.start('module_b');
                 assert.isFalse( symposia.modules.start('module_b') );
             });
 
-            it('should return true if a module starts successfully', function () {
+            it('should be truthy if a module starts successfully', function () {
                 assert.isTrue( symposia.modules.start('module_a') );
             });
         });
 
         describe('stop()', function () {
 
-            it('should return false if trying to stop an inactive module', function () {
+            it('should be falsy if trying to stop an inactive module', function () {
                 assert.isFalse( symposia.modules.stop('module_a') );
             });
 
@@ -120,43 +120,37 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         });
 
         describe('hasModules()', function () {
-            it('should return true if there are modules', function () {
+            it('should be truthy if there are modules', function () {
                 assert.isTrue( symposia.modules.hasModules() );
             });
         });
 
 
         describe('isStarted()', function () {
-            it('isStarted() should return true if module is started', function () {
+            it('should be truthy if module is started', function () {
                 symposia.modules.start('module_a');
                 assert.isTrue( symposia.modules.isStarted('module_a') );
             });
-            it('isStarted() should return false if module is stopped', function () {
+            it('should be falsy if module is stopped', function () {
                 assert.isFalse( symposia.modules.isStarted('module_a') );
             });
         });
 
         describe('isModule()', function () {
 
-            it('should throw ERROR if no name is passed', function () {
+            it('should throw descriptive errors if invalid moduleId', function () {
                 assert.throws( function () {
                     symposia.modules.isModule();
                 }, Error, 'No moduleId supplied');
-            });
-
-            it('should return FALSE if module name is not a string', function () {
                 assert.throws(function () {
                     symposia.modules.isModule(12345);
                 }, Error, 'moduleId must be a string, number supplied');
-            });
-
-            it('should return FALSE if module does not exist', function () {
                 assert.throws(function () {
                     symposia.modules.isModule('module_z');
                 }, Error, 'Unable to find module [module_z]');
             });
 
-            it('should return TRUE if module exists', function () {
+            it('should be truthy if module exists', function () {
                 assert.isTrue( symposia.modules.isModule('module_a') );
             });
 
