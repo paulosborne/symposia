@@ -20,7 +20,7 @@
   },
   "scripts": {
     "pretest": "bower install",
-    "test": "grunt test"
+    "test": "sudo grunt test --verbose"
   },
   "dependencies": {},
   "analyze": false,
