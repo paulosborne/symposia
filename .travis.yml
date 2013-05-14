@@ -2,9 +2,6 @@ branches:
   only:
     - master
 
-script:
-  - "make -f Makefile"
- 
 language: node_js
  
 node_js:
