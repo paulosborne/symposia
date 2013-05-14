@@ -16,10 +16,19 @@ define(['jquery'], function ( $ )  {
                 },
                 notify: function ( notification ) {
                     symposia.events.publish( notification );
-                },
-                subscribe: function ( subConfig ) {
-                    var subscription = symposia.bus.subscribe( subConfig );
+                    sandbox.subscribe({
 
+                },
+                subscribe: function ( config ) {
+                    // create new subscription
+                    var subcription = symposia.bus.subscribe( config );
+                    // add subscription to module
+                    symposia.modules.get( moduleId ).subscriptions.push( subscription );
+                    // return subscription
+                    return subDef;
+                },
+                subscribeOnce: function ( config ) {
+                    this.subscribe( config ).once();
                 }
             };
         }

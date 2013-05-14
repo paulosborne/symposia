@@ -3,6 +3,11 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
     var moduleData = {};
 
     symposia.modules = {
+        get: function ( moduleId ) {
+            if ( this.isModule( moduleId ) ) {
+                return moduleData[moduleId];
+            }
+        },
         create: function ( modules, callback, context ) {
             var id,
                 temp = {},
