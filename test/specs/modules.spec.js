@@ -92,20 +92,21 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.includeMembers(this.started,['module_b']);
             });
 
-            it('should throw an error if no module id passed', function () {
-                assert.throws( symposia.modules.start, Error, 'Module ID required' );
-            });
+            it('should throw an error if attempting to start an invalid module', function () {
+                // passing no module name
+                assert.throws(function () {
+                    symposia.modules.start();
+                }, Error, 'Invalid module ID, unable to start' );
 
-            it('should throw an error if no module is found', function () {
-                assert.throws( function () {
-                    symposia.modules.start('randomModuleName');
-                }, Error, 'Module not found');
-            });
+                // passing a invalid module name
+                assert.throws(function () {
+                    symposia.modules.start('module_z');
+                }, Error, 'Invalid module ID, unable to start' );
 
-            it('should throw an error if module id is not a string', function () {
-                assert.throws(function() {
-                    symposia.modules.start(12345);
-                }, Error, 'Module ID should be an instance of String');
+                // passing a non-string
+                assert.throws(function () {
+                    symposia.modules.start( 12345 );
+                }, Error, 'Invalid module ID, unable to start' );
             });
 
             it('should return false if attempting to start a running module', function () {
@@ -124,6 +125,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
 
             it('should announce when a module stops', function () {
+                symposia.modules.start('module_a');
                 symposia.modules.stop('module_a');
                 assert.includeMembers( this.stopped, ['module_a'] );
             });

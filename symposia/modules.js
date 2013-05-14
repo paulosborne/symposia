@@ -59,7 +59,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
         },
         start: function ( id ) {
             if ( !this.isModule( id ) ) {
-                throw new Error('Unable to start module ['+ id +']');
+                throw new Error('Invalid module ID, unable to start');
             } else {
                 if ( _.isObject( moduleData[id].instance )) {
                     return false;
@@ -90,7 +90,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
         },
         stop: function ( id ) {
             if ( !this.isModule( id ) ) {
-                throw new Error('Unable to stop module ['+ id +']');
+                throw new Error('Invalid module ID, unable to stop');
             } else {
                 if ( _.isNull( moduleData[id].instance ) ) {
                     return false;
