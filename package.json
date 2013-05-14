@@ -20,7 +20,7 @@
   },
   "scripts": {
     "pretest": "bower install",
-    "test": "grunt --verbose"
+    "test": "grunt"
   },
   "dependencies": {},
   "analyze": false,

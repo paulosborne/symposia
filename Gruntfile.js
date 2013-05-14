@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         server: {
             options: {
                 hostname: '127.0.0.1',
-                port: 8899,
+                port: 8000
                 base: '.'
             }
         }
@@ -91,6 +91,6 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', ['connect','mocha']);
-  grunt.registerTask('test', ['connect:server','mocha']);
+  grunt.registerTask('test', ['connect','mocha']);
 
 };
