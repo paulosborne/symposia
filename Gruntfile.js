@@ -23,7 +23,7 @@ module.exports = function(grunt) {
     mocha: {
         all: {
             options: {
-                urls: ['http://localhost:<%= connect.server.options.port %>/index.html'],
+                urls: ['http://localhost:<%= connect.server.options.port %>/test/index.html'],
                 reporter: 'Spec'
             }
         }
