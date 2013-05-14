@@ -30,8 +30,18 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             assert.equal(_.isNull(moduleData.module_b.instance), true);
         });
 
-        it('should publish a message when a module starts', function () {
-
+        it('should announce when a module starts', function () {
+            var subscription = symposia.bus.subscribe({
+                channel: 'modules',
+                topic: 'module.started',
+                callback: function( data ) {
+                    assert.equal( data.id, 'module_b');
+                }
+            });
+            // remove subscriber after it has been fired.
+            subscription.once();
+            // start module
+            symposia.modules.start('module_b');
         });
     });
 });
