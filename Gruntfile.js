@@ -94,6 +94,6 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['connect','mocha']);
+  grunt.registerTask('default', ['requirejs','connect','mocha']);
 
 };
