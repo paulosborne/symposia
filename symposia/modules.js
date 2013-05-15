@@ -1,8 +1,7 @@
 define([
     'symposia/core',
-    'symposia/sandbox',
-    'symposia/lib/ModuleDefinition'
-], function( symposia, sandbox, ModuleDefinition ) {
+    'symposia/lib/SymposiaModule'
+], function( symposia, SymposiaModule ) {
 
     symposia.modules = {
         moduleData: {},
@@ -25,14 +24,17 @@ define([
          * @param { object } context
          */
         create: function ( modules, callback, context ) {
-            var id,
-                temp = {},
+            var id, temp = {},
                 options = {
                     init: true
                 };
 
             if ( typeof modules !== 'object' ) {
-                throw new Error('module should be an instance of object');
+                throw new Error('Create must be passed an object');
+            }
+
+            if ( !_.isUndefined( callback ) && !_.isFunction( callback ) ) {
+                throw new Error('Callback must be a function');
             }
 
             for ( id in modules ) {
@@ -50,31 +52,18 @@ define([
                         throw new Error('Creator should return a public interface');
                     }
 
-                    temp = modules[id].creator( sandbox.create( symposia, id) );
-                    if ( typeof temp !== 'object' ) {
-                        throw new Error('failed to created temporary module instance');
-                    }
-
                     if ( _.isFunction(temp.init) === false && _.isFunction(temp.destroy) === false) {
                         throw new Error("Module must have both init and destroy methods");
                     }
 
                     temp = null;
 
-                    /*
-                    this.moduleData[id] = {
-                        id: id,
-                        creator: modules[id].creator,
-                        instance: null,
-                        subscriptions: []
-                    };
-                    */
-                    this.moduleData[id] = new ModuleDefinition({
+                    this.moduleData[id] = new SymposiaModule({
                         id: id,
                         creator: modules[id].creator
                     });
 
-                    if ( options.init ) {
+                    if ( this.moduleData[id].start ) {
                         symposia.modules.start( id );
                     }
                 }
@@ -96,10 +85,8 @@ define([
                     return false;
                 }
 
-                this.moduleData[moduleId].instance = this.moduleData[moduleId].creator(
-                    sandbox.create( symposia, moduleId )
-                );
-                this.moduleData[moduleId].instance.init();
+                console.log(this.moduleData[moduleId]);
+                this.moduleData[moduleId].start();
 
                 // announce module initialization
                 symposia.bus.publish({

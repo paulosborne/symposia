@@ -9,9 +9,10 @@ symposia.config = {
         paths: {
             jquery: 'vendor/jquery/jquery',
             underscore: 'vendor/lodash/lodash',
-            postal: 'vendor/postaljs/lib/postal',
+            postal: 'vendor/postaljs/lib/postal.min',
             diagnostics: 'vendor/postaljs.diagnostics/lib/postal.diagnostics'
-        }
+        },
+        deps: ['symposia/need']
     },
     debug: false
 };
@@ -21,8 +22,7 @@ require.config( symposia.config.require );
 define([
     'underscore',
     'jquery',
-    'postal',
-    'diagnostics'
+    'postal'
 ], function ( _, $ ) {
     if ( typeof window.symposia === 'undefined' ) {
         window.symposia = symposia;

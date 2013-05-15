@@ -1,10 +1,22 @@
 define(['jquery'], function ( $ )  {
+
+    var Sandbox = function ( symposia, module ) {
+        this.element = $('#'+ module.id);
+        return {
+
+        };
+    };
+
+    Sandbox.prototype = {
+
+    };
+
+    /*
     return {
         create: function ( symposia, selector ) {
             var element = $('#' + selector);
 
             return {
-                subscriptions: [],
                 container: element,
                 find: function ( query ) {
                     if ( element !== undefined && typeof element.find === 'function' ) {
@@ -24,5 +36,7 @@ define(['jquery'], function ( $ )  {
                 }
             };
         }
-    };
+    };*/
+
+    return Sandbox;
 });

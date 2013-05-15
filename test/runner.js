@@ -3,7 +3,7 @@ var should;
 require.config({
     baseUrl: '../',
     paths: {
-        'symposia': 'symposia',
+        'symposia': 'dist/symposia',
         'chai': 'node_modules/chai/chai',
         'sinonChai': 'node_modules/sinon-chai/lib/sinon-chai'
     }

@@ -2,6 +2,7 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -18,13 +19,27 @@ module.exports = function(grunt) {
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
     // Task configuration.
+    requirejs: {
+        compile: {
+            options: {
+                name: 'symposia',
+                exclude: ['jquery','underscore'],
+                baseUrl: '.',
+                out: 'dist/symposia.js',
+                paths: {
+                    'underscore': 'vendor/lodash/lodash',
+                    'jquery': 'vendor/jquery/jquery',
+                    'postal': 'vendor/postaljs/lib/postal'
+                }
+            }
+        }
+    },
     connect: {
         server: {
             options: {
                 hostname: '127.0.0.1',
                 port: 8000,
-                base: '.',
-                keepalive: true
+                base: '.'
             }
         }
     },
@@ -56,26 +71,13 @@ module.exports = function(grunt) {
     },
     jshint: {
       options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        unused: true,
-        boss: true,
-        eqnull: true,
-        globals: {
-          jQuery: true
-        }
+        jshintrc: '.jshintrc'
       },
       gruntfile: {
         src: 'Gruntfile.js'
       },
       lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
+        src: ['symposia/*.js', 'test/specs/*.js']
       }
     },
     watch: {
@@ -85,13 +87,12 @@ module.exports = function(grunt) {
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'nodeunit']
+        tasks: ['connect', 'mocha']
       }
     }
   });
 
   // Default task.
-  grunt.registerTask('default', ['connect','mocha']);
-  grunt.registerTask('test', ['connect','mocha']);
+  grunt.registerTask('default', ['requirejs','connect','mocha']);
 
 };

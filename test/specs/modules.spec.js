@@ -7,6 +7,8 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             this.started = [];
             this.stopped = [];
 
+            console.log( symposia );
+
             moduleData = symposia.modules.create({
                 'module_a': {
                     creator: mods.a
@@ -49,6 +51,22 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
 
             it('should create a module', function () {
                 assert.isTrue( moduleData.hasOwnProperty('module_a') );
+            });
+
+            it('should throw an error if no modules object is passed', function () {
+                assert.throws(function() {
+                    symposia.modules.create('fred');
+                }, Error, 'Create must be passed an object');
+            });
+
+            it('should throw an error if callback is not a function', function () {
+                assert.throws(function() {
+                    symposia.modules.create({
+                        'invalidCallback': {
+                            creator: mods.a
+                        }
+                    }, 'hello');
+                }, Error, 'Callback must be a function');
             });
 
 
