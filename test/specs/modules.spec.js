@@ -55,6 +55,26 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.isTrue( _.isNull( moduleData.module_b.instance ));
             });
 
+            it('should throw an error if no creator is passed', function () {
+                assert.throws( function () {
+                    symposia.modules.create({
+                        'noCreator': {
+                            creator: null
+                        }
+                    });
+                }, Error, 'Creator should be an instance of Function');
+            });
+
+            it('should throw an error if creator function doesnt return a public interface', function () {
+                assert.throws(function () {
+                    symposia.modules.create({
+                        'noPublicInterface': {
+                            creator: function () {}
+                        }
+                    });
+                }, Error, 'Creator should return a public interface');
+            });
+
         });
 
         describe('start()', function () {
@@ -98,7 +118,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
 
         describe('stop()', function () {
 
-            it('should be falsy if trying to stop an inactive module', function () {
+            it('should return false if trying to stop an inactive module', function () {
                 assert.isFalse( symposia.modules.stop('module_a') );
             });
 
@@ -106,6 +126,11 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 symposia.modules.start('module_a');
                 symposia.modules.stop('module_a');
                 assert.includeMembers( this.stopped, ['module_a'] );
+            });
+
+            it('should return true if module stops', function () {
+                symposia.modules.start('module_a');
+                assert.isTrue( symposia.modules.stop('module_a') );
             });
         });
 
@@ -137,7 +162,6 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         });
 
         describe('isModule()', function () {
-
             it('should throw descriptive errors if invalid moduleId', function () {
                 assert.throws( function () {
                     symposia.modules.isModule();
@@ -152,6 +176,20 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
 
             it('should be truthy if module exists', function () {
                 assert.isTrue( symposia.modules.isModule('module_a') );
+            });
+        });
+
+        describe('getStarted()', function () {
+
+            it('should return an array of modules that are currently active', function () {
+                var mods = [];
+                symposia.modules.start('module_a');
+                mods = symposia.modules.getStarted();
+                assert.deepPropertyVal( mods[0], 'id','module_a' );
+            });
+
+            it('should return an empty array if no modules are active', function () {
+                assert.lengthOf( symposia.modules.getStarted(), 0);
             });
 
         });

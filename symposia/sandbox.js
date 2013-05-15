@@ -16,14 +16,12 @@ define(['jquery'], function ( $ )  {
                 },
                 notify: function ( notification ) {
                     symposia.events.publish( notification );
-                    sandbox.subscribe({
-
                 },
                 subscribe: function ( config ) {
                     // create new subscription
                     var subcription = symposia.bus.subscribe( config );
                     // add subscription to module
-                    symposia.modules.get( moduleId ).subscriptions.push( subscription );
+                    //symposia.modules.get( moduleId ).subscriptions.push( subscription );
                     // return subscription
                     return subDef;
                 },
