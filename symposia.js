@@ -1,3 +1,3 @@
-define(['symposia/core','symposia/need','symposia/bus','symposia/modules'], function ( symposia ) {
+define(['symposia/core'], function ( symposia ) {
     return symposia;
 });

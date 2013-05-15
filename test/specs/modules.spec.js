@@ -108,7 +108,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 // passing no module name
                 assert.throws(function () {
                     symposia.modules.start();
-                }, Error, 'No moduleId supplied' );
+                }, Error, 'No id supplied' );
 
                 // passing a invalid module name
                 assert.throws(function () {
@@ -118,7 +118,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 // passing a non-string
                 assert.throws(function () {
                     symposia.modules.start( 12345 );
-                }, Error, 'moduleId must be a string, number supplied' );
+                }, Error, 'id must be a string, number supplied' );
             });
 
             it('should be falsy if attempting to start a running module', function () {
@@ -177,13 +177,13 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         });
 
         describe('isModule()', function () {
-            it('should throw descriptive errors if invalid moduleId', function () {
+            it('should throw descriptive errors if invalid id', function () {
                 assert.throws( function () {
                     symposia.modules.isModule();
-                }, Error, 'No moduleId supplied');
+                }, Error, 'No id supplied');
                 assert.throws(function () {
                     symposia.modules.isModule(12345);
-                }, Error, 'moduleId must be a string, number supplied');
+                }, Error, 'id must be a string, number supplied');
                 assert.throws(function () {
                     symposia.modules.isModule('module_z');
                 }, Error, 'Unable to find module [module_z]');

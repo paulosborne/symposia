@@ -1,42 +1,23 @@
 define(['jquery'], function ( $ )  {
-
-    var Sandbox = function ( symposia, module ) {
-        this.element = $('#'+ module.id);
-        return {
-
-        };
-    };
-
-    Sandbox.prototype = {
-
-    };
-
-    /*
     return {
-        create: function ( symposia, selector ) {
-            var element = $('#' + selector);
-
+        create: function ( core, id ) {
+            var $element = $('[data-symposia-module='+ id +']');
             return {
-                container: element,
-                find: function ( query ) {
-                    if ( element !== undefined && typeof element.find === 'function' ) {
-                       return element.find( query );
-                    }
-                    return $(query);
-                },
-                listen: function ( events ) {
-                    symposia.events.subscribe( events, selector);
-                },
-                notify: function ( notification ) {
-                    symposia.events.publish( notification );
+                publish: function ( envelope ) {
+                    core.events.publish( envelope );
                 },
                 subscribe: function ( subDef ) {
+                    core.events.subscribe( subDef );
                 },
-                publish: function ( envelope ) {
+                unsubscribe: function () {
+                    core.events.unsubscribeAll( id );
+                },
+                find: function () {
+                },
+                container: function () {
+                    return $element;
                 }
-            };
+            }
         }
-    };*/
-
-    return Sandbox;
+    }
 });
