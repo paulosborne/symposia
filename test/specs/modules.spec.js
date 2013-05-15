@@ -51,9 +51,6 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.isTrue( moduleData.hasOwnProperty('module_a') );
             });
 
-            it('should (optionally) prevent modules from being initialized', function () {
-                assert.isTrue( _.isNull( moduleData.module_b.instance ));
-            });
 
             it('should throw an error if no creator is passed', function () {
                 assert.throws( function () {

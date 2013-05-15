@@ -13,7 +13,7 @@ symposia.config = {
             diagnostics: 'vendor/postaljs.diagnostics/lib/postal.diagnostics'
         }
     },
-    debug: true
+    debug: false
 };
 
 require.config( symposia.config.require );

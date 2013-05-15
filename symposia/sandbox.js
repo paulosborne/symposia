@@ -4,6 +4,7 @@ define(['jquery'], function ( $ )  {
             var element = $('#' + selector);
 
             return {
+                subscriptions: [],
                 container: element,
                 find: function ( query ) {
                     if ( element !== undefined && typeof element.find === 'function' ) {
@@ -17,16 +18,9 @@ define(['jquery'], function ( $ )  {
                 notify: function ( notification ) {
                     symposia.events.publish( notification );
                 },
-                subscribe: function ( config ) {
-                    // create new subscription
-                    var subcription = symposia.bus.subscribe( config );
-                    // add subscription to module
-                    //symposia.modules.get( moduleId ).subscriptions.push( subscription );
-                    // return subscription
-                    return subDef;
+                subscribe: function ( subDef ) {
                 },
-                subscribeOnce: function ( config ) {
-                    this.subscribe( config ).once();
+                publish: function ( envelope ) {
                 }
             };
         }

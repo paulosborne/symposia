@@ -1,8 +1,11 @@
-define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
-
-    var moduleData = {};
+define([
+    'symposia/core',
+    'symposia/sandbox',
+    'symposia/lib/ModuleDefinition'
+], function( symposia, sandbox, ModuleDefinition ) {
 
     symposia.modules = {
+        moduleData: {},
         /**
          * Get a module using its moduleId
          *
@@ -11,7 +14,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
          */
         get: function ( moduleId ) {
             if ( this.isModule( moduleId ) ) {
-                return moduleData[moduleId];
+                return this.moduleData[moduleId];
             }
         },
         /**
@@ -58,12 +61,18 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
 
                     temp = null;
 
-                    moduleData[id] = {
+                    /*
+                    this.moduleData[id] = {
                         id: id,
                         creator: modules[id].creator,
                         instance: null,
                         subscriptions: []
                     };
+                    */
+                    this.moduleData[id] = new ModuleDefinition({
+                        id: id,
+                        creator: modules[id].creator
+                    });
 
                     if ( options.init ) {
                         symposia.modules.start( id );
@@ -72,7 +81,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
             }
 
             if ( typeof callback === 'function' ) {
-                return callback( moduleData );
+                return callback( this.moduleData );
             }
         },
         /**
@@ -83,12 +92,14 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
          */
         start: function ( moduleId ) {
             if ( this.isModule( moduleId ) ) {
-                if ( _.isObject( moduleData[moduleId].instance )) {
+                if ( _.isObject( this.moduleData[moduleId].instance )) {
                     return false;
                 }
 
-                moduleData[moduleId].instance = moduleData[moduleId].creator( sandbox.create( symposia, moduleId ) );
-                moduleData[moduleId].instance.init();
+                this.moduleData[moduleId].instance = this.moduleData[moduleId].creator(
+                    sandbox.create( symposia, moduleId )
+                );
+                this.moduleData[moduleId].instance.init();
 
                 // announce module initialization
                 symposia.bus.publish({
@@ -97,7 +108,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                     data: { id: moduleId }
                 });
 
-                return _.isObject(moduleData[moduleId].instance);
+                return _.isObject(this.moduleData[moduleId].instance);
             }
         },
         /**
@@ -108,7 +119,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
          */
         stop: function ( moduleId ) {
             if ( this.isModule( moduleId ) ) {
-                if ( _.isNull( moduleData[moduleId].instance ) ) {
+                if ( !_.isObject(this.moduleData[moduleId].instance ) ) {
                     return false;
                 }
 
@@ -118,10 +129,10 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                     data: { id: moduleId }
                 });
 
-                moduleData[moduleId].instance.destroy();
-                moduleData[moduleId].instance = null;
+                this.moduleData[moduleId].instance.destroy();
+                this.moduleData[moduleId].instance = null;
 
-                return !_.isObject(moduleData[moduleId].instance);
+                return delete (this.moduleData[moduleId].instance);
             }
         },
         /**
@@ -132,8 +143,8 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
         stopAll: function () {
             var moduleId;
 
-            for ( moduleId in moduleData ) {
-                if ( moduleData.hasOwnProperty( moduleId ) ) {
+            for ( moduleId in this.moduleData ) {
+                if ( this.moduleData.hasOwnProperty( moduleId ) ) {
                     this.stop( moduleId );
                 }
             }
@@ -146,7 +157,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
         getStarted: function () {
             var list = [];
 
-            _.each( moduleData, function ( module ) {
+            _.each( this.moduleData, function ( module ) {
                 if ( _.isObject( module.instance )) {
                     list.push( module );
                 }
@@ -154,7 +165,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
             return list;
         },
         search: function ( criteria ) {
-            return _.where( moduleData, criteria );
+            return _.where( this.moduleData, criteria );
         },
         /**
          * Are there modules created?
@@ -162,7 +173,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
          * @return {boolean}
          */
         hasModules: function () {
-            return ( moduleData.length !== 0 ) ? true : false;
+            return ( this.moduleData.length !== 0 ) ? true : false;
         },
         /**
          * Is the module started?
@@ -172,7 +183,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
          */
         isStarted: function ( moduleId ) {
             if ( this.isModule( moduleId ) ) {
-                return _.isObject( moduleData[moduleId].instance );
+                return _.isObject( this.moduleData[moduleId].instance );
             }
         },
         /**
@@ -190,7 +201,7 @@ define(['symposia/core','symposia/sandbox'], function( symposia, sandbox ) {
                 throw new Error('moduleId must be a string, '+ typeof moduleId +' supplied');
             }
 
-            if ( !_.has( moduleData, moduleId ) ) {
+            if ( !_.has( this.moduleData, moduleId ) ) {
                 throw new Error('Unable to find module ['+ moduleId +']');
             }
 
