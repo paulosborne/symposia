@@ -1,17 +1,17 @@
-define(['symposia/base','symposia/sandbox'], function ( symposia, Sandbox ) {
+define(function () {
 
-    var Module = function ( config ) {
-        this._id = _.uniqueId();
-        this.id = config.id;
+    var Module = function ( core, config ) {
+        this._id = _.uniqueId('module-');
+        this.name  = config.name;
         this.creator = config.creator;
-        this.subscriptions = [];
         this.options = config.options;
         this.init = config.options.init || true;
+    };
 
-        if ( this.init ) {
-            this.start();
-        }
+    Module.prototype = {
+        // extend module object here
     };
 
     return Module;
+
 });

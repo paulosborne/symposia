@@ -1,10 +1,10 @@
-define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
+define(['symposia/base','symposia/sandbox','symposia/Module'], function( base, sandbox, SymModule ) {
 
     var core = {},
-        subscriptions = [],
+        _subscriptions = [],
         moduleData = {};
 
-    _.extend( core, base );
+    _.extend( core, base, sandbox );
 
     core.modules = {
         /**
@@ -18,6 +18,9 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
                 return moduleData[id];
             }
         },
+        getModules: function () {
+            return moduleData;
+        },
         /**
          * Create a module
          *
@@ -26,7 +29,7 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
          * @param { object } context
          */
         create: function ( modules, callback, context ) {
-            var id, temp = {},
+            var name, temp = {},
                 options = {
                     init: true
                 };
@@ -39,16 +42,16 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
                 throw new Error('Callback must be a function');
             }
 
-            for ( id in modules ) {
-                if( modules.hasOwnProperty( id ) ) {
+            for ( name in modules ) {
+                if( modules.hasOwnProperty( name ) ) {
 
-                    _.extend(options, modules[id].options);
+                    _.extend(options, modules[name].options);
 
-                    if ( _.isFunction(modules[id].creator) === false ) {
+                    if ( _.isFunction(modules[name].creator) === false ) {
                         throw new Error("Creator should be an instance of Function");
                     }
 
-                    temp = modules[id].creator();
+                    temp = modules[name].creator();
 
                     if ( _.isObject(temp) === false ) {
                         throw new Error('Creator should return a public interface');
@@ -60,14 +63,14 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
 
                     temp = null;
 
-                    moduleData[id] = {
-                        id: id,
-                        creator: modules[id].creator,
+                    moduleData[name] = new SymModule( core, {
+                        name: name,
+                        creator: modules[name].creator,
                         options: options
-                    };
+                    });
 
-                    if ( moduleData[id].initialize ) {
-                        this.start( id );
+                    if ( moduleData[name].initialize ) {
+                        this.start( name );
                     }
                 }
             }
@@ -82,23 +85,24 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
          * @param { string } id - the Id of the module to start
          * @return { boolean }
          */
-        start: function ( id ) {
+        start: function ( name ) {
 
-            if ( this.isModule( id ) ) {
-                if ( _.isObject( moduleData[id].instance )) {
+            if ( this.isModule( name ) ) {
+                if ( _.isObject( moduleData[name].instance )) {
                     return false;
                 }
 
-                moduleData[id].instance = moduleData[id].creator( sandbox.create( core, id ));
+                moduleData[name].instance = moduleData[name].creator( core.sandbox.create( core, moduleData[name] ));
+                moduleData[name].instance.init();
 
                 // announce module initialization
                 core.bus.publish({
                     channel: 'modules',
                     topic: 'module.started',
-                    data: { id: id }
+                    data: { module: moduleData[name] }
                 });
 
-                return _.isObject(moduleData[id].instance);
+                return moduleData[name].instance;
             }
         },
         /**
@@ -107,22 +111,25 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
          * @param { string } id - the id of the module to stop
          * @return { boolean }
          */
-        stop: function ( id ) {
-            if ( this.isModule( id ) ) {
-                if ( !_.isObject(moduleData[id].instance ) ) {
+        stop: function ( name ) {
+            if ( this.isModule( name ) ) {
+                if ( !_.isObject(moduleData[name].instance ) ) {
                     return false;
                 }
 
                 core.bus.publish({
                     channel: "modules",
                     topic: "module.stopped",
-                    data: { id: id }
+                    data: { module: moduleData[name] }
                 });
 
-                moduleData[id].instance.destroy();
-                moduleData[id].instance = null;
+                // remove all subscribtions for this module
+                core.events.unsubscribeAll( moduleData[name]._id );
 
-                return delete (moduleData[id].instance);
+                moduleData[name].instance.destroy();
+                moduleData[name].instance = null;
+
+                return delete ( moduleData[name].instance );
             }
         },
         /**
@@ -131,11 +138,11 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
          * @return {boolean}
          */
         stopAll: function () {
-            var id;
+            var name;
 
-            for ( id in moduleData ) {
-                if ( moduleData.hasOwnProperty( id ) ) {
-                    this.stop( id );
+            for ( name in moduleData ) {
+                if ( moduleData.hasOwnProperty( name ) ) {
+                    this.stop( name );
                 }
             }
         },
@@ -171,9 +178,9 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
          * @param {string} id - the module to look for
          * @return {boolean}
          */
-        isStarted: function ( id ) {
-            if ( this.isModule( id ) ) {
-                return _.isObject( moduleData[id].instance );
+        isStarted: function ( name ) {
+            if ( this.isModule( name ) ) {
+                return _.isObject( moduleData[name].instance );
             }
         },
         /**
@@ -200,24 +207,65 @@ define(['symposia/base','symposia/sandbox'], function( base, sandbox ) {
     };
 
     core.events = {
+        /**
+         * Publish a message
+         *
+         * @param {object} envelope - envelope to send
+         * @return {object}
+         */
         publish: function ( envelope ) {
-            core.bus.publish( envelope );
+            return core.bus.publish( envelope );
         },
+        /**
+         * subscribe to an event
+         *
+         * @param {object} subDef - subscriptionDefinition
+         * @param {string} id - module name to add subscriber for
+         *
+         */
         subscribe: function (subDef, id) {
             var subscription = core.bus.subscribe( subDef );
             // add to subscription
-            subscriptions.push({
-                id: id,
-                sub: subscription
+            _subscriptions.push({
+                _id: _.uniqueId('subscriber-'),
+                attachedTo: id,
+                instance: subscription
             });
         },
+        /**
+         * Unsubscribe a specific channel/topic from a module
+         *
+         * @param {object} config
+         *
+         */
+        unsubscribe: function ( config ) {},
+        /**
+         * Unsubscribe all subscriptions
+         *
+         * @param {string} id - module to unsubscribe
+         */
         unsubscribeAll: function ( id ) {
-            var subs = _.where( subscriptions, { id: module_id } );
-            _.each( subs, function ( sub ) {
-                sub.unsubscribe();
-            });
+            var index, max;
+            for ( index = 0, max = _subscriptions.length; index < max; index++ ) {
+                if ( _subscriptions[index].attachedTo === id ) {
+                    _subscriptions.splice( index, 1 )[0].instance.unsubscribe();
+                }
+            }
+        },
+        /**
+         * Get current subscribers
+         *
+         * @return {object}
+         */
+        getSubscribers: function () {
+            return _subscriptions;
         }
     };
+
+    if ( core.debug ) {
+        // provide a global object for console debugging
+        window.symposia = core;
+    }
 
     return core;
 });

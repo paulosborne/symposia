@@ -7,8 +7,6 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             this.started = [];
             this.stopped = [];
 
-            console.log( symposia );
-
             moduleData = symposia.modules.create({
                 'module_a': {
                     creator: mods.a
@@ -27,7 +25,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 channel: 'modules',
                 topic: 'module.started',
                 callback: function ( data, envelope ) {
-                    this.started.push( data.id );
+                    this.started.push( data.module.name );
                 }
             }).withContext( this );
 
@@ -35,7 +33,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 channel: 'modules',
                 topic: 'module.stopped',
                 callback: function ( data, envelope ) {
-                    this.stopped.push( data.id );
+                    this.stopped.push( data.module.name );
                 }
             }).withContext( this );
 
@@ -126,8 +124,10 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.isFalse( symposia.modules.start('module_b') );
             });
 
-            it('should be truthy if a module starts successfully', function () {
-                assert.isTrue( symposia.modules.start('module_a') );
+            it('should return module instance if starts successfully', function () {
+                var module =  symposia.modules.start('module_a');
+                assert.property( module, 'init');
+                assert.property( module, 'destroy');
             });
         });
 
@@ -195,12 +195,16 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         });
 
         describe('getStarted()', function () {
-
             it('should return an array of modules that are currently active', function () {
-                var mods = [];
+                var started = [];
                 symposia.modules.start('module_a');
-                mods = symposia.modules.getStarted();
-                assert.deepPropertyVal( mods[0], 'id','module_a' );
+                started = symposia.modules.getStarted();
+                assert.isTrue( _.isArray( started ) );
+                assert.lengthOf( started, 1 );
+                assert.property( started[0], '_id');
+                assert.property( started[0], 'name');
+                assert.property( started[0], 'creator');
+                assert.property( started[0], 'instance');
             });
 
             it('should return an empty array if no modules are active', function () {
@@ -208,5 +212,44 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
 
         });
+
+        describe('Events', function () {
+            it('should be able to receive events', function () {
+                var modA = symposia.modules.start('module_a'),
+                    modB = symposia.modules.start('module_b'),
+                    callback = sinon.spy(function ( envelope ) {
+                        console.log({ envelope: envelope });
+                    });
+
+                modB.listen( callback );
+                modA.notify();
+
+                assert.isTrue( callback.called );
+                assert.equal( callback.callCount, 1);
+            });
+
+
+            it('should be able to recieve the same event multiple times', function () {
+                var modA = symposia.modules.start('module_a'),
+                    modB = symposia.modules.start('module_b'),
+                    callback = sinon.spy();
+
+                modB.listen( callback );
+                modA.notify();
+                modA.notify();
+                modA.notify();
+                modA.notify();
+                modA.notify();
+
+                assert.isTrue( callback.called );
+                assert.equal( callback.callCount, 5 );
+
+            });
+
+            after(function () {
+                assert.lengthOf( symposia.events.getSubscribers(), 0 );
+            });
+        });
     });
+
 });

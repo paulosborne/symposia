@@ -11,14 +11,15 @@
                 postal: 'vendor/postaljs/lib/postal.min',
                 diagnostics: 'vendor/postaljs.diagnostics/lib/postal.diagnostics'
             }
-        },
-        debug: false
+        }
     };
 
     require.config( config.require );
 
     define(['module','underscore','jquery','postal'], function ( module, _, $, postal ) {
-        var base =  {};
+        var base =  {
+            debug: true
+        };
 
         base.bus = postal;
 
