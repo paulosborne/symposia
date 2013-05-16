@@ -16,7 +16,6 @@
     "dependencies": {
         "lodash": "lodash",
         "postaljs": "https://github.com/postaljs/postal.js.git",
-        "postaljs.diagnostics":"https://github.com/postaljs/postal.diagnostics.git",
         "requirejs": "requirejs",
         "jquery": "1.9.1"
     },

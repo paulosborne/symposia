@@ -8,8 +8,7 @@
             paths: {
                 jquery: 'vendor/jquery/jquery',
                 underscore: 'vendor/lodash/lodash',
-                postal: 'vendor/postaljs/lib/postal.min',
-                diagnostics: 'vendor/postaljs.diagnostics/lib/postal.diagnostics'
+                postal: 'vendor/postaljs/lib/postal.min'
             }
         }
     };
