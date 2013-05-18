@@ -1,23 +1,30 @@
 define(function() {
 
-    var Subscription = function ( config ) {
+    var Subscription = function ( subscription, signature ) {
 
-        if ( !_.isObject( config.subscription )) {
-            throw new TypeError('Invalid subscription type');
+        try {
+            if ( _.isObject( subscription ) && _.isString( signature ) {
+
+            } else {
+                throw new TypeError;
+            }
+        } catch ( ex ) {
+            if ( ex instanceof TypeError ) {
+                throw TypeError('arguments
         }
-
-        if( !_.isString( config.signature ) ) {
-            throw new TypeError('Invalid signature type');
-        }
-
-        // give subscriber uniqueId
         this._id = _.uniqueId('subscriber-');
 
-        //  object that sent the subscription request
-        this.signature = config.signature;
+        if ( _.isObject( config.subscription ) {
+            this.instance = config.subscription;
+        } else {
+            throw new TypeError("'subscription' required and must be an object");
+        }
 
-        // SubscriptionDefinition
-        this.instance = config.subscription
+        if( _.isString( config.signature ) ) {
+            this.signature = signature;
+        } else {
+            throw new TypeError("'signature' required and must be a string");
+        }
     }
 
     return Subscription;

@@ -20,7 +20,10 @@ require(['chai','sinonChai'], function ( chai, sinonChai ) {
     chai.use(sinonChai);
     mocha.setup('tdd');
 
-    require(['test/specs/core.spec'], function () {
+    require([
+        'test/specs/core.modules.spec',
+        'test/specs/core.events.spec'
+    ], function () {
         mocha.run();
     });
 

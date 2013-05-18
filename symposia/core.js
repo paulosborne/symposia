@@ -3,7 +3,7 @@ define([
     'symposia/sandbox',
     'symposia/Module',
     'symposia/Subscription'
-], function( base, sandbox, SymModule, Subscription ) {
+], function( base, sandbox, Module, Subscription ) {
 
     var core = {},
         _subscriptions = [],
@@ -69,7 +69,7 @@ define([
 
                     temp = null;
 
-                    moduleData[name] = new SymModule( core, {
+                    moduleData[name] = new Module( core, {
                         name: name,
                         creator: modules[name].creator,
                         options: options
@@ -234,17 +234,21 @@ define([
         subscribe: function (subDef, sig) {
             var subscription;
 
-            if ( !_.has(subDef,'topic') || !_.has(subDef,'callback') || _.isUndefined( sig ) ) {
-                throw new Error ('Required properties missing from subscription request');
+            if ( !_.has(subDef,'topic') || !_.has(subDef,'callback') ) {
+                throw new Error("Subscription definition must have a topic and callback");
             }
-            // create new postal signature
-            sub = core.bus.subscribe( subDef );
-            // add to subscriptions
-            _subscriptions.push( new Subscription({
-                subscription: sub,
+
+            if ( ! _.isString( sig ) ) {
+                throw new TypeError("Subscription signature must be a string");
+            }
+
+            subscription = core.bus.subscribe( subDef );
+
+            _subscriptions.push({
+                _id: _.uniqueId('subscriber-'),
+                subscription: subscription,
                 signature: sig
-                })
-            );
+            });
 
             return sub;
         },
