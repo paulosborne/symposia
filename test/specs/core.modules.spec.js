@@ -1,9 +1,8 @@
 define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
-    describe('modules', function () {
+    describe('Core.Modules', function () {
         var moduleData = {};
 
         before(function() {
-
             this.started = [];
             this.stopped = [];
 
@@ -45,7 +44,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             symposia.modules.stopAll();
         });
 
-        describe('create()', function() {
+        describe('create', function() {
 
             it('should create a module', function () {
                 assert.isTrue( moduleData.hasOwnProperty('module_a') );
@@ -90,7 +89,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
 
         });
 
-        describe('start()', function () {
+        describe('start', function () {
 
             it('should automatically start modules by default', function () {
                 symposia.modules.start('module_a');
@@ -131,7 +130,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
         });
 
-        describe('stop()', function () {
+        describe('stop', function () {
 
             it('should return false if trying to stop an inactive module', function () {
                 assert.isFalse( symposia.modules.stop('module_a') );
@@ -149,7 +148,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
         });
 
-        describe('stopAll()', function () {
+        describe('stopAll', function () {
             it('should stop all active modules', function () {
                 symposia.modules.start('module_a');
                 symposia.modules.start('module_b');
@@ -159,14 +158,14 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
         });
 
-        describe('hasModules()', function () {
+        describe('hasModules', function () {
             it('should be truthy if there are modules', function () {
                 assert.isTrue( symposia.modules.hasModules() );
             });
         });
 
 
-        describe('isStarted()', function () {
+        describe('isStarted', function () {
             it('should be truthy if module is started', function () {
                 symposia.modules.start('module_a');
                 assert.isTrue( symposia.modules.isStarted('module_a') );
@@ -176,7 +175,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
         });
 
-        describe('isModule()', function () {
+        describe('isModule', function () {
             it('should throw descriptive errors if invalid id', function () {
                 assert.throws( function () {
                     symposia.modules.isModule();
@@ -194,7 +193,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
             });
         });
 
-        describe('getStarted()', function () {
+        describe('getStarted', function () {
             it('should return an array of modules that are currently active', function () {
                 var started = [];
                 symposia.modules.start('module_a');
@@ -211,44 +210,6 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.lengthOf( symposia.modules.getStarted(), 0);
             });
 
-        });
-
-        describe('Events', function () {
-            it('should be able to receive events', function () {
-                var modA = symposia.modules.start('module_a'),
-                    modB = symposia.modules.start('module_b'),
-                    callback = sinon.spy(function ( envelope ) {
-                        console.log({ envelope: envelope });
-                    });
-
-                modB.listen( callback );
-                modA.notify();
-
-                assert.isTrue( callback.called );
-                assert.equal( callback.callCount, 1);
-            });
-
-
-            it('should be able to recieve the same event multiple times', function () {
-                var modA = symposia.modules.start('module_a'),
-                    modB = symposia.modules.start('module_b'),
-                    callback = sinon.spy();
-
-                modB.listen( callback );
-                modA.notify();
-                modA.notify();
-                modA.notify();
-                modA.notify();
-                modA.notify();
-
-                assert.isTrue( callback.called );
-                assert.equal( callback.callCount, 5 );
-
-            });
-
-            after(function () {
-                assert.lengthOf( symposia.events.getSubscribers(), 0 );
-            });
         });
     });
 

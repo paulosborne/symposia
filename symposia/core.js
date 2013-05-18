@@ -1,10 +1,16 @@
-define(['symposia/base','symposia/sandbox','symposia/Module'], function( base, sandbox, SymModule ) {
+define([
+    'symposia/base',
+    'symposia/sandbox',
+    'symposia/Module',
+    'symposia/Subscription'
+], function( base, sandbox, SymModule, Subscription ) {
 
     var core = {},
         _subscriptions = [],
         moduleData = {};
 
     _.extend( core, base, sandbox );
+
 
     core.modules = {
         /**
@@ -211,7 +217,9 @@ define(['symposia/base','symposia/sandbox','symposia/Module'], function( base, s
          * Publish a message
          *
          * @param {object} envelope - envelope to send
+         * @todo message history ?
          * @return {object}
+         *
          */
         publish: function ( envelope ) {
             return core.bus.publish( envelope );
@@ -223,31 +231,48 @@ define(['symposia/base','symposia/sandbox','symposia/Module'], function( base, s
          * @param {string} id - module name to add subscriber for
          *
          */
-        subscribe: function (subDef, id) {
-            var subscription = core.bus.subscribe( subDef );
-            // add to subscription
-            _subscriptions.push({
-                _id: _.uniqueId('subscriber-'),
-                attachedTo: id,
-                instance: subscription
-            });
+        subscribe: function (subDef, sig) {
+            var subscription;
+
+            if ( !_.has(subDef,'topic') || !_.has(subDef,'callback') || _.isUndefined( sig ) ) {
+                throw new Error ('Required properties missing from subscription request');
+            }
+            // create new postal signature
+            sub = core.bus.subscribe( subDef );
+            // add to subscriptions
+            _subscriptions.push( new Subscription({
+                subscription: sub,
+                signature: sig
+                })
+            );
+
+            return sub;
         },
         /**
          * Unsubscribe a specific channel/topic from a module
          *
          * @param {object} config
-         *
          */
-        unsubscribe: function ( config ) {},
+        unsubscribe: function ( config, sig ) {
+            if ( _.has(config,'topic') || _.has('channel') ) {
+                _.each( _subscriptions, function ( sub ) {
+                    if ( sub.signature === sig ) {
+                        console.log( sub );
+                    }
+                });
+            } else {
+                throw new Error('topic or channel required');
+            }
+        },
         /**
-         * Unsubscribe all subscriptions
+         * Unsubscribe all subscriptions for a specific subscriber
          *
          * @param {string} id - module to unsubscribe
          */
-        unsubscribeAll: function ( id ) {
+        unsubscribeAll: function ( sig ) {
             var index, max;
             for ( index = 0, max = _subscriptions.length; index < max; index++ ) {
-                if ( _subscriptions[index].attachedTo === id ) {
+                if ( _subscriptions[index].signature === sig ) {
                     _subscriptions.splice( index, 1 )[0].instance.unsubscribe();
                 }
             }

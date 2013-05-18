@@ -11,7 +11,10 @@ define(['jquery'], function ( $ )  {
                         core.events.subscribe( subDef, module._id );
                     },
                     unsubscribeAll: function () {
-                        core.events.unsubscribeAll( module._id);
+                        core.events.unsubscribeAll( module._id );
+                    },
+                    unsubscribe: function ( config ) {
+                        core.events.unsubscribe( config, module._id );
                     },
                     find: function () {
                     },
