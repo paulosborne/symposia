@@ -39,16 +39,14 @@ module.exports = function(grunt) {
             options: {
                 hostname: '127.0.0.1',
                 port: 8000,
-                base: '.',
-                keepalive: true
+                base: '.'
             }
         }
     },
     mocha: {
         all: {
             options: {
-                urls: ['http://localhost:<%= connect.server.options.port %>/test/index.html'],
-                reporter: 'Spec'
+                urls: ['http://localhost:<%= connect.server.options.port %>/test/index.html']
             }
         }
     },

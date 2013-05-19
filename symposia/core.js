@@ -1,12 +1,11 @@
 define([
     'symposia/base',
     'symposia/sandbox',
-    'symposia/Module',
-    'symposia/Subscription'
-], function( base, sandbox, Module, Subscription ) {
+    'symposia/Module'
+], function( base, sandbox, Module ) {
 
     var core = {},
-        _subscriptions = [],
+        _subscriptions = {},
         moduleData = {};
 
     _.extend( core, base, sandbox );
@@ -231,26 +230,26 @@ define([
          * @param {string} id - module name to add subscriber for
          *
          */
-        subscribe: function (subDef, sig) {
-            var subscription;
+        subscribe: function ( subDef, subscriber ) {
+            var subs;
 
-            if ( !_.has(subDef,'topic') || !_.has(subDef,'callback') ) {
-                throw new Error("Subscription definition must have a topic and callback");
+            if ( !_.isString( subscriber) ) {
+                throw new Error('Invalid subscriber id');
             }
 
-            if ( ! _.isString( sig ) ) {
-                throw new TypeError("Subscription signature must be a string");
+            if ( !_.has( subDef, 'topic') || !_.has( subDef, 'callback' ) ) {
+                throw new Error('Subscription definition must have a topic and callback');
             }
 
-            subscription = core.bus.subscribe( subDef );
+            subs = _subscriptions[subscriber];
 
-            _subscriptions.push({
-                _id: _.uniqueId('subscriber-'),
-                subscription: subscription,
-                signature: sig
-            });
+            if ( !subs ) {
+                subs = _subscriptions[subscriber] = [];
+            }
 
-            return sub;
+            subs.push( core.bus.subscribe( subDef ) );
+
+            return subs.length;
         },
         /**
          * Unsubscribe a specific channel/topic from a module
@@ -272,22 +271,26 @@ define([
          * Unsubscribe all subscriptions for a specific subscriber
          *
          * @param {string} id - module to unsubscribe
+         * @return {number} - number of subscriptions removed
          */
-        unsubscribeAll: function ( sig ) {
-            var index, max;
-            for ( index = 0, max = _subscriptions.length; index < max; index++ ) {
-                if ( _subscriptions[index].signature === sig ) {
-                    _subscriptions.splice( index, 1 )[0].instance.unsubscribe();
+        unsubscribeAll: function ( subscriber ) {
+            var rem = 0, subs = _subscriptions[subscriber];
+            if ( subs ) {
+                while ( subs.length ) {
+                    subs.shift().unsubscribe();
+                    rem += 1;
                 }
             }
+            return rem;
         },
         /**
          * Get current subscribers
          *
+         * @param {string} subscriber - ( optional )
          * @return {object}
          */
-        getSubscribers: function () {
-            return _subscriptions;
+        getSubscribers: function ( subscriber ) {
+            return ( subscriber ) ? _subscriptions[subscriber] : _subscriptions;
         }
     };
 

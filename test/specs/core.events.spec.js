@@ -1,8 +1,7 @@
 define([
     'symposia',
-    'symposia/Subscription',
     'test/mocks/modules'
-], function ( symposia, Subscription, mods ) {
+], function ( symposia, mods ) {
 
     describe('Core.Events', function () {
         describe('publish', function () {
@@ -30,26 +29,25 @@ define([
 
         describe('subscribe', function () {
             var errorMsg = [
-                'Required properties missing from subscription request',
-                'Invalid subscription type',
-                'Invalid signature type'
+                'Subscription definition must have a topic and callback',
+                'Invalid subscriber id'
             ];
 
-            it('should throw an error if initialized without a signature', function () {
+            it('should throw an error if initialized without a subscriber id', function () {
                 assert.throws(function() {
                     symposia.events.subscribe({ topic: 'test', callback: function () {} });
-                }, Error, errorMsg[0]);
+                }, Error, errorMsg[1]);
             });
 
             it('should throw an error if initialized without a topic', function () {
                 assert.throws(function() {
-                    symposia.events.subscribe({ callback: function () {} },'signature');
+                    symposia.events.subscribe({ callback: function () {} },'module-1');
                 }, Error, errorMsg[0]);
             });
 
             it('should throw an error if initialized without a callback', function () {
                 assert.throws(function() {
-                    symposia.events.subscribe({ topic: 'test' },'signature');
+                    symposia.events.subscribe({ topic: 'test' },'module-2');
                 }, Error, errorMsg[0]);
             });
 
@@ -57,28 +55,22 @@ define([
                 assert.doesNotThrow(function () {
                     subscription = symposia.events.subscribe({
                         topic: 'menu.click.zoom',
-                        callback: subCallback
-                    },'test');
+                        callback: function () {},
+                    },'module-3');
                 }, Error);
             });
 
             it('should throw an error if subscription is not an object', function () {
-                assert.throws(function() {
-                     new Subscription( 'anything', 'module-1' );
-                }, TypeError, errorMsg[1]);
             });
 
             it('should throw an error if signature is not a string', function () {
-                assert.throws(function () {
-                    new Subscription( {}, {} );
-                }, TypeError, errorMsg[1] );
             });
 
         });
 
 
         afterEach(function() {
-            symposia.events.unsubscribeAll();
+            //symposia.events.unsubscribeAll();
         });
     });
 
