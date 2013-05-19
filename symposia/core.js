@@ -4,12 +4,9 @@ define([
     'symposia/Module'
 ], function( base, sandbox, Module ) {
 
-    var core = {},
-        _subscriptions = {},
-        moduleData = {};
-
-    _.extend( core, base, sandbox );
-
+    var _subscriptions = {},
+        _modules = {},
+        core = _.extend( base, sandbox );
 
     core.modules = {
         /**
@@ -20,11 +17,11 @@ define([
          */
         get: function ( id ) {
             if ( this.isModule( id ) ) {
-                return moduleData[id];
+                return _modules[id];
             }
         },
         getModules: function () {
-            return moduleData;
+            return _modules;
         },
         /**
          * Create a module
@@ -68,20 +65,20 @@ define([
 
                     temp = null;
 
-                    moduleData[name] = new Module( core, {
+                    _modules[name] = new Module( core, {
                         name: name,
                         creator: modules[name].creator,
                         options: options
                     });
 
-                    if ( moduleData[name].initialize ) {
+                    if ( _modules[name].initialize ) {
                         this.start( name );
                     }
                 }
             }
 
             if ( typeof callback === 'function' ) {
-                return callback( moduleData );
+                return callback( _modules );
             }
         },
         /**
@@ -93,21 +90,21 @@ define([
         start: function ( name ) {
 
             if ( this.isModule( name ) ) {
-                if ( _.isObject( moduleData[name].instance )) {
+                if ( _.isObject( _modules[name].instance )) {
                     return false;
                 }
 
-                moduleData[name].instance = moduleData[name].creator( core.sandbox.create( core, moduleData[name] ));
-                moduleData[name].instance.init();
+                _modules[name].instance = _modules[name].creator( core.sandbox.create( core, _modules[name] ));
+                _modules[name].instance.init();
 
                 // announce module initialization
                 core.bus.publish({
                     channel: 'modules',
                     topic: 'module.started',
-                    data: { module: moduleData[name] }
+                    data: { module: _modules[name] }
                 });
 
-                return moduleData[name].instance;
+                return _modules[name].instance;
             }
         },
         /**
@@ -118,23 +115,23 @@ define([
          */
         stop: function ( name ) {
             if ( this.isModule( name ) ) {
-                if ( !_.isObject(moduleData[name].instance ) ) {
+                if ( !_.isObject(_modules[name].instance ) ) {
                     return false;
                 }
 
                 core.bus.publish({
                     channel: "modules",
                     topic: "module.stopped",
-                    data: { module: moduleData[name] }
+                    data: { module: _modules[name] }
                 });
 
                 // remove all subscribtions for this module
-                core.events.unsubscribeAll( moduleData[name]._id );
+                core.events.unsubscribeAll( _modules[name]._id );
 
-                moduleData[name].instance.destroy();
-                moduleData[name].instance = null;
+                _modules[name].instance.destroy();
+                _modules[name].instance = null;
 
-                return delete ( moduleData[name].instance );
+                return delete ( _modules[name].instance );
             }
         },
         /**
@@ -145,8 +142,8 @@ define([
         stopAll: function () {
             var name;
 
-            for ( name in moduleData ) {
-                if ( moduleData.hasOwnProperty( name ) ) {
+            for ( name in _modules ) {
+                if ( _modules.hasOwnProperty( name ) ) {
                     this.stop( name );
                 }
             }
@@ -159,7 +156,7 @@ define([
         getStarted: function () {
             var list = [];
 
-            _.each( moduleData, function ( module ) {
+            _.each( _modules, function ( module ) {
                 if ( _.isObject( module.instance )) {
                     list.push( module );
                 }
@@ -167,7 +164,7 @@ define([
             return list;
         },
         search: function ( criteria ) {
-            return _.where( moduleData, criteria );
+            return _.where( _modules, criteria );
         },
         /**
          * Are there modules created?
@@ -175,7 +172,7 @@ define([
          * @return {boolean}
          */
         hasModules: function () {
-            return ( moduleData.length !== 0 ) ? true : false;
+            return ( _modules.length !== 0 ) ? true : false;
         },
         /**
          * Is the module started?
@@ -185,7 +182,7 @@ define([
          */
         isStarted: function ( name ) {
             if ( this.isModule( name ) ) {
-                return _.isObject( moduleData[name].instance );
+                return _.isObject( _modules[name].instance );
             }
         },
         /**
@@ -203,7 +200,7 @@ define([
                 throw new Error('id must be a string, '+ typeof id +' supplied');
             }
 
-            if ( !_.has( moduleData, id ) ) {
+            if ( !_.has( _modules, id ) ) {
                 throw new Error('Unable to find module ['+ id +']');
             }
 
