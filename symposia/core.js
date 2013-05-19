@@ -237,8 +237,8 @@ define([
                 throw new Error('Invalid subscriber id');
             }
 
-            if ( !_.has( subDef, 'topic') || !_.has( subDef, 'callback' ) ) {
-                throw new Error('Subscription definition must have a topic and callback');
+            if ( !_.isString ( subDef.topic ) || !_.isFunction( subDef.callback ) ) {
+                throw new Error('Subscription definition must have a topic (string) and callback (function)');
             }
 
             subs = _subscriptions[subscriber];
@@ -291,6 +291,22 @@ define([
          */
         getSubscribers: function ( subscriber ) {
             return ( subscriber ) ? _subscriptions[subscriber] : _subscriptions;
+        },
+        /**
+         * Unsubscribe and remove all subscribers from all sandboxes
+         *
+         */
+        reset: function () {
+            _.each( _subscriptions, function ( subscription ) {
+                while ( subscription.length ) {
+                    subscription.shift().unsubscribe();
+                }
+            });
+
+            // reset subscriptions
+            _subscriptions = {};
+
+            return this;
         }
     };
 

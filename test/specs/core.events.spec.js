@@ -29,7 +29,7 @@ define([
 
         describe('subscribe', function () {
             var errorMsg = [
-                'Subscription definition must have a topic and callback',
+                'Subscription definition must have a topic (string) and callback (function)',
                 'Invalid subscriber id'
             ];
 
@@ -51,6 +51,15 @@ define([
                 }, Error, errorMsg[0]);
             });
 
+            it('should throw an error if callback is not a function', function () {
+                assert.throws(function() {
+                    symposia.events.subscribe({
+                        topic: 'menu.click.1',
+                        callback: {}
+                    },'module-4');
+                }, Error);
+            });
+
             it('should be initialized with at lease a topic, callback and signature', function () {
                 assert.doesNotThrow(function () {
                     subscription = symposia.events.subscribe({
@@ -60,18 +69,64 @@ define([
                 }, Error);
             });
 
-            it('should throw an error if subscription is not an object', function () {
+            it('should register multiple subscriptions to the same subscriber', function () {
+                symposia.events.subscribe({ topic: 'menu.click.zoom.1', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.2', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-2' );
+                assert.lengthOf( symposia.events.getSubscribers('module-2'), 3);
             });
 
-            it('should throw an error if signature is not a string', function () {
+            afterEach(function() {
+                symposia.events.reset();
+            });
+        });
+
+        describe('reset', function () {
+            it("should remove and unsubscribe all subscriptions", function () {
+
+                symposia.events.subscribe({ topic: 'menu.click.zoom.1', callback: function () {} }, 'module-1' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.2', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.1', callback: function () {} }, 'module-3' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.2', callback: function () {} }, 'module-3' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.2', callback: function () {} }, 'module-3' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-4' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-4' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-4' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-4' );
+
+                assert.lengthOf( symposia.events.getSubscribers('module-1'), 1 );
+                assert.lengthOf( symposia.events.getSubscribers('module-2'), 2 );
+                assert.lengthOf( symposia.events.getSubscribers('module-3'), 3 );
+                assert.lengthOf( symposia.events.getSubscribers('module-4'), 4 );
+                assert.equal( _.size( symposia.events.reset().getSubscribers()), 0 );
             });
 
+            after(function() {
+                symposia.events.reset();
+            });
         });
 
+        describe('unsubscribeAll', function () {
 
-        afterEach(function() {
-            //symposia.events.unsubscribeAll();
+            beforeEach(function () {
+                symposia.events.subscribe({ topic: 'menu.click.zoom.1', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.2', callback: function () {} }, 'module-2' );
+                symposia.events.subscribe({ topic: 'menu.click.zoom.3', callback: function () {} }, 'module-2' );
+            });
+
+            it('should unsubscribe all subscriptions for a give subscriber', function () {
+                var removed, subs = symposia.events.getSubscribers('module-2');
+                assert.lengthOf( subs, 3 );
+                assert.equal( symposia.events.unsubscribeAll('module-2'), 3 );
+                assert.lengthOf( subs, 0 );
+            });
+
+            afterEach(function() {
+                symposia.events.reset();
+            });
         });
+
     });
 
 });
