@@ -58,13 +58,13 @@ define([
 
                 temp = null;
 
-                _modules[idx] = { name: idx, creator: mod.creator };
+                _modules[idx] = {
+                    _id: _.uniqueId('module-'),
+                    name: idx,
+                    creator: mod.creator
+                };
 
             });
-
-            if ( _.isFunction( callback ) ) {
-                return callback( _modules );
-            }
 
             return this;
         },
@@ -82,6 +82,7 @@ define([
             if ( args.length ) {
                 _.each( args, function ( mod, key ) {
                     if ( !_this.isRunning( mod ) ) {
+                        console.log( mod );
                         // start & initialize module.
                         _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, _modules[mod] ));
                         _modules[mod].instance.init();
@@ -99,7 +100,7 @@ define([
          *
          */
         startAll: function () {
-            return this.start.apply( _.keys( _modules ) );
+            return this.start.apply( this, _.keys( _modules ) );
         },
 
         /**
@@ -108,26 +109,29 @@ define([
          * @param { string } id - the id of the module to stop
          * @return { boolean }
          */
-        stop: function ( name ) {
-            if ( this.isModule( name ) ) {
-                if ( !_.isObject(_modules[name].instance ) ) {
-                    return false;
-                }
+        stop: function () {
+            var _this = this,
+                args = [].splice.call( arguments, 0 );
 
-                core.bus.publish({
-                    channel: "modules",
-                    topic: "module.stopped",
-                    data: { module: _modules[name] }
-                });
-
-                // remove all subscribtions for this module
-                core.events.unsubscribeAll( _modules[name]._id );
-
-                _modules[name].instance.destroy();
-                _modules[name].instance = null;
-
-                return delete ( _modules[name].instance );
+            if ( !args.length ) {
+                throw new Error('No module name supplied');
             }
+
+            _.each( args, function ( mod ) {
+                if( _this.isRunning( mod ) ) {
+                    // stop module
+                    _modules[mod].instance.destroy();
+                    _modules[mod].instance = null;
+                    // unsubscribe events
+                    core.events.unsubscribeAll( mod );
+                    // announce
+                    core.bus.publish({ channel: 'modules', topic: 'module.stopped', data: { name: mod } });
+                    //
+                    delete( _modules[mod].instance );
+                }
+            });
+
+            return this;
         },
         /**
          * Stop all modules
@@ -135,39 +139,18 @@ define([
          * @return {boolean}
          */
         stopAll: function () {
-            var name;
-
-            for ( name in _modules ) {
-                if ( _modules.hasOwnProperty( name ) ) {
-                    this.stop( name );
-                }
-            }
+            this.stop.apply( this, _.keys( _modules ));
         },
         /**
          * Returns all started modules
          *
          * @return {array}
          */
-        getStarted: function () {
-            var list = [];
-
-            _.each( _modules, function ( module ) {
-                if ( _.isObject( module.instance )) {
-                    list.push( module );
-                }
+        getRunning: function () {
+            var running = _.filter( _modules, function ( mod ) {
+                return _.has( mod, 'instance' );
             });
-            return list;
-        },
-        search: function ( criteria ) {
-            return _.where( _modules, criteria );
-        },
-        /**
-         * Are there modules created?
-         *
-         * @return {boolean}
-         */
-        hasModules: function () {
-            return ( _modules.length !== 0 ) ? true : false;
+            return running;
         },
         /**
          * Is the module started?
