@@ -76,13 +76,11 @@ define([
          */
         start: function () {
             var _this = this,
-                // turn arguments into a real array
                 args = [].splice.call( arguments, 0 );
 
             if ( args.length ) {
                 _.each( args, function ( mod, key ) {
                     if ( !_this.isRunning( mod ) ) {
-                        console.log( mod );
                         // start & initialize module.
                         _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, _modules[mod] ));
                         _modules[mod].instance.init();
@@ -124,7 +122,7 @@ define([
                     _modules[mod].instance = null;
                     // unsubscribe events
                     core.events.unsubscribeAll( mod );
-                    // announce
+                    // announce module has stopped.
                     core.bus.publish({ channel: 'modules', topic: 'module.stopped', data: { name: mod } });
                     //
                     delete( _modules[mod].instance );

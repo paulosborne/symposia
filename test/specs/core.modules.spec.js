@@ -51,19 +51,6 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 }, Error, 'Creator should return a public interface');
             });
 
-            it('should fire callback if provided', function () {
-                var callback = sinon.spy();
-
-                symposia.modules.create({
-                    'module-1': { creator: mods.a }
-                }, callback );
-
-                assert.isTrue( callback.called );
-                assert.equal( callback.callCount, 1 );
-                assert.lengthOf( callback.args[0], 1 );
-                assert.isObject( callback.args[0][0] );
-            });
-
             afterEach(function () {
                 symposia.modules.reset();
             });
@@ -98,87 +85,105 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
         });
 
         describe('stop', function () {
+            it('should only stop if module has an instance', function () {
+                symposia.modules.create({
+                    'ABC': { creator: mods.a },
+                    'DEF': { creator: mods.a },
+                    'GHI': { creator: mods.a }
+                }).start('ABC','DEF','GHI');
 
-            it('should return false if trying to stop an inactive module', function () {
-                assert.isFalse( symposia.modules.stop('module_a') );
-            });
+                assert.equal( _.size( symposia.modules.getRunning()), 3);
+                assert.isTrue( symposia.modules.isRunning('DEF') );
 
-            it('should announce when a module stops', function () {
-                symposia.modules.start('module_a');
-                symposia.modules.stop('module_a');
-                assert.includeMembers( this.stopped, ['module_a'] );
-            });
+                symposia.modules.stop('DEF');
 
-            it('should return true if module stops', function () {
-                symposia.modules.start('module_a');
-                assert.isTrue( symposia.modules.stop('module_a') );
+                assert.equal( _.size( symposia.modules.getRunning()), 2);
+                assert.isFalse( symposia.modules.isRunning('DEF') );
             });
         });
 
         describe('stopAll', function () {
 
             it('should stop all active modules', function () {
-                symposia.modules.start('module_a');
-                symposia.modules.start('module_b');
+
+                symposia.modules.create({
+                    'ABC': { creator: mods.a },
+                    'DEF': { creator: mods.b },
+                    'GHI': { creator: mods.c }
+                }).start('ABC','DEF','GHI');
+
+                assert.equal( _.size( symposia.modules.getRunning()), 3);
                 symposia.modules.stopAll();
-
-                assert.includeMembers( this.stopped, ['module_a','module_b'] );
-            });
-
-        });
-
-        describe('hasModules', function () {
-            it('should be truthy if there are modules', function () {
-                assert.isTrue( symposia.modules.hasModules() );
+                assert.equal( _.size( symposia.modules.getRunning()), 0);
             });
         });
 
-
-        describe('isStarted', function () {
-            it('should be truthy if module is started', function () {
-                symposia.modules.start('module_a');
-                assert.isTrue( symposia.modules.isStarted('module_a') );
+        describe('isRunning', function () {
+            before(function () {
+                symposia.modules.create({
+                    'ABC': { creator: mods.a },
+                    'DEF': { creator: mods.b },
+                    'GHI': { creator: mods.c }
+                }).start('ABC');
             });
-            it('should be falsy if module is stopped', function () {
-                assert.isFalse( symposia.modules.isStarted('module_a') );
+
+            it('should return true if module is running', function () {
+                assert.isTrue( symposia.modules.isRunning('ABC') );
+            });
+
+            it('should return false if module is not running', function () {
+                assert.isFalse( symposia.modules.isRunning('DEF') );
+                assert.isFalse( symposia.modules.isRunning('GHI') );
+            });
+
+            after(function() {
+                symposia.modules.reset();
             });
         });
 
         describe('isModule', function () {
-            it('should throw descriptive errors if invalid id', function () {
+            it('should throw error if no name supplied', function () {
                 assert.throws( function () {
                     symposia.modules.isModule();
-                }, Error, 'No id supplied');
+                }, Error);
+            });
+
+            it('should throw error if non-string passed', function () {
                 assert.throws(function () {
                     symposia.modules.isModule(12345);
-                }, Error, 'id must be a string, number supplied');
+                }, Error);
+            });
+
+            it('should throw error module does not exist', function () {
                 assert.throws(function () {
                     symposia.modules.isModule('module_z');
-                }, Error, 'Unable to find module [module_z]');
+                }, Error );
             });
 
             it('should be truthy if module exists', function () {
-                assert.isTrue( symposia.modules.isModule('module_a') );
+                symposia.modules.create({
+                    'ABC': { creator: mods.a }
+                }).start('ABC');
+
+                assert.isTrue( symposia.modules.isModule('ABC') );
             });
         });
 
-        describe('getStarted', function () {
+        describe('getRunning', function () {
             it('should return an array of modules that are currently active', function () {
-                var started = [];
-                symposia.modules.start('module_a');
-                started = symposia.modules.getStarted();
-                assert.isTrue( _.isArray( started ) );
-                assert.lengthOf( started, 1 );
-                assert.property( started[0], '_id');
-                assert.property( started[0], 'name');
-                assert.property( started[0], 'creator');
-                assert.property( started[0], 'instance');
-            });
+                var running;
 
-            it('should return an empty array if no modules are active', function () {
-                assert.lengthOf( symposia.modules.getStarted(), 0);
-            });
+                symposia.modules.create({
+                    'ABC': { creator: mods.a },
+                    'DEF': { creator: mods.b },
+                    'GHI': { creator: mods.c }
+                }).startAll();
 
+                running = symposia.modules.getRunning();
+
+                assert.lengthOf( running, 3 );
+                assert.isTrue( _.isArray( running ) );
+            });
         });
     });
 
