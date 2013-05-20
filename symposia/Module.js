@@ -5,7 +5,7 @@ define(function () {
         this.name  = config.name;
         this.creator = config.creator;
         this.options = config.options;
-        this.init = config.options.init || true;
+        this.init = config.init || true;
     };
 
     Module.prototype = {

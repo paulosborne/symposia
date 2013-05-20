@@ -30,13 +30,10 @@ define([
          * @param { function } callback
          * @param { object } context
          */
-        create: function ( modules, callback, context ) {
-            var name, temp = {},
-                options = {
-                    init: true
-                };
+        create: function ( moduleDef, callback, context ) {
+            var name, temp, _this = this;
 
-            if ( typeof modules !== 'object' ) {
+            if ( typeof moduleDef !== 'object' ) {
                 throw new Error('Create must be passed an object');
             }
 
@@ -44,69 +41,67 @@ define([
                 throw new Error('Callback must be a function');
             }
 
-            for ( name in modules ) {
-                if( modules.hasOwnProperty( name ) ) {
-
-                    _.extend(options, modules[name].options);
-
-                    if ( _.isFunction(modules[name].creator) === false ) {
-                        throw new Error("Creator should be an instance of Function");
-                    }
-
-                    temp = modules[name].creator();
-
-                    if ( _.isObject(temp) === false ) {
-                        throw new Error('Creator should return a public interface');
-                    }
-
-                    if ( _.isFunction(temp.init) === false && _.isFunction(temp.destroy) === false) {
-                        throw new Error("Module must have both init and destroy methods");
-                    }
-
-                    temp = null;
-
-                    _modules[name] = new Module( core, {
-                        name: name,
-                        creator: modules[name].creator,
-                        options: options
-                    });
-
-                    if ( _modules[name].initialize ) {
-                        this.start( name );
-                    }
+            _.each( moduleDef, function ( mod, idx ) {
+                if ( !_.isFunction( mod.creator ) ) {
+                    throw new Error("Creator should be an instance of Function");
                 }
-            }
 
-            if ( typeof callback === 'function' ) {
+                temp = mod.creator();
+
+                if ( !_.isObject( temp ) ) {
+                    throw new Error("Creator should return a public interface");
+                }
+
+                if ( !_.isFunction(temp.init) && !_.isFunction(temp.destroy)) {
+                    throw new Error("Module return an object containing both an init and destroy method");
+                }
+
+                temp = null;
+
+                _modules[idx] = { name: idx, creator: mod.creator };
+
+            });
+
+            if ( _.isFunction( callback ) ) {
                 return callback( _modules );
             }
+
+            return this;
         },
         /**
          * Start a module
          *
-         * @param { string } id - the Id of the module to start
+         * @param { array } arguments - comma seperated list of modules to start
          * @return { boolean }
          */
-        start: function ( name ) {
+        start: function () {
+            var _this = this,
+                // turn arguments into a real array
+                args = [].splice.call( arguments, 0 );
 
-            if ( this.isModule( name ) ) {
-                if ( _.isObject( _modules[name].instance )) {
-                    return false;
-                }
-
-                _modules[name].instance = _modules[name].creator( core.sandbox.create( core, _modules[name] ));
-                _modules[name].instance.init();
-
-                // announce module initialization
-                core.bus.publish({
-                    channel: 'modules',
-                    topic: 'module.started',
-                    data: { module: _modules[name] }
+            if ( args.length ) {
+                _.each( args, function ( mod, key ) {
+                    if ( !_this.isRunning( mod ) ) {
+                        // start & initialize module.
+                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, _modules[mod] ));
+                        _modules[mod].instance.init();
+                        // announce
+                        core.bus.publish({ channel: 'modules', topic: 'module.started', data: { module: mod } });
+                    }
                 });
-
-                return _modules[name].instance;
+            } else {
+                throw new Error("No module name supplied");
             }
+            return this;
         },
+        /**
+         * Start all unstarted modules
+         *
+         */
+        startAll: function () {
+            return this.start.apply( _.keys( _modules ) );
+        },
+
         /**
          * Stop a module
          *
@@ -180,31 +175,34 @@ define([
          * @param {string} id - the module to look for
          * @return {boolean}
          */
-        isStarted: function ( name ) {
+        isRunning: function ( name ) {
             if ( this.isModule( name ) ) {
                 return _.isObject( _modules[name].instance );
             }
         },
         /**
-         * Does the supplied id resolve to a module
+         * Does the supplied module name resolve to a module
          *
-         * @param {string} id - the module to check
+         * @param {string} name - the module to check
          * @return {boolean}
          */
-        isModule: function ( id ) {
-            if ( _.isUndefined( id ) ) {
-                throw new Error('No id supplied');
+        isModule: function ( name ) {
+            if ( _.isUndefined( name ) ) {
+                throw new Error('No module name supplied');
             }
 
-            if ( !_.isString( id ) ) {
-                throw new Error('id must be a string, '+ typeof id +' supplied');
+            if ( !_.isString( name ) ) {
+                throw new TypeError('Module name must be a string');
             }
 
-            if ( !_.has( _modules, id ) ) {
-                throw new Error('Unable to find module ['+ id +']');
+            if ( !_.has( _modules, name ) ) {
+                throw new Error("Unable to find module '"+ name +"'");
             }
 
             return true;
+        },
+        reset: function () {
+            _modules = {};
         }
     };
 

@@ -39,7 +39,8 @@ module.exports = function(grunt) {
             options: {
                 hostname: '127.0.0.1',
                 port: 8000,
-                base: '.'
+                base: '.',
+                keepalive: true
             }
         }
     },
@@ -87,7 +88,7 @@ module.exports = function(grunt) {
       },
       lib_test: {
         files: '<%= jshint.lib_test.src %>',
-        tasks: ['connect', 'mocha']
+        tasks: ['requirejs','connect', 'mocha']
       }
     }
   });
