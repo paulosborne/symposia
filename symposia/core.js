@@ -1,8 +1,7 @@
 define([
     'symposia/base',
-    'symposia/sandbox',
-    'symposia/Module'
-], function( base, sandbox, Module ) {
+    'symposia/sandbox'
+], function( base, sandbox ) {
 
     var _subscriptions = {},
         _modules = {},
