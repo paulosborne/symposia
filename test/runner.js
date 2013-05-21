@@ -3,7 +3,6 @@ var should;
 require.config({
     baseUrl: '../',
     paths: {
-        'symposia': 'dist/symposia',
         'chai': 'node_modules/chai/chai',
         'sinonChai': 'node_modules/sinon-chai/lib/sinon-chai'
     }
@@ -22,7 +21,8 @@ require(['chai','sinonChai'], function ( chai, sinonChai ) {
 
     require([
         'test/specs/core.modules.spec',
-        'test/specs/core.events.spec'
+        'test/specs/core.events.spec',
+        'test/specs/core.sandbox.spec'
     ], function () {
         mocha.run();
     });

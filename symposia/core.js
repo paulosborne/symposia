@@ -81,7 +81,7 @@ define([
                 _.each( args, function ( mod, key ) {
                     if ( !_this.isRunning( mod ) ) {
                         // start & initialize module.
-                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, _modules[mod] ));
+                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, mod ));
                         _modules[mod].instance.init();
                         // announce
                         core.bus.publish({ channel: 'modules', topic: 'module.started', data: { module: mod } });
