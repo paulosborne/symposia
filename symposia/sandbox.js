@@ -16,6 +16,9 @@ define(['jquery'], function ( $ )  {
                 }
 
                 return {
+                    addWireTap: function ( callback ) {
+                        core.events.addWireTap( callback );
+                    },
                     /**
                      * Publish a message, attaches the sandbox id
                      *

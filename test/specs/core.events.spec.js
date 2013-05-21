@@ -127,6 +127,10 @@ define([
             });
         });
 
+        describe('addWireTap', function () {
+
+        });
+
     });
 
 });

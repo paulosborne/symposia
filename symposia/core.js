@@ -282,6 +282,14 @@ define([
             _subscriptions = {};
 
             return this;
+        },
+        /**
+         * Add a wiretap to listen for events on the message bus
+         *
+         * @param {function} callback
+         */
+        addWireTap: function ( callback ) {
+            core.bus.addWireTap( callback );
         }
     };
 

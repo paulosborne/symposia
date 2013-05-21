@@ -58,6 +58,17 @@ define(['symposia'], function ( symposia ) {
 
             });
 
+            describe('addWireTap', function () {
+                var callback = sinon.spy();
+
+                it('should fire callback when activity is observed', function () {
+                    sandboxes[0].addWireTap( callback );
+                    sandboxes[0].publish({ topic: 'menu.click' });
+                    assert.isTrue( callback.called );
+                });
+
+            });
+
         after(function () {
             sandbox = null;
         });
