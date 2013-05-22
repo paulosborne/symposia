@@ -45,7 +45,7 @@ define([
                     throw new Error("Creator should be an instance of Function");
                 }
 
-                temp = mod.creator();
+                temp = mod.creator( core.sandbox.create( core, idx ));
 
                 if ( !_.isObject( temp ) ) {
                     throw new Error("Creator should return a public interface");
