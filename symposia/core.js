@@ -45,7 +45,7 @@ define([
                     throw new Error("Creator should be an instance of Function");
                 }
 
-                temp = mod.creator();
+                temp = mod.creator( core.sandbox.create( core, idx ));
 
                 if ( !_.isObject( temp ) ) {
                     throw new Error("Creator should return a public interface");
@@ -81,7 +81,7 @@ define([
                 _.each( args, function ( mod, key ) {
                     if ( !_this.isRunning( mod ) ) {
                         // start & initialize module.
-                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, _modules[mod] ));
+                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, mod ));
                         _modules[mod].instance.init();
                         // announce
                         core.bus.publish({ channel: 'modules', topic: 'module.started', data: { module: mod } });
@@ -282,6 +282,14 @@ define([
             _subscriptions = {};
 
             return this;
+        },
+        /**
+         * Add a wiretap to listen for events on the message bus
+         *
+         * @param {function} callback
+         */
+        addWireTap: function ( callback ) {
+            core.bus.addWireTap( callback );
         }
     };
 

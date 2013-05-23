@@ -14,6 +14,13 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.equal( _.size( created ), 2 );
             });
 
+            it('issue#2', function () {
+                var mod;
+                symposia.modules.create({ 'ABC': { creator: mods.d } }).startAll();
+                mod = symposia.modules.getModules();
+                assert.isTrue( mod.ABC.instance.init.called );
+            });
+
             it('should throw an error if no modules object is passed', function () {
                 assert.throws(function() {
                     symposia.modules.create('fred');

@@ -6,8 +6,15 @@
     </head>
     <body>
         <div id="mocha"></div>
-        <div data-module="module_a"></div>
-        <div data-module="module_b"></div>
+        <div data-symposia-module="module_a">
+            <h1>module_a</h1>
+        </div>
+        <div data-symposia-module="module_b">
+            <h1>module_b</h1>
+        </div>
+        <div data-symposia-module="todo">
+            <h1>todo</h1>
+        </div>
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/sinon/lib/sinon.js"></script>
         <script src="../node_modules/sinon/lib/sinon/spy.js"></script>
