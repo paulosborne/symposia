@@ -3,7 +3,7 @@ symposia
 
 <img src="https://travis-ci.org/posbo/symposia.png?branch=master">
 
-AMD based JavaScript framework for development of scalable, modular web applications.
+AMD based JavaScript framework for development of scalable, library agnostic, modular web applications.
 
 
 ### Usage
