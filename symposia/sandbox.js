@@ -12,7 +12,7 @@ define(['jquery'], function ( $ )  {
                 var $element, _id = _.uniqueId('sandbox-');
 
                 if ( element ) {
-                    $element = $('[data-symposia-module='+ element +']');
+                    $element = $('#'+ element);
                 }
 
                 return {

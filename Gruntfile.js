@@ -1,4 +1,3 @@
-/*global module:false*/
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -9,16 +8,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-mocha');
 
-  // Project configuration.
   grunt.initConfig({
-    // Metadata.
     pkg: grunt.file.readJSON('package.json'),
-    banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-    // Task configuration.
     requirejs: {
         compile: {
             options: {
@@ -26,7 +17,11 @@ module.exports = function(grunt) {
                 exclude: ['jquery','underscore'],
                 baseUrl: '.',
                 out: 'dist/symposia.js',
+                shim: {
+                    'backbone': ['underscore']
+                },
                 paths: {
+                    'backbone': 'vendor/backbone-amd/backbone-min',
                     'underscore': 'vendor/lodash/lodash',
                     'jquery': 'vendor/jquery/jquery',
                     'postal': 'vendor/postaljs/lib/postal'
@@ -37,9 +32,8 @@ module.exports = function(grunt) {
     connect: {
         server: {
             options: {
-                hostname: '127.0.0.1',
                 port: 8000,
-                base: '.'
+                base: '.',
             }
         }
     },
@@ -49,25 +43,6 @@ module.exports = function(grunt) {
                 urls: ['http://localhost:<%= connect.server.options.port %>/test/index.html']
             }
         }
-    },
-    concat: {
-      options: {
-        banner: '<%= banner %>',
-        stripBanners: true
-      },
-      dist: {
-        src: ['lib/<%= pkg.name %>.js'],
-        dest: 'dist/<%= pkg.name %>.js'
-      }
-    },
-    uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      }
     },
     jshint: {
       options: {
@@ -92,7 +67,7 @@ module.exports = function(grunt) {
     }
   });
 
-  // Default task.
   grunt.registerTask('default', ['requirejs','connect','mocha']);
+  grunt.registerTask('build:test',['connect','mocha']);
 
 };

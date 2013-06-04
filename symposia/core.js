@@ -30,7 +30,7 @@ define([
          * @param { object } context
          */
         create: function ( moduleDef, callback, context ) {
-            var name, temp, _this = this;
+            var mod, moduleName;
 
             if ( typeof moduleDef !== 'object' ) {
                 throw new Error('Create must be passed an object');
@@ -40,30 +40,44 @@ define([
                 throw new Error('Callback must be a function');
             }
 
-            _.each( moduleDef, function ( mod, idx ) {
+            _.each( moduleDef, function ( mod, moduleName ) {
+                var moduleId, temp;
+                // return if moduleName already exists.
+                // if ( _.has( _modules, moduleName )) return;
+                moduleId = _.uniqueId('module-');
+
                 if ( !_.isFunction( mod.creator ) ) {
                     throw new Error("Creator should be an instance of Function");
                 }
 
-                temp = mod.creator( core.sandbox.create( core, idx ));
+                temp = mod.creator( core.sandbox.create( core, moduleName ));
 
                 if ( !_.isObject( temp ) ) {
                     throw new Error("Creator should return a public interface");
                 }
 
-                if ( !_.isFunction(temp.init) && !_.isFunction(temp.destroy)) {
+                if ( !_.isFunction( temp.init ) && !_.isFunction( temp.destroy )) {
                     throw new Error("Module return an object containing both an init and destroy method");
                 }
 
                 temp = null;
 
-                _modules[idx] = {
-                    _id: _.uniqueId('module-'),
-                    name: idx,
+                _modules[moduleName] = {
+                    _id: moduleId,
+                    name: moduleName,
                     creator: mod.creator
                 };
 
-            });
+                core.bus.publish({
+                    channel: 'modules',
+                    topic: 'created',
+                    envelope: {
+                        moduleName: moduleName,
+                        moduleId: _modules[moduleName]._id
+                    }
+                });
+
+            }, this);
 
             return this;
         },
@@ -116,14 +130,13 @@ define([
 
             _.each( args, function ( mod ) {
                 if( _this.isRunning( mod ) ) {
-                    // stop module
+
                     _modules[mod].instance.destroy();
                     _modules[mod].instance = null;
-                    // unsubscribe events
+
                     core.events.unsubscribeAll( mod );
-                    // announce module has stopped.
                     core.bus.publish({ channel: 'modules', topic: 'module.stopped', data: { name: mod } });
-                    //
+
                     delete( _modules[mod].instance );
                 }
             });
@@ -293,10 +306,8 @@ define([
         }
     };
 
-    if ( core.debug ) {
-        // provide a global object for console debugging
-        window.symposia = core;
-    }
+    // provide a global object for console debugging
+    window.symposia = core;
 
     return core;
 });

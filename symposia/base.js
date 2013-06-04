@@ -5,6 +5,8 @@
                 jquery: { exports: '$' },
                 underscore: { exports: '_' }
             },
+            postal: ['underscore'],
+            deps:['jquery'],
             paths: {
                 jquery: 'vendor/jquery/jquery',
                 underscore: 'vendor/lodash/lodash',
@@ -15,14 +17,8 @@
 
     require.config( config.require );
 
-    define(['module','underscore','jquery','postal'], function ( module, _, $, postal ) {
-        var base =  {
-            debug: true
-        };
-
-        base.bus = postal;
-
-        return base;
+    define(['postal'], function ( postal ) {
+        return { bus: postal };
     });
 
 }());
