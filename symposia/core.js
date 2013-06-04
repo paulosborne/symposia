@@ -128,6 +128,8 @@ define([
                 throw new Error('No module name supplied');
             }
 
+
+
             _.each( args, function ( mod ) {
                 if( _this.isRunning( mod ) ) {
 
@@ -149,7 +151,13 @@ define([
          * @return {boolean}
          */
         stopAll: function () {
-            this.stop.apply( this, _.keys( _modules ));
+            var started = _.keys( _modules );
+
+            if ( started.length ) {
+                this.stop.apply( this, started );
+            }
+
+            return this;
         },
         /**
          * Returns all started modules
