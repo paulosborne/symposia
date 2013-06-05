@@ -47,9 +47,6 @@ define(['src/core'], function ( core ) {
                     throw new Error("Creator should be an instance of Function");
                 }
 
-                console.log( core );
-
-
                 temp = mod.creator( core.sandbox.create( core, moduleName ));
 
                 if ( !_.isObject( temp ) ) {
