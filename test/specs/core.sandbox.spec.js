@@ -70,7 +70,7 @@ define(['symposia'], function ( symposia ) {
             });
 
         after(function () {
-            sandbox = null;
+            sandboxes = null;
         });
     });
 });

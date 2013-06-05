@@ -1,8 +1,6 @@
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -68,7 +66,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['requirejs','connect','mocha']);
+  grunt.registerTask('default', ['jshint','requirejs','connect','mocha']);
   grunt.registerTask('build:test',['connect','mocha']);
 
 };

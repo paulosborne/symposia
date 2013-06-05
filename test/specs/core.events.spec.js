@@ -62,9 +62,9 @@ define([
 
             it('should be initialized with at lease a topic, callback and signature', function () {
                 assert.doesNotThrow(function () {
-                    subscription = symposia.events.subscribe({
+                    var subscription = symposia.events.subscribe({
                         topic: 'menu.click.zoom',
-                        callback: function () {},
+                        callback: function () {}
                     },'module-3');
                 }, Error);
             });
