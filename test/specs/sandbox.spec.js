@@ -4,9 +4,9 @@ define(['symposia'], function ( symposia ) {
         var sandboxes = [];
 
         before(function () {
-            sandboxes.push( symposia.sandbox.create( symposia, 'todo' ));
-            sandboxes.push( symposia.sandbox.create( symposia, 'module_a'));
-            sandboxes.push( symposia.sandbox.create( symposia, 'module_b'));
+            sandboxes.push( symposia.sandbox.create( 'todo' ));
+            sandboxes.push( symposia.sandbox.create( 'module_a'));
+            sandboxes.push( symposia.sandbox.create( 'module_b'));
         });
 
         it('should return a new sandbox', function () {
