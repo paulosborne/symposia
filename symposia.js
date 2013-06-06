@@ -1,3 +1,3 @@
-define(['src/base','src/core','src/sandbox','src/events','src/modules','src/state'], function ( base, core ) {
+define(['src/base','src/core','src/sandbox','src/event','src/module'], function ( base, core ) {
     return core;
 });

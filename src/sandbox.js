@@ -8,7 +8,7 @@ define(['src/core','jquery'], function ( core, $ )  {
          * @param {string} element - element to find
          * @return {object} sandbox
          */
-        create: function ( core, element ) {
+        create: function ( element ) {
             var $element, _id = _.uniqueId('sandbox-');
 
             if ( element ) {

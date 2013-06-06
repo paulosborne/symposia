@@ -1,7 +1,5 @@
 define(['src/core'], function ( core ) {
 
-    var _modules = {};
-
     core.modules = {
         /**
          * Get a module using its id
@@ -11,11 +9,11 @@ define(['src/core'], function ( core ) {
          */
         get: function ( id ) {
             if ( this.isModule( id ) ) {
-                return _modules[id];
+                return core._modules[id];
             }
         },
         getModules: function () {
-            return _modules;
+            return core._modules;
         },
         /**
          * Create a module
@@ -37,9 +35,10 @@ define(['src/core'], function ( core ) {
 
             _.each( moduleDef, function ( mod, moduleName ) {
                 var moduleId, temp;
-                // return if moduleName already exists.
-                //
-                 if ( _.has( _modules, moduleName )) return;
+
+                if ( _.has( core._modules, moduleName )) {
+                    return;
+                }
 
                 moduleId = _.uniqueId('module-');
 
@@ -47,7 +46,7 @@ define(['src/core'], function ( core ) {
                     throw new Error("Creator should be an instance of Function");
                 }
 
-                temp = mod.creator( core.sandbox.create( core, moduleName ));
+                temp = mod.creator( core.sandbox.create( moduleName ));
 
                 if ( !_.isObject( temp ) ) {
                     throw new Error("Creator should return a public interface");
@@ -59,21 +58,11 @@ define(['src/core'], function ( core ) {
 
                 temp = null;
 
-                _modules[moduleName] = {
+                core._modules[moduleName] = {
                     _id: moduleId,
                     name: moduleName,
                     creator: mod.creator
                 };
-
-                core.bus.publish({
-                    channel: 'modules',
-                    topic: 'created',
-                    envelope: {
-                        moduleName: moduleName,
-                        moduleId: _modules[moduleName]._id
-                    }
-                });
-
             }, this);
 
             return this;
@@ -85,19 +74,20 @@ define(['src/core'], function ( core ) {
          * @return { boolean }
          */
         start: function () {
-            var _this = this,
-                args = [].splice.call( arguments, 0 );
+            var args = [].splice.call( arguments, 0 );
 
             if ( args.length ) {
                 _.each( args, function ( mod, key ) {
-                    if ( !_this.isRunning( mod ) ) {
-                        // start & initialize module.
-                        _modules[mod].instance = _modules[mod].creator( core.sandbox.create( core, mod ));
-                        _modules[mod].instance.init();
-                        // announce
-                        core.bus.publish({ channel: 'modules', topic: 'module.started', data: { module: mod } });
+                    if ( !this.isRunning( mod ) ) {
+
+                        _.extend( core._modules[mod], {
+                            instance: core._modules[mod].creator( core.sandbox.create( mod ) ),
+                            started: new Date()
+                        });
+
+                        core._modules[mod].instance.init();
                     }
-                });
+                }, this );
             } else {
                 throw new Error("No module name supplied");
             }
@@ -108,9 +98,8 @@ define(['src/core'], function ( core ) {
          *
          */
         startAll: function () {
-            return this.start.apply( this, _.keys( _modules ) );
+            return this.start.apply( this, _.keys( core._modules ) );
         },
-
         /**
          * Stop a module
          *
@@ -118,25 +107,23 @@ define(['src/core'], function ( core ) {
          * @return { boolean }
          */
         stop: function () {
-            var _this = this,
-                args = [].splice.call( arguments, 0 );
+            var args = [].splice.call( arguments, 0 );
 
             if ( !args.length ) {
                 throw new Error('No module name supplied');
             }
 
             _.each( args, function ( mod ) {
-                if( _this.isRunning( mod ) ) {
+                if( this.isRunning( mod ) ) {
 
-                    _modules[mod].instance.destroy();
-                    _modules[mod].instance = null;
+                    core._modules[mod].instance.destroy();
+                    core._modules[mod].instance = null;
 
                     core.events.unsubscribeAll( mod );
-                    core.bus.publish({ channel: 'modules', topic: 'module.stopped', data: { name: mod } });
 
-                    delete( _modules[mod].instance );
+                    delete( core._modules[mod].instance );
                 }
-            });
+            }, this);
 
             return this;
         },
@@ -146,7 +133,7 @@ define(['src/core'], function ( core ) {
          * @return {boolean}
          */
         stopAll: function () {
-            var started = _.keys( _modules );
+            var started = _.keys( core._modules );
 
             if ( started.length ) {
                 this.stop.apply( this, started );
@@ -160,7 +147,7 @@ define(['src/core'], function ( core ) {
          * @return {array}
          */
         getRunning: function () {
-            var running = _.filter( _modules, function ( mod ) {
+            var running = _.filter( core._modules, function ( mod ) {
                 return _.has( mod, 'instance' );
             });
             return running;
@@ -173,7 +160,7 @@ define(['src/core'], function ( core ) {
          */
         isRunning: function ( name ) {
             if ( this.isModule( name ) ) {
-                return _.isObject( _modules[name].instance );
+                return _.isObject( core._modules[name].instance );
             }
         },
         /**
@@ -191,14 +178,15 @@ define(['src/core'], function ( core ) {
                 throw new TypeError('Module name must be a string');
             }
 
-            if ( !_.has( _modules, name ) ) {
+            if ( !_.has( core._modules, name ) ) {
                 throw new Error("Unable to find module '"+ name +"'");
             }
 
             return true;
         },
         reset: function () {
-            _modules = {};
+            this.stopAll();
+            core._modules = {};
         }
     };
 
