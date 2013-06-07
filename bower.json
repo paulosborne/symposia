@@ -1,30 +1,31 @@
 {
-    "name": "symposia",
-    "version": "0.2.6",
-    "description": "A JavaScript framework for building modular and scalable web applications.",
-    "main": "dist/symposia.js",
-    "homepage": "https://github.com/posbo/symposia",
-    "bugs": "https://github.com/posbo/symposia/issues",
-    "author": {
-        "name": "Paul Osborne",
-        "email": "paul.osborne.uk@gmail.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/posbo/symposia.git"
-    },
-    "dependencies": {
-        "lodash": "lodash",
-        "postaljs": "https://github.com/postaljs/postal.js.git",
-        "requirejs": "requirejs",
-        "jquery": "1.9.1"
-    },
-    "licenses": [
-        {
-            "type": "MIT"
-        }
-    ],
-    "ignore": [
-        "node_modules"
-    ]
+  "name": "symposia",
+  "version": "0.2.6",
+  "description": "A JavaScript framework for building modular and scalable web applications.",
+  "main": "dist/symposia.js",
+  "homepage": "https://github.com/posbo/symposia",
+  "bugs": "https://github.com/posbo/symposia/issues",
+  "author": {
+    "name": "Paul Osborne",
+    "email": "paul.osborne.uk@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/posbo/symposia.git"
+  },
+  "dependencies": {
+    "lodash": "lodash",
+    "postaljs": "https://github.com/postaljs/postal.js.git",
+    "requirejs": "requirejs",
+    "jquery": "1.9.1",
+    "es5-shim": "~2.1.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "ignore": [
+    "node_modules"
+  ]
 }

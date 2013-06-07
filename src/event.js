@@ -1,7 +1,5 @@
 define(['src/core'], function ( core ) {
 
-    var _subscriptions = [];
-
     core.events = {
         /**
          * Publish a message
@@ -32,10 +30,10 @@ define(['src/core'], function ( core ) {
                 throw new Error('Subscription definition must have a topic (string) and callback (function)');
             }
 
-            subs = _subscriptions[subscriber];
+            subs = core._subscriptions[subscriber];
 
             if ( !subs ) {
-                subs = _subscriptions[subscriber] = [];
+                subs = core._subscriptions[subscriber] = [];
             }
 
             subs.push( core.bus.subscribe( subDef ) );
@@ -49,7 +47,7 @@ define(['src/core'], function ( core ) {
          */
         unsubscribe: function ( config, sig ) {
             if ( _.has(config,'topic') || _.has('channel') ) {
-                _.each( _subscriptions, function ( sub ) {
+                _.each( core._subscriptions, function ( sub ) {
                     if ( sub.signature === sig ) {
                         console.log( sub );
                     }
@@ -65,7 +63,7 @@ define(['src/core'], function ( core ) {
          * @return {number} - number of subscriptions removed
          */
         unsubscribeAll: function ( subscriber ) {
-            var rem = 0, subs = _subscriptions[subscriber];
+            var rem = 0, subs = core._subscriptions[subscriber];
             if ( subs ) {
                 while ( subs.length ) {
                     subs.shift().unsubscribe();
@@ -81,21 +79,21 @@ define(['src/core'], function ( core ) {
          * @return {object}
          */
         getSubscribers: function ( subscriber ) {
-            return ( subscriber ) ? _subscriptions[subscriber] : _subscriptions;
+            return ( subscriber ) ? core._subscriptions[subscriber] : core._subscriptions;
         },
         /**
          * Unsubscribe and remove all subscribers from all sandboxes
          *
          */
         reset: function () {
-            _.each( _subscriptions, function ( subscription ) {
+            _.each( core._subscriptions, function ( subscription ) {
                 while ( subscription.length ) {
                     subscription.shift().unsubscribe();
                 }
             });
 
             // reset subscriptions
-            _subscriptions = {};
+            core._subscriptions = {};
 
             return this;
         },
