@@ -1,6 +1,10 @@
 define(['src/base','src/core','src/sandbox','src/event','src/module'], function ( base, core ) {
 
-    window.symposia = core;
+    var symposia = _.extend( base, core , { version: '0.2.6', debug: true });
 
-    return core;
+    if ( symposia.debug ) {
+        window.symposia = symposia;
+    }
+
+    return symposia;
 });
