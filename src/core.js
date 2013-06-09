@@ -6,7 +6,7 @@ define(['src/base'], function( base ) {
         _subscriptions : []
     };
 
-    if ( !base.hasOwnProperty('bus') ) {
+    if ( !_.has(base,'bus')) {
         throw new Error('Base object must contain a message bus');
     }
 
