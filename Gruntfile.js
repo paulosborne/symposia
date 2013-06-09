@@ -24,7 +24,8 @@ module.exports = function(grunt) {
                     'jquery': 'vendor/jquery/jquery',
                     'postal': 'vendor/postaljs/lib/postal',
                     'crossroads': 'node_modules/crossroads/dist/crossroads.min',
-                    'signals': 'node_modules/signals/dist/signals.min'
+                    'signals': 'node_modules/signals/dist/signals.min',
+                    'hasher': 'node_modules/hasher/dist/js/hasher.min'
                 }
             }
         }
@@ -35,7 +36,7 @@ module.exports = function(grunt) {
                 hostname: '127.0.0.1',
                 port: 8000,
                 base: '.',
-                keepalive: false
+                keepalive:false
             }
         }
     },
