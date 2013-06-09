@@ -3,7 +3,7 @@ define([
     'test/mocks/modules'
 ], function ( symposia, mods ) {
 
-    describe('Core.Events', function () {
+    describe('core.events', function () {
         describe('publish', function () {
             it('should publish a message', function () {
                 var callback = sinon.spy(),

@@ -22,7 +22,9 @@ module.exports = function(grunt) {
                     'backbone': 'vendor/backbone-amd/backbone-min',
                     'underscore': 'vendor/lodash/lodash',
                     'jquery': 'vendor/jquery/jquery',
-                    'postal': 'vendor/postaljs/lib/postal'
+                    'postal': 'vendor/postaljs/lib/postal',
+                    'crossroads': 'node_modules/crossroads/dist/crossroads.min',
+                    'signals': 'node_modules/signals/dist/signals.min'
                 }
             }
         }
@@ -32,7 +34,8 @@ module.exports = function(grunt) {
             options: {
                 hostname: '127.0.0.1',
                 port: 8000,
-                base: '.'
+                base: '.',
+                keepalive: false
             }
         }
     },
