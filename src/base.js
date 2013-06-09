@@ -24,11 +24,7 @@
     require.config( config.require );
 
     define(['postal','crossroads'], function ( postal, cr ) {
-        console.log( postal );
-        return { 
-          bus: postal,
-          router: cr 
-        };
+        return { bus: postal, router: cr };
     });
 
 }());
