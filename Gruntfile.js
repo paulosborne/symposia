@@ -70,7 +70,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['jshint','requirejs','connect','mocha']);
+  grunt.registerTask('default', ['jshint','requirejs']);
   grunt.registerTask('build:test',['connect','mocha']);
 
 };
