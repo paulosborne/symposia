@@ -1,8 +1,8 @@
-define(['src/base','src/core','src/sandbox','src/event','src/module'], function ( base, core ) {
+define(['src/base','src/core','src/sandbox','src/event','src/module'], function (base, core) {
 
-    var symposia = _.extend( base, core , { version: '0.2.6', debug: true });
+    var symposia = _.extend(base, core);
 
-    if ( symposia.debug ) {
+    if ( window.debug ) {
         window.symposia = symposia;
     }
 

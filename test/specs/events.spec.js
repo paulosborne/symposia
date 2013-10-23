@@ -1,7 +1,8 @@
-define([
-    'symposia',
-    'test/mocks/modules'
-], function ( symposia, mods ) {
+define(function (require) {
+
+    var symposia        = require('symposia'),
+        mods            = require('test/mocks/modules'),
+        _strings        = require('config').strings;
 
     describe('core.events', function () {
         describe('publish', function () {
@@ -28,27 +29,22 @@ define([
         });
 
         describe('subscribe', function () {
-            var errorMsg = [
-                'Subscription definition must have a topic (string) and callback (function)',
-                'Invalid subscriber id'
-            ];
-
             it('should throw an error if initialized without a subscriber id', function () {
                 assert.throws(function() {
                     symposia.events.subscribe({ topic: 'test', callback: function () {} });
-                }, Error, errorMsg[1]);
+                }, Error, _strings.SUBSCRIBE_INVALID_ID);
             });
 
             it('should throw an error if initialized without a topic', function () {
                 assert.throws(function() {
                     symposia.events.subscribe({ callback: function () {} },'module-1');
-                }, Error, errorMsg[0]);
+                }, Error, _strings.SUBSCRIBE_INVALID_DEF);
             });
 
             it('should throw an error if initialized without a callback', function () {
                 assert.throws(function() {
                     symposia.events.subscribe({ topic: 'test' },'module-2');
-                }, Error, errorMsg[0]);
+                }, Error, _strings.SUBSCRIBE_INVALID_DEF);
             });
 
             it('should throw an error if callback is not a function', function () {

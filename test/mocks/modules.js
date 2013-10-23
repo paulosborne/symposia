@@ -42,6 +42,10 @@ define(function() {
                 init: sinon.spy(),
                 destroy: sinon.spy()
             }
+        },
+        'e': function (sandbox) {
+            return {
+            }
         }
     };
 });

@@ -6,6 +6,12 @@ define(['src/base'], function( base ) {
         _subscriptions : []
     };
 
+    core.log = function (type, message) {
+        if (typeof console !== undefined && console[type]) {
+            console[type](message);
+        }
+    };
+
     if ( !_.has(base,'bus')) {
         throw new Error('Base object must contain a message bus');
     }

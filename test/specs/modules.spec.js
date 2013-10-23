@@ -1,4 +1,9 @@
-define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
+define(function (require) {
+
+    var symposia        = require('symposia'),
+        mods            = require('test/mocks/modules'),
+        _strings        = require('config').strings;
+
     describe('Core.Modules', function () {
         var moduleData = {};
 
@@ -14,10 +19,18 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                 assert.equal( _.size( created ), 2 );
             });
 
+            it('should throw an error if module creator doesnt have an init or destroy method', function () {
+                assert.throws(function () {
+                    symposia.modules.create({
+                        'module-1': { creator: mods.e }
+                    });
+                }, Error, _.template(_strings.ERR_MODULE_MISSING_METHOD, { m: 'module-1' }));
+            });
+
             it('should throw an error if no modules object is passed', function () {
                 assert.throws(function() {
                     symposia.modules.create('fred');
-                }, Error, 'Create must be passed an object');
+                }, Error, _strings.ERR_MODULE_DEF_NOT_OBJECT);
             });
 
             it('should throw an error if callback is not a function', function () {
@@ -27,18 +40,19 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                             creator: mods.a
                         }
                     }, 'hello');
-                }, Error, 'Callback must be a function');
+                }, Error, _strings.ERR_CALLBACK_NOT_FUNC);
             });
 
 
             it('should throw an error if no creator is passed', function () {
+                var mod = 'noCreator';
                 assert.throws( function () {
                     symposia.modules.create({
-                        'noCreator': {
+                        'noCreator' : {
                             creator: null
                         }
                     });
-                }, Error, 'Creator should be an instance of Function');
+                }, Error, _.template(_strings.ERR_MODULE_NOT_FUNC, { m: mod }));
             });
 
             it('should throw an error if creator function doesnt return a public interface', function () {
@@ -48,7 +62,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                             creator: function () {}
                         }
                     });
-                }, Error, 'Creator should return a public interface');
+                }, Error, _.template(_strings.ERR_MODULE_NO_API, { m: 'noPublicInterface' }));
             });
 
             afterEach(function () {
@@ -64,7 +78,7 @@ define(['symposia','test/mocks/modules'], function ( symposia, mods ) {
                         'ABC': { creator: mods.a },
                         'DEF': { creator: mods.b }
                     }).start('ABC','DEF','ABC','GHI');
-                }, Error, "Unable to find module 'GHI'" );
+                }, Error, _.template(_strings.ERR_MODULE_NOT_FOUND, { m: 'GHI' }));
             });
 
             it('should throw an error if no module name supplied', function () {

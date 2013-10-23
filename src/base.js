@@ -17,8 +17,12 @@
 
     require.config( config.require );
 
-    define(['postal','crossroads','hasher'], function ( postal, cr, hash ) {
-        return { bus: postal, router: cr, hash: hash };
+    define(['postal','crossroads','hasher'], function ( postal, crossroads, hash ) {
+        return {
+            bus: postal,
+            router: crossroads,
+            hash: hash
+        };
     });
 
 }());

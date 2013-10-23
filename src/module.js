@@ -1,4 +1,7 @@
-define(['src/core'], function ( core ) {
+define(function (require, exports) {
+
+    var core        = require('src/core'),
+        _strings    = require('config').strings;
 
     core.modules = {
         /**
@@ -26,41 +29,41 @@ define(['src/core'], function ( core ) {
             var mod, moduleName;
 
             if ( typeof moduleDef !== 'object' ) {
-                throw new Error('Create must be passed an object');
+                throw new Error(_strings.ERR_MODULE_DEF_NOT_OBJECT);
             }
 
             if ( !_.isUndefined( callback ) && !_.isFunction( callback ) ) {
-                throw new Error('Callback must be a function');
+                throw new Error(_strings.ERR_CALLBACK_NOT_FUNC);
             }
 
-            _.each( moduleDef, function ( mod, moduleName ) {
+            _.each( moduleDef, function ( mod, name ) {
                 var moduleId, temp;
 
-                if ( _.has( core._modules, moduleName )) {
+                if ( _.has( core._modules, name )) {
                     return;
                 }
 
                 moduleId = _.uniqueId('module-');
 
-                if ( !_.isFunction( mod.creator ) ) {
-                    throw new Error("Creator should be an instance of Function");
+                if (!_.isFunction( mod.creator )) {
+                    throw new Error(_.template(_strings.ERR_MODULE_NOT_FUNC, { m: name }));
                 }
 
-                temp = mod.creator( core.sandbox.create( moduleName ));
+                temp = mod.creator( core.sandbox.create( name ));
 
                 if ( !_.isObject( temp ) ) {
-                    throw new Error("Creator should return a public interface");
+                    throw new Error(_.template(_strings.ERR_MODULE_NO_API, { m: name }));
                 }
 
                 if ( !_.isFunction( temp.init ) && !_.isFunction( temp.destroy )) {
-                    throw new Error("Module return an object containing both an init and destroy method");
+                    throw new Error(_.template(_strings.ERR_MODULE_MISSING_METHOD, { m: name }));
                 }
 
                 temp = null;
 
-                core._modules[moduleName] = {
+                core._modules[name] = {
                     _id: moduleId,
-                    name: moduleName,
+                    name: name,
                     creator: mod.creator
                 };
             }, this);
@@ -82,14 +85,16 @@ define(['src/core'], function ( core ) {
 
                         _.extend( core._modules[mod], {
                             instance: core._modules[mod].creator( core.sandbox.create( mod ) ),
-                            started: new Date()
+                            started: new Date().getTime()
                         });
 
                         core._modules[mod].instance.init();
+                        core.log('info', _.template(_strings.MODULE_STARTED, { m: mod }));
+
                     }
                 }, this );
             } else {
-                throw new Error("No module name supplied");
+                throw new Error(_strings.ERR_MODULE_NO_NAME);
             }
             return this;
         },
@@ -110,7 +115,7 @@ define(['src/core'], function ( core ) {
             var args = [].splice.call( arguments, 0 );
 
             if ( !args.length ) {
-                throw new Error('No module name supplied');
+                throw new Error(_strings.ERR_MODULE_NO_NAME);
             }
 
             _.each( args, function ( mod ) {
@@ -171,15 +176,15 @@ define(['src/core'], function ( core ) {
          */
         isModule: function ( name ) {
             if ( _.isUndefined( name ) ) {
-                throw new Error('No module name supplied');
+                throw new Error(_strings.ERR_MODULE_NO_NAME);
             }
 
             if ( !_.isString( name ) ) {
-                throw new TypeError('Module name must be a string');
+                throw new TypeError(_strings.ERR_MODULE_NAME_NOT_STR);
             }
 
             if ( !_.has( core._modules, name ) ) {
-                throw new Error("Unable to find module '"+ name +"'");
+                throw new Error(_.template(_strings.ERR_MODULE_NOT_FOUND, { m: name }));
             }
 
             return true;

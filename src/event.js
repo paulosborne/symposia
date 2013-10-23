@@ -1,4 +1,7 @@
-define(['src/core'], function ( core ) {
+define(function (require) {
+
+    var core        = require('src/core'),
+        _strings    = require('config').strings;
 
     core.events = {
         /**
@@ -22,12 +25,12 @@ define(['src/core'], function ( core ) {
         subscribe: function ( subDef, subscriber ) {
             var subs;
 
-            if ( !_.isString( subscriber) ) {
-                throw new Error('Invalid subscriber id');
+            if ( !_.isString(subscriber) ) {
+                throw new Error(_strings.SUBSCRIBE_INVALID_ID);
             }
 
             if ( !_.isString ( subDef.topic ) || !_.isFunction( subDef.callback ) ) {
-                throw new Error('Subscription definition must have a topic (string) and callback (function)');
+                throw new Error(_strings.SUBSCRIBE_INVALID_DEF);
             }
 
             subs = core._subscriptions[subscriber];
@@ -48,12 +51,12 @@ define(['src/core'], function ( core ) {
         unsubscribe: function ( config, sig ) {
             if ( _.has(config,'topic') || _.has('channel') ) {
                 _.each( core._subscriptions, function ( sub ) {
-                    if ( sub.signature === sig ) {
-                        console.log( sub );
+                    if (sub.signature === sig) {
+                        core.log('log', sub );
                     }
                 });
             } else {
-                throw new Error('topic or channel required');
+                throw new Error(_strings.UNSUBSCRIBE_ERROR);
             }
         },
         /**
