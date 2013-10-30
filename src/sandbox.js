@@ -19,7 +19,6 @@ define(function (require) {
             }
 
             return {
-                id: _id,
                 addWireTap: function ( callback ) {
                     core.events.addWireTap( callback );
                 },

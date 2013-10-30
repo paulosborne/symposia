@@ -106,13 +106,13 @@ define(function (require) {
                     'GHI': { creator: mods.a }
                 }).start('ABC','DEF','GHI');
 
-                assert.equal( _.size( symposia.modules.getRunning()), 3);
-                assert.isTrue( symposia.modules.isRunning('DEF') );
+                assert.equal( _.size( symposia.modules.getStarted()), 3);
+                assert.isTrue( symposia.modules.isStarted('DEF') );
 
                 symposia.modules.stop('DEF');
 
-                assert.equal( _.size( symposia.modules.getRunning()), 2);
-                assert.isFalse( symposia.modules.isRunning('DEF') );
+                assert.equal( _.size( symposia.modules.getStarted()), 2);
+                assert.isFalse( symposia.modules.isStarted('DEF') );
             });
         });
 
@@ -126,13 +126,13 @@ define(function (require) {
                     'GHI': { creator: mods.c }
                 }).start('ABC','DEF','GHI');
 
-                assert.equal( _.size( symposia.modules.getRunning()), 3);
+                assert.equal( _.size( symposia.modules.getStarted()), 3);
                 symposia.modules.stopAll();
-                assert.equal( _.size( symposia.modules.getRunning()), 0);
+                assert.equal( _.size( symposia.modules.getStarted()), 0);
             });
         });
 
-        describe('isRunning', function () {
+        describe('isStarted', function () {
             before(function () {
                 symposia.modules.create({
                     'ABC': { creator: mods.a },
@@ -142,12 +142,12 @@ define(function (require) {
             });
 
             it('should return true if module is running', function () {
-                assert.isTrue( symposia.modules.isRunning('ABC') );
+                assert.isTrue( symposia.modules.isStarted('ABC') );
             });
 
             it('should return false if module is not running', function () {
-                assert.isFalse( symposia.modules.isRunning('DEF') );
-                assert.isFalse( symposia.modules.isRunning('GHI') );
+                assert.isFalse( symposia.modules.isStarted('DEF') );
+                assert.isFalse( symposia.modules.isStarted('GHI') );
             });
 
             after(function() {
@@ -183,7 +183,7 @@ define(function (require) {
             });
         });
 
-        describe('getRunning', function () {
+        describe('getStarted', function () {
             it('should return an array of modules that are currently active', function () {
                 var running;
 
@@ -193,7 +193,7 @@ define(function (require) {
                     'GHI': { creator: mods.c }
                 }).startAll();
 
-                running = symposia.modules.getRunning();
+                running = symposia.modules.getStarted();
 
                 assert.lengthOf( running, 3 );
                 assert.isTrue( _.isArray( running ) );

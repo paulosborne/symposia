@@ -88,13 +88,13 @@ define(function (require, exports) {
 
                         _.extend( core._modules[mod], {
                             sandbox: sbx,
-                            instance: core._modules[mod].creator( sbx ),
+                            instance: core._modules[mod].creator( sbx )
                         });
 
                         core._modules[mod].instance.init();
                         core.log('info', _.template(_strings.MODULE_STARTED, {
                             m: mod,
-                            s: sbx.getId(), 
+                            s: sbx.getId(),
                             t: new Date().getTime()
                         }));
                     }
