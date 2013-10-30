@@ -3,6 +3,7 @@ define(function (require, exports) {
     var core        = require('src/core'),
         _strings    = require('config').strings;
 
+
     core.modules = {
         /**
          * Get a module using its id
@@ -81,16 +82,21 @@ define(function (require, exports) {
 
             if ( args.length ) {
                 _.each( args, function ( mod, key ) {
-                    if ( !this.isRunning( mod ) ) {
+                    var sbx;
+                    if ( !this.isStarted( mod ) ) {
+                        sbx = core.sandbox.create(mod);
 
                         _.extend( core._modules[mod], {
-                            instance: core._modules[mod].creator( core.sandbox.create( mod ) ),
-                            started: new Date().getTime()
+                            sandbox: sbx,
+                            instance: core._modules[mod].creator( sbx ),
                         });
 
                         core._modules[mod].instance.init();
-                        core.log('info', _.template(_strings.MODULE_STARTED, { m: mod }));
-
+                        core.log('info', _.template(_strings.MODULE_STARTED, {
+                            m: mod,
+                            s: sbx.getId(), 
+                            t: new Date().getTime()
+                        }));
                     }
                 }, this );
             } else {
@@ -103,7 +109,7 @@ define(function (require, exports) {
          *
          */
         startAll: function () {
-            return this.start.apply( this, _.keys( core._modules ) );
+            return this.start.apply(this, _.keys( core._modules ) );
         },
         /**
          * Stop a module
@@ -119,7 +125,7 @@ define(function (require, exports) {
             }
 
             _.each( args, function ( mod ) {
-                if( this.isRunning( mod ) ) {
+                if( this.isStarted( mod ) ) {
 
                     core._modules[mod].instance.destroy();
                     core._modules[mod].instance = null;
@@ -127,6 +133,9 @@ define(function (require, exports) {
                     core.events.unsubscribeAll( mod );
 
                     delete( core._modules[mod].instance );
+                    delete( core._modules[mod].sandbox );
+
+                    core.log('info', _.template(_strings.MODULE_STOPPED, { m: mod, t: new Date().getTime() }));
                 }
             }, this);
 
@@ -151,11 +160,11 @@ define(function (require, exports) {
          *
          * @return {array}
          */
-        getRunning: function () {
-            var running = _.filter( core._modules, function ( mod ) {
+        getStarted: function () {
+            var started = _.filter( core._modules, function ( mod ) {
                 return _.has( mod, 'instance' );
             });
-            return running;
+            return started;
         },
         /**
          * Is the module started?
@@ -163,7 +172,7 @@ define(function (require, exports) {
          * @param {string} id - the module to look for
          * @return {boolean}
          */
-        isRunning: function ( name ) {
+        isStarted: function ( name ) {
             if ( this.isModule( name ) ) {
                 return _.isObject( core._modules[name].instance );
             }

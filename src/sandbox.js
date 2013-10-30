@@ -1,4 +1,7 @@
-define(['src/core','jquery'], function ( core, $ )  {
+define(function (require) {
+
+    var core        = require('src/core'),
+        $           = require('jquery');
 
     core.sandbox = {
         /**
@@ -16,6 +19,7 @@ define(['src/core','jquery'], function ( core, $ )  {
             }
 
             return {
+                id: _id,
                 addWireTap: function ( callback ) {
                     core.events.addWireTap( callback );
                 },
