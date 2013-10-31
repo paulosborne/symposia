@@ -78,7 +78,7 @@ define(function (require, exports) {
          * @return { boolean }
          */
         start: function () {
-            var args = [].splice.call( arguments, 0 );
+            var args = [].slice.call( arguments );
 
             if ( args.length ) {
                 _.each( args, function ( mod, key ) {
