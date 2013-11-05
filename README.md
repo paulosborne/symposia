@@ -5,6 +5,9 @@ symposia
 
 AMD based JavaScript framework for development of scalable, library agnostic, modular web applications.
 
+### Why?
+
+Symposia is a framework that was created to solve a problem that I faced at work. It has been a great learning exercise and has allowed me to develop a number of loosely coupled, modular applications.
 
 ### Usage
 
