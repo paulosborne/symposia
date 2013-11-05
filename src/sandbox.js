@@ -1,7 +1,6 @@
 define(function (require) {
 
-    var core        = require('src/core'),
-        $           = require('jquery');
+    var core        = require('src/core');
 
     core.sandbox = {
         /**
@@ -11,11 +10,11 @@ define(function (require) {
          * @param {string} element - element to find
          * @return {object} sandbox
          */
-        create: function ( element ) {
-            var $element, _id = _.uniqueId('sandbox-');
+        create: function ( moduleName ) {
+            var el, _id = _.uniqueId('sandbox-');
 
-            if ( element ) {
-                $element = $('#'+ element);
+            if ( moduleName ) {
+                el = document.getElementById( moduleName );
             }
 
             return {
@@ -66,7 +65,7 @@ define(function (require) {
                  * @param {string} selector
                  */
                 getElement: function (selector) {
-                    return (selector) ? $element.find(selector) : $element;
+                    return (selector) ? el.find(selector) : el;
                 },
                 /**
                  * Returns the ID of this sandbox
