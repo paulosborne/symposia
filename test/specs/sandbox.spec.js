@@ -29,6 +29,22 @@ define(['symposia'], function ( symposia ) {
             assert.equal( $el.prop('nodeName'), 'DIV' );
         });
 
+        it('passing a selector to getElement finds child elements of the module container', function () {
+            var $todo       = sandboxes[0].getElement('h1'),
+                $module_a   = sandboxes[1].getElement('h1'),
+                $module_b   = sandboxes[2].getElement('h1');
+
+            assert.equal($todo.length, 1);
+            assert.equal($todo.text(),'todo');
+
+            assert.equal($module_a.length, 1);
+            assert.equal($module_a.text(),'module_a');
+
+            assert.equal($module_b.length, 1);
+            assert.equal($module_b.text(),'module_b');
+
+        });
+
             describe('subscribe()', function () {
 
                 var callback = sinon.spy();

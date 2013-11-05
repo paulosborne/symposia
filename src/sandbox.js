@@ -62,9 +62,11 @@ define(function (require) {
                 },
                 /**
                  * Returns the DOM element associated with this sandbox
+                 *
+                 * @param {string} selector
                  */
-                getElement: function () {
-                    return $element;
+                getElement: function (selector) {
+                    return (selector) ? $element.find(selector) : $element;
                 },
                 /**
                  * Returns the ID of this sandbox
