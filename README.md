@@ -14,5 +14,21 @@ Symposia has a few dependencies.
 - [Dependencies](#dependencies)
 - [Modules](#modules)
 - [Message Bus](#message-bus)
-- [Views](#backbone-views)
 
+### Installation
+
+To use symposia in your AMD based application, create a new path entry which points to the in your require configuration file
+
+```javascript
+paths: {
+  "symposia": 'bower_components/symposia/dist/symposia'
+}
+```
+
+Then include it in a module definition using:
+
+```javascript
+define(function (require) {
+  var symposia = require('symposia');
+});
+```
