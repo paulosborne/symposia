@@ -1,13 +1,12 @@
-symposia 
+Symposia 
 ========
 
 <img src="https://travis-ci.org/posbo/symposia.png?branch=master">
 
-based JavaScript framework for development of scalable, library agnostic, modular web applications.
 
-### Why?
+### Introduction
 
-Symposia is a framework for developing loosely coupled, modular applications by bringing together a number of design patterns including the Mediator, Observer, Module and Sandbox. It is based on the [Patterns of Large Scale JavaScript Applications](http://addyosmani.com/largescalejavascript/) by Addy Osmani and was created to solve a problem I was having at work, where my jQuery applications were becoming too tightly coupled, and a headache to both maintain and add additional functionality.
+Symposia is a framework for developing loosely coupled, modular applications by bringing together a number of design patterns including the Mediator, Observer, Module and Sandbox. It is based on the [Patterns of Large Scale JavaScript Applications](http://addyosmani.com/largescalejavascript/) by Addy Osmani and was created to solve a problem I was having at work, where my jQuery applications were becoming too tightly coupled, and a headache to both maintain and extend.
 
 It contains the following open source libraries in its core.
 
