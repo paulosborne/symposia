@@ -11,7 +11,6 @@ Symposia is a framework for developing loosely coupled, modular applications by 
 It contains the following open source libraries in its core.
 
 - [Crossroads](http://millermedeiros.github.io/crossroads.js/) by [Miller Medeiros](https://github.com/millermedeiros)
-- [RequireJS](https://github.com/jrburke/requirejs) by [James Burke](https://github.com/jrburke)
 - [PostalJS](https://github.com/postaljs/postal.js) by [Jim Cowart](https://github.com/ifandelse)
 
 ### Usage
