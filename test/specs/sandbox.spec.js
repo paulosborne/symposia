@@ -37,8 +37,10 @@ define(function (require) {
         suite('#getElement', function () {
             test('should find matching DOM elements', function () {
                 _.each(sandboxes, function (sandbox) {
-                    var node = sandbox.getElement();
+                    var element = sandbox.getElement();
+                    var name    = sandbox.getModuleName();
 
+                    expect(element.prop('id')).to.equal(name);
                 });
             });
         });
@@ -50,9 +52,18 @@ define(function (require) {
                     sandbox.subscribe({ topic: 'ping', callback: callbackSpy });
                 });
             });
+
+            test('should have a subscription', function () {
+                _.each(sandboxes, function (sandbox) {
+                    var subs = sandbox.getSubscriptions();
+
+                    subs.should.have.length(1);
+                });
+            });
         });
 
         suiteTeardown(function () {
+            
         });
     });
 });

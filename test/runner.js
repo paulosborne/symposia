@@ -3,8 +3,6 @@ var should;
 require.config({
     baseUrl: '../',
     paths: {
-        'jquery': 'vendor/jquery/jquery.min',
-        'underscore': 'vendor/lodash/dist/lodash.min',
         'chai': 'node_modules/chai/chai',
         'sinonChai': 'node_modules/sinon-chai/lib/sinon-chai'
     }

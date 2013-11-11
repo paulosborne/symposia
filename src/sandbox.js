@@ -9,14 +9,12 @@ define(function (require) {
          *
          * @param {object} core
          * @param {string} element - element to find
-         * @return {object} sandbox
+         * @return {object}
          */
-        create: function ( element ) {
-            var $element, _id = _.uniqueId('sandbox-');
-
-            if ( element ) {
-                $element = $('#'+ element);
-            }
+        create: function (moduleName) {
+            var _id      = _.uniqueId('sandbox-');
+            var _name    = moduleName;
+            var element  = $('#'+ _name);
 
             return {
                 addWireTap: function ( callback ) {
@@ -66,13 +64,21 @@ define(function (require) {
                  * @param {string} selector
                  */
                 getElement: function (selector) {
-                    return (selector) ? $element.find(selector) : $element;
+                    return (selector) ? element.find(selector) : element;
                 },
                 /**
                  * Returns the ID of this sandbox
                  */
                 getId: function () {
                     return _id;
+                },
+                /**
+                 * Returns the name of the module associated with this sandbox.
+                 *
+                 * @return {string}
+                 */
+                getModuleName: function () {
+                    return moduleName;
                 }
             };
         }
