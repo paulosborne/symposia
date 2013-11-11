@@ -78,7 +78,7 @@ define(function (require) {
                  * @return {string}
                  */
                 getModuleName: function () {
-                    return moduleName;
+                    return _name;
                 }
             };
         }

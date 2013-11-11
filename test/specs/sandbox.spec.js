@@ -9,57 +9,91 @@ define(function (require) {
             tagName     = 'div',
             total         = 100;
 
-        suiteSetup(function () {
-            _(total).times(function (i) {
-                var div = document.createElement(tagName),
-                    _id = _.uniqueId('module-');
-
-                div.id = _id;
-                container.appendChild(div);
-                sandboxes.push( symposia.sandbox.create(_id) );
-            });
-        });
-
         suite('#create', function () {
-            test("should create sandboxes", function () {
-                sandboxes.should.have.length(total);
+
+            suiteSetup(function () {
+                sandboxes.push(symposia.sandbox.create());
             });
+
+            test("should create inboxes with unique id", function () {
+                expect(sandboxes[0].getId()).to.match(/sandbox-[0-9]+/g);
+            });
+
+            suiteTeardown(function () {
+                sandboxes = [];
+            });
+
         });
 
-        suite('#getId', function () {
-            test("should return the unique sandbox id", function () {
-                _.each(sandboxes, function (sandbox) {
-                    expect(sandbox.getId()).to.match(/sandbox-[0-9]+/g);
-                });
-            });
-        });
 
         suite('#getElement', function () {
+
+            suiteSetup(function () {
+                _(total).times(function (i) {
+                    var div = document.createElement(tagName),
+                        _id = _.uniqueId('module-');
+
+                    div.id = _id;
+                    container.appendChild(div);
+                    sandboxes.push( symposia.sandbox.create(_id) );
+                });
+            });
+
             test('should find matching DOM elements', function () {
                 _.each(sandboxes, function (sandbox) {
                     var element = sandbox.getElement();
                     var name    = sandbox.getModuleName();
-
                     expect(element.prop('id')).to.equal(name);
                 });
+            });
+
+            suiteTeardown(function () {
+                sandboxes = [];
             });
         });
 
         suite('#getSubscriptions', function () {
+            var topic_string = 'testing';
+
             suiteSetup(function () {
-                _.each(sandboxes, function (sandbox) {
-                    var callbackSpy = sinon.spy();
-                    sandbox.subscribe({ topic: 'ping', callback: callbackSpy });
+                var sandbox     = symposia.sandbox.create();
+                    callback    = sinon.spy();
+
+                sandbox.subscribe({
+                    topic: topic_string,
+                    callback: callback
                 });
+
+                sandboxes.push(sandbox);
             });
 
             test('should have a subscription', function () {
-                _.each(sandboxes, function (sandbox) {
-                    var subs = sandbox.getSubscriptions();
+                var subs = _.first(sandboxes).getSubscriptions();
 
-                    subs.should.have.length(1);
+                expect(subs[0]).to.have.property('topic');
+                expect(subs[0].topic).to.equal(topic_string);
+            });
+
+            suiteTeardown(function () {
+                sandboxes = [];
+            });
+
+        });
+
+        suite('#unsubscribeAll', function () {
+            test("should unsubscribe all subscriptions", function () {
+                _.each(sandboxes, function (sandbox) {
+                    var subscriptions = sandbox.getSubscriptions();
+
+                    subscriptions.should.have.length(1);
+                    sandbox.unsubscribeAll();
+                    subscriptions.should.have.length(0);
                 });
             });
+        });
+
+        suite('#unsubscribe', function () {
+            
         });
 
         suiteTeardown(function () {
