@@ -20,17 +20,15 @@ module.exports = function(grunt) {
                     exclude: ['jquery','underscore'],
                     baseUrl: '.',
                     out: 'dist/symposia.js',
-                    shim: {
-                        'backbone': ['underscore']
-                    },
+                    optimize: "uglify",
+                    preserveLicenseComments: false,
                     paths: {
-                        'backbone': 'vendor/backbone-amd/backbone-min',
-                        'underscore': 'vendor/lodash/lodash',
-                        'jquery': 'vendor/jquery/jquery',
-                        'postal': 'vendor/postaljs/lib/postal',
-                        'crossroads': 'node_modules/crossroads/dist/crossroads.min',
-                        'signals': 'node_modules/signals/dist/signals.min',
-                        'hasher': 'node_modules/hasher/dist/js/hasher.min'
+                        'underscore'    : 'vendor/lodash/lodash',
+                        'jquery'        : 'vendor/jquery/jquery',
+                        'postal'        : 'vendor/postaljs/lib/postal',
+                        'crossroads'    : 'node_modules/crossroads/dist/crossroads.min',
+                        'signals'       : 'node_modules/signals/dist/signals.min',
+                        'hasher'        : 'node_modules/hasher/dist/js/hasher.min'
                     }
                 }
             }

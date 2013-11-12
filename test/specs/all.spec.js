@@ -1,1 +1,1 @@
-define(['./sandbox.spec'], function () {});
+define(['./sandbox.spec','./modules.spec'], function () {});
