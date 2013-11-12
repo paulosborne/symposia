@@ -26,6 +26,12 @@
     "sinon": true,
     "suiteSetup": true,
     "suiteTeardown": true,
-    "expect": true
+    "expect": true,
+    "assert": true,
+    "it": true,
+    "after": true,
+    "describe": true,
+    "afterEach": true,
+    "beforeEach": true,
   }
 }
