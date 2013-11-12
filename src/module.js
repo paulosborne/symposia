@@ -3,7 +3,6 @@ define(function (require, exports) {
     var core        = require('src/core'),
         _strings    = require('config').strings;
 
-
     core.modules = {
         /**
          * Get a module using its id
@@ -16,9 +15,6 @@ define(function (require, exports) {
                 return core._modules[id];
             }
         },
-        getModules: function () {
-            return core._modules;
-        },
         /**
          * Create a module
          *
@@ -26,25 +22,19 @@ define(function (require, exports) {
          * @param { function } callback
          * @param { object } context
          */
-        create: function ( moduleDef, callback, context ) {
+        create: function (moduleDef) {
             var mod, moduleName;
 
             if ( typeof moduleDef !== 'object' ) {
                 throw new Error(_strings.ERR_MODULE_DEF_NOT_OBJECT);
             }
 
-            if ( !_.isUndefined( callback ) && !_.isFunction( callback ) ) {
-                throw new Error(_strings.ERR_CALLBACK_NOT_FUNC);
-            }
-
             _.each( moduleDef, function ( mod, name ) {
-                var moduleId, temp;
+                var temp, temp2;
 
-                if ( _.has( core._modules, name )) {
+                if ( _.has(core._modules, name)) {
                     return;
                 }
-
-                moduleId = _.uniqueId('module-');
 
                 if (!_.isFunction( mod.creator )) {
                     throw new Error(_.template(_strings.ERR_MODULE_NOT_FUNC, { m: name }));
@@ -56,16 +46,16 @@ define(function (require, exports) {
                     throw new Error(_.template(_strings.ERR_MODULE_NO_API, { m: name }));
                 }
 
-                if ( !_.isFunction( temp.init ) && !_.isFunction( temp.destroy )) {
+                if ( !_.isFunction( temp.init )) {
                     throw new Error(_.template(_strings.ERR_MODULE_MISSING_METHOD, { m: name }));
                 }
 
                 temp = null;
 
                 core._modules[name] = {
-                    _id: moduleId,
-                    name: name,
-                    creator: mod.creator
+                    _id     : _.uniqueId('module-'),
+                    name    : name,
+                    creator : mod.creator
                 };
             }, this);
 
@@ -74,42 +64,41 @@ define(function (require, exports) {
         /**
          * Start a module
          *
-         * @param { array } arguments - comma seperated list of modules to start
          * @return { boolean }
          */
         start: function () {
             var args = [].slice.call( arguments );
 
-            if ( args.length ) {
-                _.each( args, function ( mod, key ) {
-                    var sbx;
-                    if ( !this.isStarted( mod ) ) {
-                        sbx = core.sandbox.create(mod);
-
-                        _.extend( core._modules[mod], {
-                            sandbox: sbx,
-                            instance: core._modules[mod].creator( sbx )
-                        });
-
-                        core._modules[mod].instance.init();
-                        core.log('info', _.template(_strings.MODULE_STARTED, {
-                            m: mod,
-                            s: sbx.getId(),
-                            t: new Date().getTime()
-                        }));
-                    }
-                }, this );
-            } else {
-                throw new Error(_strings.ERR_MODULE_NO_NAME);
+            if (!args.length) {
+                return;
             }
-            return this;
+
+            _.each( args, function ( mod ) {
+                var sbx = core.sandbox.create(mod.name);
+
+                _.extend(mod, {
+                    sandbox: sbx,
+                    instance: mod.creator( sbx )
+                });
+
+                mod.instance.destroy = mod.instance.destroy || function () {};
+                mod.instance.init();
+
+                core.log('info', _.template(_strings.MODULE_STARTED, {
+                    m: mod.name,
+                    s: sbx.getId(),
+                    t: new Date().getTime()
+                }));
+            });
         },
         /**
          * Start all unstarted modules
          *
          */
         startAll: function () {
-            return this.start.apply(this, _.keys( core._modules ) );
+            this.start.apply(this, _.filter(core._modules, function (mod) {
+                return !mod.instance;
+            }));
         },
         /**
          * Stop a module
@@ -118,25 +107,24 @@ define(function (require, exports) {
          * @return { boolean }
          */
         stop: function () {
-            var args = [].splice.call( arguments, 0 );
+            var args = [].slice.call( arguments );
 
             if ( !args.length ) {
                 throw new Error(_strings.ERR_MODULE_NO_NAME);
             }
 
-            _.each( args, function ( mod ) {
-                if( this.isStarted( mod ) ) {
+            _.each(args, function ( mod ) {
+                mod.instance.destroy();
+                mod.instance = null;
+                mod.sandbox.unsubscribeAll();
 
-                    core._modules[mod].instance.destroy();
-                    core._modules[mod].instance = null;
+                delete( mod.instance );
+                delete( mod.sandbox );
 
-                    core._modules[mod].sandbox.unsubscribeAll();
-
-                    delete( core._modules[mod].instance );
-                    delete( core._modules[mod].sandbox );
-
-                    core.log('info', _.template(_strings.MODULE_STOPPED, { m: mod, t: new Date().getTime() }));
-                }
+                core.log('info', _.template(_strings.MODULE_STOPPED, {
+                    m: mod.name,
+                    t: new Date().getTime()
+                }));
             }, this);
 
             return this;
@@ -147,9 +135,11 @@ define(function (require, exports) {
          * @return {boolean}
          */
         stopAll: function () {
-            var started = _.keys( core._modules );
+            var started = _.filter(core._modules, function (mod) {
+                return _.has(mod, 'instance');
+            });
 
-            if ( started.length ) {
+            if (started.length) {
                 this.stop.apply( this, started );
             }
 
