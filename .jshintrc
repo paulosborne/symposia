@@ -32,6 +32,6 @@
     "after": true,
     "describe": true,
     "afterEach": true,
-    "beforeEach": true,
+    "beforeEach": true
   }
 }
