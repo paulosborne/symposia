@@ -12,9 +12,9 @@ define(function (require) {
          * @return {object}
          */
         create: function (moduleName) {
-            var _id      = _.uniqueId('sandbox-');
-            var _name    = moduleName;
-            var element  = $('#'+ _name);
+            var _id      = _.uniqueId('sandbox-'),
+                _name    = moduleName,
+                element  = $('#'+ _name);
 
             return {
                 addWireTap: function ( callback ) {
@@ -42,7 +42,7 @@ define(function (require) {
                  * Remove all sandbox subscriptions
                  */
                 unsubscribeAll: function () {
-                    core.events.unsubscribeAll( _id );
+                    return core.events.unsubscribeAll( _id );
                 },
                 /**
                  * Unsubscribe a single subscription ( not implemented )

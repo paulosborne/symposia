@@ -48,13 +48,16 @@ define(function (require) {
          *
          * @param {object} config
          */
-        unsubscribe: function ( config, sig ) {
-            if ( _.has(config,'topic') || _.has('channel') ) {
-                _.each( core._subscriptions, function ( sub ) {
-                    if (sub.signature === sig) {
-                        core.log('log', sub );
+        unsubscribe: function (o, id) {
+            if ( o.topic && core._subscriptions[id] ) {
+
+                for (var i = 0, max = core._subscriptions[id].length; i < max; i += 1) {
+                    if ( core._subscriptions[id][i].topic === o.topic ) {
+                        core._subscriptions[id].splice(i, 1);
                     }
-                });
+                }
+
+                console.log(core._subscriptions[id].length);
             } else {
                 throw new Error(_strings.UNSUBSCRIBE_ERROR);
             }
@@ -66,14 +69,16 @@ define(function (require) {
          * @return {number} - number of subscriptions removed
          */
         unsubscribeAll: function ( subscriber ) {
-            var rem = 0, subs = core._subscriptions[subscriber];
+            var i = 0,
+                subs = core._subscriptions[subscriber];
+
             if ( subs ) {
                 while ( subs.length ) {
                     subs.shift().unsubscribe();
-                    rem += 1;
+                    i += 1;
                 }
             }
-            return rem;
+            return i;
         },
         /**
          * Get current subscribers
@@ -89,14 +94,14 @@ define(function (require) {
          *
          */
         reset: function () {
-            _.each( core._subscriptions, function ( subscription ) {
-                while ( subscription.length ) {
-                    subscription.shift().unsubscribe();
-                }
-            });
+            // _.each( core._subscriptions, function ( subscription ) {
+            //     while ( subscription.length ) {
+            //         subscription.shift().unsubscribe();
+            //     }
+            // });
 
             // reset subscriptions
-            core._subscriptions = {};
+            //core._subscriptions = {};
 
             return this;
         },

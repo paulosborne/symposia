@@ -1,1 +1,1 @@
-define(['./events.spec','./modules.spec','./sandbox.spec'], function () {});
+define(['./sandbox.spec'], function () {});

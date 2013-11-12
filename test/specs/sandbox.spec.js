@@ -88,10 +88,12 @@ define(['symposia'], function (symposia) {
             });
 
             test("should unsubscribe all subscriptions", function () {
-                var subscriptions = sandboxes[0].getSubscriptions();
+                var subscriptions = sandboxes[0].getSubscriptions(),
+                    removed = 0;
 
                 subscriptions.should.have.length(total);
-                sandboxes[0].unsubscribeAll();
+                removed = sandboxes[0].unsubscribeAll();
+                expect(removed).to.equal(total);
                 subscriptions.should.have.length(0);
             });
 
@@ -112,11 +114,12 @@ define(['symposia'], function (symposia) {
             });
 
             test("should remove a single subscription", function () {
-                var subs = sandboxes[0].getSubscriptions();
+                var subs    = sandboxes[0].getSubscriptions();
 
                 subs.should.have.length(total);
+                sandboxes[0].unsubscribe({ topic: subs[11].topic });
+
             });
         });
-
     });
 });
