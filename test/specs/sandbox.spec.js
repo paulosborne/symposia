@@ -1,13 +1,14 @@
-define(function (require) {
+define(['symposia'], function (symposia) {
 
-    var symposia    = require('symposia');
+    'use strict';
 
     suite('Sandbox', function () {
 
-        var sandboxes   = [],
-            container   = document.getElementById('container'),
-            tagName     = 'div',
-            total         = 100;
+        var sandboxes       = [],
+            container       = document.getElementById('container'),
+            tagName         = 'div',
+            total           = 100,
+            topic_string    = 'nyan.cat';
 
         suite('#create', function () {
 
@@ -53,16 +54,10 @@ define(function (require) {
         });
 
         suite('#getSubscriptions', function () {
-            var topic_string = 'testing';
-
             suiteSetup(function () {
                 var sandbox     = symposia.sandbox.create();
-                    callback    = sinon.spy();
 
-                sandbox.subscribe({
-                    topic: topic_string,
-                    callback: callback
-                });
+                sandbox.subscribe({ topic: topic_string, callback: $.noop });
 
                 sandboxes.push(sandbox);
             });
@@ -81,23 +76,47 @@ define(function (require) {
         });
 
         suite('#unsubscribeAll', function () {
-            test("should unsubscribe all subscriptions", function () {
-                _.each(sandboxes, function (sandbox) {
-                    var subscriptions = sandbox.getSubscriptions();
 
-                    subscriptions.should.have.length(1);
-                    sandbox.unsubscribeAll();
-                    subscriptions.should.have.length(0);
+            setup(function () {
+                var sandbox = symposia.sandbox.create();
+
+                _(total).times(function (i) {
+                    sandbox.subscribe({ topic: topic_string + '.' + i, callback: $.noop });
                 });
+
+                sandboxes.push(sandbox);
+            });
+
+            test("should unsubscribe all subscriptions", function () {
+                var subscriptions = sandboxes[0].getSubscriptions();
+
+                subscriptions.should.have.length(total);
+                sandboxes[0].unsubscribeAll();
+                subscriptions.should.have.length(0);
+            });
+
+            teardown(function () {
+                sandboxes = [];
             });
         });
 
         suite('#unsubscribe', function () {
-            
+            setup(function () {
+                var sandbox = symposia.sandbox.create();
+
+                _(total).times(function (i) {
+                    sandbox.subscribe({ topic: topic_string + '.' + i, callback: $.noop });
+                });
+
+                sandboxes.push(sandbox);
+            });
+
+            test("should remove a single subscription", function () {
+                var subs = sandboxes[0].getSubscriptions();
+
+                subs.should.have.length(total);
+            });
         });
 
-        suiteTeardown(function () {
-            
-        });
     });
 });
