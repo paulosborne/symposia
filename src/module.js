@@ -130,7 +130,7 @@ define(function (require, exports) {
                     core._modules[mod].instance.destroy();
                     core._modules[mod].instance = null;
 
-                    core.events.unsubscribeAll( mod );
+                    core._modules[mod].sandbox.unsubscribeAll();
 
                     delete( core._modules[mod].instance );
                     delete( core._modules[mod].sandbox );

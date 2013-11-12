@@ -117,7 +117,7 @@ define(['symposia'], function (symposia) {
                 var subs    = sandboxes[0].getSubscriptions();
 
                 subs.should.have.length(total);
-                console.log(sandboxes[0].unsubscribe(subs[11].topic));
+                sandboxes[0].unsubscribe(subs[11].topic);
 
                 subs.should.have.length(total - 1);
 

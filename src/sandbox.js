@@ -72,7 +72,7 @@ define(function (require) {
                         _(_subscriptions.splice(idx, 1)).invoke('unsubscribe');
                     }
 
-                    return _subscriptions.length;
+                    return _subscriptions;
                 },
                 /**
                  * Return all subscriptions for this sandbox

@@ -1,4 +1,4 @@
-define(['src/base','src/core','src/sandbox','src/event','src/module'], function (base, core) {
+define(['src/base','src/core','src/sandbox','src/module'], function (base, core) {
 
     var symposia = _.extend(base, core);
 
