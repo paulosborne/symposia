@@ -12,13 +12,14 @@ define(function (require) {
          * @return {object}
          */
         create: function (moduleName) {
-            var _id      = _.uniqueId('sandbox-'),
-                _name    = moduleName,
-                element  = $('#'+ _name);
+            var _id             = _.uniqueId('sandbox-'),
+                _name           = moduleName,
+                _$element       = $('#'+ _name),
+                _subscriptions  = [];
 
             return {
                 addWireTap: function ( callback ) {
-                    core.events.addWireTap( callback );
+                    core.bus.addWireTap( callback );
                 },
                 /**
                  * Publish a message, attaches the sandbox id
@@ -26,9 +27,7 @@ define(function (require) {
                  * @param {object} envelope - message to be sent
                  */
                 publish: function ( envelope ) {
-                    envelope.data = envelope.data || {};
-                    envelope.data.sender = _id;
-                    core.events.publish( envelope );
+                    core.bus.publish( envelope );
                 },
                 /**
                  * Add a new message subscription
@@ -36,27 +35,50 @@ define(function (require) {
                  * @param {object} subDef - subscription definition
                  */
                 subscribe: function ( subDef ) {
-                    core.events.subscribe( subDef, _id );
+                    try {
+                        if (!_.has(subDef, 'topic') && !_.has(subDef, 'callback')) {
+                            throw new Error('Missing topic or callback for '+ _name);
+                        }
+
+                        _subscriptions.push(core.bus.subscribe(subDef));
+
+                    } catch (e) {
+                        core.log('info', e.message);
+                    }
                 },
                 /**
                  * Remove all sandbox subscriptions
                  */
                 unsubscribeAll: function () {
-                    return core.events.unsubscribeAll( _id );
+                    var i = 0;
+
+                    while(_subscriptions.length) {
+                        _subscriptions.shift().unsubscribe();
+                        i++;
+                    }
+
+                    return i;
                 },
                 /**
                  * Unsubscribe a single subscription ( not implemented )
                  *
-                 * @param {object} config
+                 * @param {string} topic -  subscription to remove
                  */
-                unsubscribe: function ( config ) {
-                    core.events.unsubscribe( config, _id );
+                unsubscribe: function (topic) {
+                    var topics  = _.pluck(_subscriptions, 'topic'),
+                        idx     = topics.indexOf(topic);
+
+                    if (idx !== -1) {
+                        _(_subscriptions.splice(idx, 1)).invoke('unsubscribe');
+                    }
+
+                    return _subscriptions.length;
                 },
                 /**
                  * Return all subscriptions for this sandbox
                  */
                 getSubscriptions: function () {
-                    return core.events.getSubscribers( _id );
+                    return _subscriptions;
                 },
                 /**
                  * Returns the DOM element associated with this sandbox
@@ -64,7 +86,7 @@ define(function (require) {
                  * @param {string} selector
                  */
                 getElement: function (selector) {
-                    return (selector) ? element.find(selector) : element;
+                    return (selector) ? _$element.find(selector) : _$element;
                 },
                 /**
                  * Returns the ID of this sandbox

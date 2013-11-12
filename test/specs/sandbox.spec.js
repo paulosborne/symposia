@@ -63,7 +63,7 @@ define(['symposia'], function (symposia) {
             });
 
             test('should have a subscription', function () {
-                var subs = _.first(sandboxes).getSubscriptions();
+                var subs = sandboxes[0].getSubscriptions();
 
                 expect(subs[0]).to.have.property('topic');
                 expect(subs[0].topic).to.equal(topic_string);
@@ -117,7 +117,9 @@ define(['symposia'], function (symposia) {
                 var subs    = sandboxes[0].getSubscriptions();
 
                 subs.should.have.length(total);
-                sandboxes[0].unsubscribe({ topic: subs[11].topic });
+                console.log(sandboxes[0].unsubscribe(subs[11].topic));
+
+                subs.should.have.length(total - 1);
 
             });
         });

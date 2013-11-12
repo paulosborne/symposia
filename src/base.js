@@ -11,7 +11,7 @@
                 postal      : 'vendor/postaljs/lib/postal',
                 signals     : 'node_modules/signals/dist/signals',
                 hasher      : 'node_modules/hasher/dist/js/hasher',
-                crossroads  : 'node_modules/crossroads/dist/crossroads',
+                crossroads  : 'node_modules/crossroads/dist/crossroads'
             }
         }
     };

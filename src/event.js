@@ -48,16 +48,14 @@ define(function (require) {
          *
          * @param {object} config
          */
-        unsubscribe: function (o, id) {
-            if ( o.topic && core._subscriptions[id] ) {
+        unsubscribe: function (obj, id) {
+            var queue;
 
-                for (var i = 0, max = core._subscriptions[id].length; i < max; i += 1) {
-                    if ( core._subscriptions[id][i].topic === o.topic ) {
-                        core._subscriptions[id].splice(i, 1);
-                    }
-                }
+            if (obj.topic && core._subscriptions[id]) {
 
-                console.log(core._subscriptions[id].length);
+                _(core._subscriptions[id]).where({ topic: obj.topic }).invoke('unsubscribe');
+
+
             } else {
                 throw new Error(_strings.UNSUBSCRIBE_ERROR);
             }
@@ -88,30 +86,6 @@ define(function (require) {
          */
         getSubscribers: function ( subscriber ) {
             return ( subscriber ) ? core._subscriptions[subscriber] : core._subscriptions;
-        },
-        /**
-         * Unsubscribe and remove all subscribers from all sandboxes
-         *
-         */
-        reset: function () {
-            // _.each( core._subscriptions, function ( subscription ) {
-            //     while ( subscription.length ) {
-            //         subscription.shift().unsubscribe();
-            //     }
-            // });
-
-            // reset subscriptions
-            //core._subscriptions = {};
-
-            return this;
-        },
-        /**
-         * Add a wiretap to listen for events on the message bus
-         *
-         * @param {function} callback
-         */
-        addWireTap: function ( callback ) {
-            core.bus.addWireTap( callback );
         }
     };
 
