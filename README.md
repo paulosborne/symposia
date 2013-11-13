@@ -51,6 +51,12 @@ define(function () {
 sandbox.subscribe({ topic: 'todo.create', callback: this.createTodo.bind(this) });
 ```
 
+### Publishing an event
+
+```javascript
+sandbox.publish({ topic: 'todo.create', data: { title: 'my first todo', body: 'this is my first todo' }});
+```
+
 
 ### Creating Modules
 
