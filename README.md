@@ -34,8 +34,7 @@ define(function (require) {
 ### Example Module
 
 ```javascript
-define(function (require) {
-
+define(function () {
   return function (sandbox) {
     return {
       init: function () {
