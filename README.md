@@ -31,6 +31,21 @@ define(function (require) {
 });
 ```
 
+### Example Module
+
+```javascript
+define(function (require) {
+
+  return function (sandbox) {
+    return {
+      init: function () {
+        console.log('woohoo!');
+      }
+    }
+  }
+});
+```
+
 ### Creating Modules
 
 ```javascript
