@@ -76,19 +76,12 @@ define(function (require, exports) {
             _.each( args, function ( mod ) {
                 var sbx = core.sandbox.create(mod.name);
 
-                _.extend(mod, {
-                    sandbox: sbx,
-                    instance: mod.creator( sbx )
-                });
-
+                mod.sandbox = sbx;
+                mod.instance = mod.creator(sbx);
                 mod.instance.destroy = mod.instance.destroy || function () {};
                 mod.instance.init();
 
-                core.log('info', _.template(_strings.MODULE_STARTED, {
-                    m: mod.name,
-                    s: sbx.getId(),
-                    t: new Date().getTime()
-                }));
+                core.log('info', _.template(_strings.MODULE_STARTED, { m: mod.name }));
             });
         },
         /**
@@ -121,11 +114,8 @@ define(function (require, exports) {
                 delete( mod.instance );
                 delete( mod.sandbox );
 
-                core.log('info', _.template(_strings.MODULE_STOPPED, {
-                    m: mod.name,
-                    t: new Date().getTime()
-                }));
-            }, this);
+                core.log('info', _.template(_strings.MODULE_STOPPED, { m: mod.name }));
+            });
 
             return this;
         },
@@ -135,15 +125,9 @@ define(function (require, exports) {
          * @return {boolean}
          */
         stopAll: function () {
-            var started = _.filter(core._modules, function (mod) {
+            this.stop.apply(this, _.filter(core._modules, function (mod) {
                 return _.has(mod, 'instance');
-            });
-
-            if (started.length) {
-                this.stop.apply( this, started );
-            }
-
-            return this;
+            }));
         },
         /**
          * Returns all started modules
@@ -151,10 +135,9 @@ define(function (require, exports) {
          * @return {array}
          */
         getStarted: function () {
-            var started = _.filter( core._modules, function ( mod ) {
+            return _.filter( core._modules, function ( mod ) {
                 return _.has( mod, 'instance' );
             });
-            return started;
         },
         /**
          * Is the module started?

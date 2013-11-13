@@ -1,7 +1,7 @@
 define({
     /** modules */
-    "MODULE_STARTED"        : "module : <%= m %> started at <%= t %> with <%= s %>",
-    "MODULE_STOPPED"        : "module : <%= m %> stopped at <%= t %>",
+    "MODULE_STARTED"        : "module : <%= m %> started at <%= new Date().getTime() %>",
+    "MODULE_STOPPED"        : "module : <%= m %> stopped at <%= new Date().getTime() %>",
     /** events */
     "SUBSCRIBE_INVALID_ID"          : "Invalid subscriber ID",
     "SUBSCRIBE_INVALID_DEF"         : "Subscription definition must contain a topic and callback",
