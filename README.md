@@ -39,24 +39,14 @@ define(function () {
     return {
       init: function () {
         console.log('woohoo!');
+      },
+      destroy: function () {
+      
       }
     }
   }
 });
 ```
-
-### Subscribing to application events
-
-```javascript
-sandbox.subscribe({ topic: 'todo.create', callback: this.createTodo.bind(this) });
-```
-
-### Publishing an event
-
-```javascript
-sandbox.publish({ topic: 'todo.create', data: { title: 'my first todo', body: 'this is my first todo' }});
-```
-
 
 ### Creating Modules
 
@@ -65,3 +55,27 @@ symposia.modules.create({
   'my-module': { creator: MyModule }
 });
 ```
+
+### Subscribing to application events
+
+```javascript
+sandbox.subscribe({
+  topic    : 'todo.create',
+  callback : this.createTodo.bind(this)
+});
+```
+
+### Publishing an event
+
+```javascript
+sandbox.publish({
+  topic: 'todo.create',
+  data: {
+    title : 'my first todo',
+    body  : 'this is my first todo' 
+  }
+});
+```
+
+
+
