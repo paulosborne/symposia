@@ -30,3 +30,11 @@ define(function (require) {
   var symposia = require('symposia');
 });
 ```
+
+### Creating Modules
+
+```javascript
+symposia.modules.create({
+  'my-module': { creator: MyModule }
+});
+```
