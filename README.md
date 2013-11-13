@@ -48,15 +48,7 @@ define(function () {
 ### Subscribing to application events
 
 ```javascript
-define(function () {
-  return function (sandbox) {
-    return {
-      init: function () {
-        sandbox.subscribe({ topic: 'todo.create', callback: this.createTodo.bind(this) });
-      }
-    }
-  }
-});
+sandbox.subscribe({ topic: 'todo.create', callback: this.createTodo.bind(this) });
 ```
 
 ### Creating Modules
