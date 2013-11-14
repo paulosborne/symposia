@@ -11,9 +11,10 @@ define(function (require, exports) {
          * @return { object }
          */
         get: function ( id ) {
-            if ( this.isModule( id ) ) {
-                return core._modules[id];
+            if (!core._modules[id]) {
+                throw new Error(_strings.ERR_MODULE_NOT_FOUND);
             }
+            return core._modules[id];
         },
         /**
          * Create a module
@@ -73,8 +74,9 @@ define(function (require, exports) {
                 return;
             }
 
-            _.each( args, function ( mod ) {
-                var sbx = core.sandbox.create(mod.name);
+            _.each(args, function (val, key) {
+                var mod = val,
+                    sbx = core.sandbox.create(val.name);
 
                 mod.sandbox = sbx;
                 mod.instance = mod.creator(sbx);
@@ -83,15 +85,8 @@ define(function (require, exports) {
 
                 core.log('info', _.template(_strings.MODULE_STARTED, { m: mod.name }));
             });
-        },
-        /**
-         * Start all unstarted modules
-         *
-         */
-        startAll: function () {
-            this.start.apply(this, _.filter(core._modules, function (mod) {
-                return !mod.instance;
-            }));
+
+            return args.length;
         },
         /**
          * Stop a module
@@ -103,7 +98,7 @@ define(function (require, exports) {
             var args = [].slice.call( arguments );
 
             if ( !args.length ) {
-                throw new Error(_strings.ERR_MODULE_NO_NAME);
+                return;
             }
 
             _.each(args, function ( mod ) {
@@ -117,17 +112,28 @@ define(function (require, exports) {
                 core.log('info', _.template(_strings.MODULE_STOPPED, { m: mod.name }));
             });
 
-            return this;
+            return args.length;
         },
         /**
-         * Stop all modules
+         * Start all unstarted modules
+         *
+         */
+        startAll: function () {
+            this.start.apply(this, this.getStopped());
+        },
+        /**
+         * Stop all started modules
          *
          * @return {boolean}
          */
         stopAll: function () {
-            this.stop.apply(this, _.filter(core._modules, function (mod) {
-                return _.has(mod, 'instance');
-            }));
+            console.log(this.stop.apply(this, this.getStarted()));
+        },
+        /**
+         * Start a single module
+         */
+        startOne: function (id) {
+            this.start.call(this, this.get(id));
         },
         /**
          * Returns all started modules
@@ -137,6 +143,14 @@ define(function (require, exports) {
         getStarted: function () {
             return _.filter( core._modules, function ( mod ) {
                 return _.has( mod, 'instance' );
+            });
+        },
+        /**
+         * Returns all stopped modules
+         */
+        getStopped: function () {
+            return _.filter(core._modules, function (mod) {
+                return !_.has(mod, 'instance');
             });
         },
         /**
@@ -157,19 +171,10 @@ define(function (require, exports) {
          * @return {boolean}
          */
         isModule: function ( name ) {
-            if ( _.isUndefined( name ) ) {
-                throw new Error(_strings.ERR_MODULE_NO_NAME);
+            if (!_.has( core._modules, name )) {
+                throw new Error(_strings.ERR_MODULE_NOT_FOUND);
             }
-
-            if ( !_.isString( name ) ) {
-                throw new TypeError(_strings.ERR_MODULE_NAME_NOT_STR);
-            }
-
-            if ( !_.has( core._modules, name ) ) {
-                throw new Error(_.template(_strings.ERR_MODULE_NOT_FOUND, { m: name }));
-            }
-
-            return true;
+            return core._modules[name];
         },
         reset: function () {
             this.stopAll();
