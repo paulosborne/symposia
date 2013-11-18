@@ -12,7 +12,7 @@ define({
     "ERR_MODULE_MISSING_METHOD"     : "Module <%= m %> is missing a required method",
     "ERR_MODULE_NO_NAME"            : "No module name supplied",
     "ERR_MODULE_NAME_NOT_STR"       : "Module name must be a string",
-    "ERR_MODULE_NOT_FOUND"          : "Unable to find module <%= m %>",
+    "ERR_MODULE_NOT_FOUND"          : "module : unable to find <%= m %>",
     "ERR_MODULE_DEF_NOT_OBJECT"     : "Module definition not object",
     "ERR_CALLBACK_NOT_FUNC"         : "Callback must be a function"
 });

@@ -12,7 +12,7 @@ define(function (require, exports) {
          */
         get: function ( id ) {
             if (!core._modules[id]) {
-                throw new Error(_strings.ERR_MODULE_NOT_FOUND);
+                throw new Error(_.template(_strings.ERR_MODULE_NOT_FOUND, { m: id }));
             }
             return core._modules[id];
         },
@@ -31,7 +31,7 @@ define(function (require, exports) {
             }
 
             _.each( moduleDef, function ( mod, name ) {
-                var temp, temp2;
+                var temp;
 
                 if ( _.has(core._modules, name)) {
                     return;
@@ -63,30 +63,34 @@ define(function (require, exports) {
             return this;
         },
         /**
-         * Start a module
+         * Start module(s).
          *
+         * Can be used to start a single or multiple modules by either passing
+         * in each module name, or module objects.
+         *
+         * @param {string} - name of the module to start
+         * @param {object} - module
          * @return { boolean }
          */
         start: function () {
             var args = [].slice.call( arguments );
 
-            if (!args.length) {
-                return;
+            try {
+                _.each(args, function (m, i) {
+                    var mod     = _.isString(m) ? this.get(m) : m,
+                        sandbox = core.sandbox.create(m.name);
+
+                    mod.sandbox  = sandbox;
+                    mod.instance = mod.creator(sandbox);
+                    mod.instance.destroy = mod.instance.destroy || function () {};
+                    mod.instance.init();
+
+                    core.log('info', _.template(_strings.MODULE_STARTED, { m: mod.name }));
+
+                }, this);
+            } catch (e) {
+                core.log('info', e.message);
             }
-
-            _.each(args, function (val, key) {
-                var mod = val,
-                    sbx = core.sandbox.create(val.name);
-
-                mod.sandbox = sbx;
-                mod.instance = mod.creator(sbx);
-                mod.instance.destroy = mod.instance.destroy || function () {};
-                mod.instance.init();
-
-                core.log('info', _.template(_strings.MODULE_STARTED, { m: mod.name }));
-            });
-
-            return args.length;
         },
         /**
          * Stop a module
@@ -128,12 +132,6 @@ define(function (require, exports) {
          */
         stopAll: function () {
             console.log(this.stop.apply(this, this.getStarted()));
-        },
-        /**
-         * Start a single module
-         */
-        startOne: function (id) {
-            this.start.call(this, this.get(id));
         },
         /**
          * Returns all started modules

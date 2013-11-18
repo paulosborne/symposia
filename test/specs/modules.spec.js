@@ -28,16 +28,20 @@ define(function (require) {
 
         });
 
-        suite('#startAll', function () {
+        suite('#start', function () {
             setup(function () {
                 symposia.modules.create({
                     'module-1': { creator: mods.a },
                     'module-2': { creator: mods.b }
                 });
+
+                symposia.modules.start('module-1');
             });
 
             test('should start a single module', function () {
-                //symposia.modules.startOne('module-1');
+                var started = symposia.modules.getStarted();
+
+                expect(started).to.have.length(1);
             });
 
             teardown(function () {
