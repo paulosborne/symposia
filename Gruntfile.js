@@ -21,6 +21,7 @@ module.exports = function(grunt) {
                     baseUrl: '.',
                     out: 'dist/symposia.js',
                     optimize: "uglify",
+                    namespace: 'symposia',
                     preserveLicenseComments: false,
                     paths: {
                         'underscore'    : 'vendor/lodash/lodash',
@@ -92,11 +93,15 @@ module.exports = function(grunt) {
         'jshint'
     ]);
 
-    grunt.registerTask('release', [
+    grunt.registerTask('build', [
         'default',
-        'requirejs',
+        'requirejs'
+    ]);
+
+    grunt.registerTask('release', [
         'bump'
     ]);
+
 
     grunt.registerTask('test', [
         'connect',

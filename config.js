@@ -1,3 +1,3 @@
 define(function (require, exports) {
-    exports.strings         = require('./config/strings');
+    exports.strings         = require('config/strings');
 });
