@@ -1,7 +1,7 @@
 {
   "name": "symposia",
   "preferGlobal": true,
-  "version": "0.2.14",
+  "version": "0.2.15",
   "author": "Paul Osborne",
   "description": "JavaScript framework for development of large-scale modular applications.",
   "contributors": [
@@ -41,7 +41,8 @@
     "grunt-contrib-watch": "~0.4.3",
     "grunt-mocha": "~0.3.1",
     "grunt-contrib-jshint": "~0.4.3",
-    "grunt-contrib-requirejs": "~0.4.0"
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-bump": "0.0.11"
   },
   "bundledDependencies": [],
   "license": "MIT",
