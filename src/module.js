@@ -1,7 +1,6 @@
 define(function (require, exports) {
 
-    var core        = require('src/core'),
-        _strings    = require('config').strings;
+    var core        = require('src/core');
 
     core.modules = {
         /**
@@ -11,9 +10,6 @@ define(function (require, exports) {
          * @return { object }
          */
         get: function ( id ) {
-            if (!core._modules[id]) {
-                throw new Error(_.template(_strings.ERR_MODULE_NOT_FOUND, { m: id }));
-            }
             return core._modules[id];
         },
         /**
@@ -26,41 +22,29 @@ define(function (require, exports) {
         create: function (moduleDef) {
             var mod, moduleName;
 
-            if ( typeof moduleDef !== 'object' ) {
-                throw new Error(_strings.ERR_MODULE_DEF_NOT_OBJECT);
+            try  {
+                _.each( moduleDef, function ( mod, name ) {
+                    var temp;
+
+                    if ( _.has(core._modules, name)) {
+                        return;
+                    }
+
+                    temp = mod.creator( core.sandbox.create( name ));
+                    temp = null;
+
+                    core._modules[name] = {
+                        _id     : _.uniqueId('module-'),
+                        name    : name,
+                        creator : mod.creator
+                    };
+                }, this);
+
+                return this;
+
+            } catch (e) {
+                core.log('error', e.message);
             }
-
-            _.each( moduleDef, function ( mod, name ) {
-                var temp;
-
-                if ( _.has(core._modules, name)) {
-                    return;
-                }
-
-                if (!_.isFunction( mod.creator )) {
-                    throw new Error(_.template(_strings.ERR_MODULE_NOT_FUNC, { m: name }));
-                }
-
-                temp = mod.creator( core.sandbox.create( name ));
-
-                if ( !_.isObject( temp ) ) {
-                    throw new Error(_.template(_strings.ERR_MODULE_NO_API, { m: name }));
-                }
-
-                if ( !_.isFunction( temp.init )) {
-                    throw new Error(_.template(_strings.ERR_MODULE_MISSING_METHOD, { m: name }));
-                }
-
-                temp = null;
-
-                core._modules[name] = {
-                    _id     : _.uniqueId('module-'),
-                    name    : name,
-                    creator : mod.creator
-                };
-            }, this);
-
-            return this;
         },
         /**
          * Start module(s).
@@ -85,7 +69,7 @@ define(function (require, exports) {
                     mod.instance.destroy = mod.instance.destroy || function () {};
                     mod.instance.init();
 
-                    core.log('info', _.template(_strings.MODULE_STARTED, { m: mod.name }));
+                    core.log('info', '['+ mod.name +'] started');
 
                 }, this);
             } catch (e) {
@@ -113,7 +97,6 @@ define(function (require, exports) {
                 delete( mod.instance );
                 delete( mod.sandbox );
 
-                core.log('info', _.template(_strings.MODULE_STOPPED, { m: mod.name }));
             });
 
             return args.length;
@@ -131,7 +114,7 @@ define(function (require, exports) {
          * @return {boolean}
          */
         stopAll: function () {
-            console.log(this.stop.apply(this, this.getStarted()));
+            this.stop.apply(this, this.getStarted());
         },
         /**
          * Returns all started modules
@@ -169,10 +152,7 @@ define(function (require, exports) {
          * @return {boolean}
          */
         isModule: function ( name ) {
-            if (!_.has( core._modules, name )) {
-                throw new Error(_strings.ERR_MODULE_NOT_FOUND);
-            }
-            return core._modules[name];
+            return !_.isUndefined(core._modules[name]);
         },
         reset: function () {
             this.stopAll();

@@ -21,7 +21,6 @@ module.exports = function(grunt) {
                     baseUrl: '.',
                     out: 'dist/symposia.js',
                     optimize: "uglify",
-                    namespace: 'symposia',
                     preserveLicenseComments: false,
                     paths: {
                         'underscore'    : 'vendor/lodash/lodash',

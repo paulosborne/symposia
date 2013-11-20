@@ -1,8 +1,7 @@
 define(function (require) {
 
     var symposia        = require('symposia'),
-        mods            = require('test/mocks/modules'),
-        _strings        = require('config').strings;
+        mods            = require('test/mocks/modules');
 
     suite("Modules", function () {
         suite("#create", function () {

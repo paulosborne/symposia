@@ -7,9 +7,15 @@ define(['src/base'], function( base ) {
     };
 
     core.log = function (type, message) {
-        if (typeof console !== undefined && console[type]) {
-            console[type](message);
+        if (!window.console) {
+            window.console = {};
         }
+
+        if (!window.console[type]) {
+            window.console[type] = function () {};
+        }
+
+        window.console[type](message);
     };
 
     if ( !_.has(base,'bus')) {
