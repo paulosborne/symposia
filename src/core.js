@@ -1,4 +1,4 @@
-define(['src/base'], function( base ) {
+define(['src/base'], function (base) {
 
     var core = {
         _modules       : {},
@@ -18,10 +18,10 @@ define(['src/base'], function( base ) {
         window.console[type](message);
     };
 
-    if ( !_.has(base,'bus')) {
+    if (!_.has(base,'bus')) {
         throw new Error('Base object must contain a message bus');
     }
 
-    return _.extend( core, base );
+    return _.extend(core, base);
 
 });
