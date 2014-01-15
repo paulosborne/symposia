@@ -1,6 +1,6 @@
-define(function (require, exports) {
+define(function (require) {
 
-    var core        = require('src/core');
+    var core = require('src/core');
 
     core.modules = {
         /**
@@ -9,7 +9,7 @@ define(function (require, exports) {
          * @param { string } id
          * @return { object }
          */
-        get: function ( id ) {
+        get: function (id) {
             return core._modules[id];
         },
         /**
@@ -23,14 +23,14 @@ define(function (require, exports) {
             var mod, moduleName;
 
             try  {
-                _.each( moduleDef, function ( mod, name ) {
+                _.each(moduleDef, function (mod, name) {
                     var temp;
 
-                    if ( _.has(core._modules, name)) {
+                    if (_.has(core._modules, name)) {
                         return;
                     }
 
-                    temp = mod.creator( core.sandbox.create( name ));
+                    temp = mod.creator(core.sandbox.create(name));
                     temp = null;
 
                     core._modules[name] = {
@@ -57,7 +57,7 @@ define(function (require, exports) {
          * @return { boolean }
          */
         start: function () {
-            var args = [].slice.call( arguments );
+            var args = [].slice.call(arguments);
 
             try {
                 _.each(args, function (m, i) {
@@ -83,19 +83,19 @@ define(function (require, exports) {
          * @return { boolean }
          */
         stop: function () {
-            var args = [].slice.call( arguments );
+            var args = [].slice.call(arguments);
 
-            if ( !args.length ) {
+            if (!args.length) {
                 return;
             }
 
-            _.each(args, function ( mod ) {
+            _.each(args, function (mod) {
                 mod.instance.destroy();
                 mod.instance = null;
                 mod.sandbox.unsubscribeAll();
 
-                delete( mod.instance );
-                delete( mod.sandbox );
+                delete(mod.instance);
+                delete(mod.sandbox);
 
             });
 
@@ -122,8 +122,8 @@ define(function (require, exports) {
          * @return {array}
          */
         getStarted: function () {
-            return _.filter( core._modules, function ( mod ) {
-                return _.has( mod, 'instance' );
+            return _.filter(core._modules, function (mod) {
+                return _.has(mod, 'instance');
             });
         },
         /**
@@ -140,9 +140,9 @@ define(function (require, exports) {
          * @param {string} id - the module to look for
          * @return {boolean}
          */
-        isStarted: function ( name ) {
-            if ( this.isModule( name ) ) {
-                return _.isObject( core._modules[name].instance );
+        isStarted: function (name) {
+            if (this.isModule(name)) {
+                return _.isObject(core._modules[name].instance);
             }
         },
         /**
@@ -151,7 +151,7 @@ define(function (require, exports) {
          * @param {string} name - the module to check
          * @return {boolean}
          */
-        isModule: function ( name ) {
+        isModule: function (name) {
             return !_.isUndefined(core._modules[name]);
         },
         reset: function () {

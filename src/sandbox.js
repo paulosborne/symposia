@@ -18,23 +18,23 @@ define(function (require) {
                 _subscriptions  = [];
 
             return {
-                addWireTap: function ( callback ) {
-                    core.bus.addWireTap( callback );
+                addWireTap: function (callback) {
+                    core.bus.addWireTap(callback);
                 },
                 /**
                  * Publish a message, attaches the sandbox id
                  *
                  * @param {object} envelope - message to be sent
                  */
-                publish: function ( envelope ) {
-                    core.bus.publish( envelope );
+                publish: function (envelope) {
+                    core.bus.publish(envelope);
                 },
                 /**
                  * Add a new message subscription
                  *
                  * @param {object} subDef - subscription definition
                  */
-                subscribe: function ( subDef ) {
+                subscribe: function (subDef) {
                     try {
                         if (!_.has(subDef, 'topic') && !_.has(subDef, 'callback')) {
                             throw new Error('Missing topic or callback for '+ _name);
