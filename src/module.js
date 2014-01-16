@@ -26,9 +26,7 @@ define(function (require) {
                 _.each(moduleDef, function (mod, name) {
                     var temp;
 
-                    if (_.has(core._modules, name)) {
-                        return;
-                    }
+                    if (_.has(core._modules, name)) return;
 
                     temp = mod.creator(core.sandbox.create(name));
                     temp = null;
@@ -85,9 +83,7 @@ define(function (require) {
         stop: function () {
             var args = [].slice.call(arguments);
 
-            if (!args.length) {
-                return;
-            }
+            if (!args.length) return;
 
             _.each(args, function (mod) {
                 mod.instance.destroy();
@@ -161,5 +157,4 @@ define(function (require) {
     };
 
     return core.modules;
-
 });
