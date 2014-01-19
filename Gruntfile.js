@@ -70,21 +70,6 @@ module.exports = function(grunt) {
                 files: '<%= meta.app %>',
                 tasks: ['requirejs','connect', 'mocha']
             }
-        },
-        bump: {
-            options: {
-                files: ['package.json','bower.json'],
-                updateConfigs: [],
-                commit: false,
-                commitMessage: 'Release v%VERSION%',
-                commitFiles: ['package.json'], // '-a' for all files
-                createTag: false,
-                tagName: 'v%VERSION%',
-                tagMessage: 'Version %VERSION%',
-                push: false,
-                pushTo: 'upstream',
-                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
-            }
         }
     });
 
@@ -96,11 +81,6 @@ module.exports = function(grunt) {
         'default',
         'requirejs'
     ]);
-
-    grunt.registerTask('release', [
-        'bump'
-    ]);
-
 
     grunt.registerTask('test', [
         'connect',
