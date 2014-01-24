@@ -7,19 +7,18 @@ define(function (require) {
         /**
          * Create a new sandbox
          *
-         * @param {object} core
-         * @param {string} element - element to find
+         * @param {string} moduleName
          * @return {object}
          */
         create: function (moduleName) {
             var _id             = _.uniqueId('sandbox-'),
                 _name           = moduleName,
-                _$element       = $('#'+ _name),
+                _$el            = $('#'+ _name),
                 _subscriptions  = [];
 
             return {
-                addWireTap: function (callback) {
-                    core.bus.addWireTap(callback);
+                $: function (selector) {
+                    return (selector) ? _$el.find(selector) : _$el;
                 },
                 /**
                  * Publish a message, attaches the sandbox id
@@ -86,7 +85,7 @@ define(function (require) {
                  * @param {string} selector
                  */
                 getElement: function (selector) {
-                    return (selector) ? _$element.find(selector) : _$element;
+                    return this.$(selector);
                 },
                 /**
                  * Returns the ID of this sandbox

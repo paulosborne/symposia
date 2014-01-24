@@ -8,7 +8,8 @@ define(['symposia'], function (symposia) {
             container       = document.getElementById('container'),
             tagName         = 'div',
             total           = 100,
-            topic_string    = 'nyan.cat';
+            topic_string    = 'nyan.cat',
+            template        = '<div id="<%= id %>"><span><%= id %></span></div>';
 
         suite('#create', function () {
 
@@ -26,30 +27,39 @@ define(['symposia'], function (symposia) {
 
         });
 
-
-        suite('#getElement', function () {
+        suite('$', function () {
+            var $el = $(container);
 
             suiteSetup(function () {
                 _(total).times(function (i) {
-                    var div = document.createElement(tagName),
-                        _id = _.uniqueId('module-');
+                    var _id = _.uniqueId('module-');
 
-                    div.id = _id;
-                    container.appendChild(div);
-                    sandboxes.push( symposia.sandbox.create(_id) );
+                    $el.append(_.template(template, { id: _id }));
+                    sandboxes.push(symposia.sandbox.create(_id));
                 });
             });
 
-            test('should find matching DOM elements', function () {
-                _.each(sandboxes, function (sandbox) {
-                    var element = sandbox.getElement();
-                    var name    = sandbox.getModuleName();
+            test('should return DOM element that matches sandbox name', function () {
+                _.each(sandboxes, function (sb) {
+                    var element = sb.$(),
+                        name    = sb.getModuleName();
+
                     expect(element.prop('id')).to.equal(name);
+                });
+            });
+
+            test('should only find elements within the sandbox DOM element', function () {
+                _.each(sandboxes, function (sb) {
+                    var spans = sb.$('span');
+
+                    expect(spans.length).to.equal(1);
+                    expect(spans.get(0).innerText).to.equal(sb.getModuleName());
                 });
             });
 
             suiteTeardown(function () {
                 sandboxes = [];
+                $el.empty();
             });
         });
 
@@ -58,7 +68,6 @@ define(['symposia'], function (symposia) {
                 var sandbox     = symposia.sandbox.create();
 
                 sandbox.subscribe({ topic: topic_string, callback: $.noop });
-
                 sandboxes.push(sandbox);
             });
 
