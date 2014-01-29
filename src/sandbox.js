@@ -17,6 +17,12 @@ define(function (require) {
                 _subscriptions  = [];
 
             return {
+                /**
+                 * Provides a convenient way to query module dom element.
+                 *
+                 * @param {string}
+                 * @return {object}
+                 */
                 $: function (selector) {
                     return (selector) ? _$el.find(selector) : _$el;
                 },
@@ -31,15 +37,21 @@ define(function (require) {
                 /**
                  * Add a new message subscription
                  *
-                 * @param {object} subDef - subscription definition
+                 * @param {object} def - subscription definition
                  */
-                subscribe: function (subDef) {
+                subscribe: function (def) {
+                    var sub;
+
                     try {
-                        if (!_.has(subDef, 'topic') && !_.has(subDef, 'callback')) {
+                        if (!_.has(def, 'topic') && !_.has(def, 'callback')) {
                             throw new Error('Missing topic or callback for '+ _name);
                         }
 
-                        _subscriptions.push(core.bus.subscribe(subDef));
+                        sub = core.bus.subscribe(def);
+
+                        _subscriptions.push(sub);
+
+                        return sub;
 
                     } catch (e) {
                         core.log('info', e.message);
