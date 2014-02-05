@@ -1,7 +1,7 @@
 {
   "name": "symposia",
   "preferGlobal": true,
-  "version": "0.2.17",
+  "version": "0.2.18",
   "author": "Paul Osborne",
   "description": "JavaScript framework for development of large-scale modular applications.",
   "contributors": [
