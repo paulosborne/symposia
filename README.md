@@ -6,7 +6,7 @@ Symposia
 
 ### Introduction
 
-Symposia is a framework for developing loosely coupled, modular applications by bringing together a number of design patterns including the Mediator, Observer, Module and Sandbox. It is based on the [Patterns of Large Scale JavaScript Applications](http://addyosmani.com/largescalejavascript/) by Addy Osmani and was created to solve a problem I was having at work.
+Symposia is a framework for developing loosely coupled, modular applications by bringing together a number of design patterns including the Mediator, Observer, Module and Sandbox. It is based on the [Patterns of Large Scale JavaScript Applications](http://addyosmani.com/largescalejavascript/) by Addy Osmani and Nicholas Zakas.
 
 It contains the following open source libraries in its core.
 
