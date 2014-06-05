@@ -26,7 +26,8 @@
     "signals": "~1.0.0",
     "hasher": "~1.1.4",
     "postal": "^0.10.0",
-    "jquery": "^2.1.1"
+    "jquery": "^2.1.1",
+    "lodash": "^2.4.1"
   },
   "analyze": false,
   "devDependencies": {
@@ -36,7 +37,18 @@
     "vinyl-source-stream": "^0.1.1",
     "gulp-uglify": "^0.3.0",
     "browserify": "^4.1.8",
-    "load-grunt-tasks": "^0.4.0"
+    "load-grunt-tasks": "^0.4.0",
+    "gulp-mocha": "^0.4.1",
+    "gulp-mocha-phantomjs": "^0.2.2",
+    "path": "^0.4.9",
+    "gutil": "^1.1.0",
+    "express": "^4.4.1",
+    "gulp-util": "^2.2.16",
+    "open": "0.0.5",
+    "gulp-streamify": "0.0.5",
+    "watchify": "^0.6.4",
+    "gulp-watchify": "^0.2.0",
+    "gulp-clean": "^0.3.0"
   },
   "bundledDependencies": [],
   "license": "MIT",
