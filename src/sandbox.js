@@ -1,10 +1,12 @@
 module.exports = function (sym, lib, utils) {
     var sandbox = {};
+    var api = {};
 
     var SandboxDefinition = function (name) {
         var _subscriptions  = [];
         var _el = sym.dom.find('#'+ name);
 
+        // expose sandbox methods
         return {
             el: function () {
                 return _el;
@@ -27,10 +29,10 @@ module.exports = function (sym, lib, utils) {
         };
     };
 
-    sandbox.create = function (name) {
+    api.create = function (name) {
         return new SandboxDefinition(name);
     };
 
     // expose sandbox API
-    sym.sandbox = sandbox;
+    sym.sandbox = api;
 };
