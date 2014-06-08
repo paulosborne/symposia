@@ -1,1 +1,2 @@
-define(['./sandbox.spec','./modules.spec'], function () {});
+var sandbox = require('./sandbox.spec');
+var modules = require('./modules.spec');
