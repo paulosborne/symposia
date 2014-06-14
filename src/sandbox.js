@@ -1,13 +1,30 @@
-var resolver = require('./resolver');
 var _ = require('underscore');
 
 function Sandbox (sym) {
     var _subscriptions = {};
-    var api = {};
+    var regex = {};
 
     var SandboxDefinition = function (name) {
         var _el = sym.dom.find('#'+ name);
         var _id = _.uniqueId('sandbox_');
+
+        function compare (binding, topic) {
+            var prev, pattern, rgx;
+
+            if (!(rgx = regex[binding])) {
+                pattern = "^"+ binding.split('.').map(function (segment) {
+                    var res = (!!prev) ? "\\.\\b" : "";
+
+                    res += (segment === '*') ? "[^.+]" : segment;
+                    prev = segment;
+
+                    return res;
+                }).join("") + '$';
+
+                rgx = regex[binding] = new RegExp(pattern);
+            }
+            return rgx.test(topic);
+        }
 
         return {
             id: _id,
