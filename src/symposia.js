@@ -1,26 +1,38 @@
-var utils   = require('./utils');
-var lib     = require('./lib');
+var lib         = require('./lib');
+var defaults    = require('./config');
+var _           = require('underscore');
 
 function Symposia (config) {
-    var symposia = this;
+    var sym = this;
 
-    symposia.config = config;
+    sym.config = _.extend({}, defaults, config);
 
     // extend
-    symposia.extend = function (extension) {
-        extension(symposia, lib, utils);
+    sym.extend = function (extension) {
+        extension(sym, lib);
     };
 
     // symposia.dom
-    symposia.extend(require('./dom'));
+    sym.extend(require('./dom'));
 
     // symposia.sandbox
-    symposia.extend(require('./sandbox'));
+    sym.extend(require('./sandbox'));
 
     // symposia.modules
-    symposia.extend(require('./module'));
+    sym.extend(require('./modules'));
 
-    return symposia;
+    // symposia.remote
+    sym.extend(require('./remote'));
+
+    if (config && config.modules) {
+        _.each(config.modules, function (fn, name) {
+            this.modules.create(name, fn);
+        }, this);
+    }
+
+
+
+    return sym;
 }
 
 module.exports = Symposia;
