@@ -38,7 +38,7 @@ function Sandbox (sym) {
              * @param {object}  def subscription definition
              */
             subscribe: function (def) {
-                var channel = def.channel || 'DEFAULT';
+                var channel = def.channel || sym.config.channel.DEFAULT;
                 var topic   = def.topic;
 
                 _subscriptions[channel] = _subscriptions[channel] || {};
@@ -55,12 +55,12 @@ function Sandbox (sym) {
              */
             publish: function (envelope) {
                 var self = this;
-                envelope.channel = envelope.channel || "DEFAULT";
+                envelope.channel = envelope.channel || sym.config.channels.DEFAULT;
                 envelope.timeStamp = new Date();
 
                 if (_subscriptions[envelope.channel]) {
                     _.each(_subscriptions[envelope.channel], function (sandboxes, topic) {
-                        if(resolver.compare(topic, envelope.topic)) {
+                        if(compare(topic, envelope.topic)) {
                             _.each(sandboxes, function (callbacks, sandbox) {
                                 _.each(callbacks, function (cb) {
                                     cb.call(null, envelope.data, envelope);
@@ -78,10 +78,8 @@ function Sandbox (sym) {
              * @param {object} def
              */
             unsubscribe: function (def) {
-                var channel, topic, idx;
-
-                channel = def.channel || 'DEFAULT';
-                topic   = def.topic;
+                var channel = def.channel || sym.config.channels.DEFAULT;
+                var topic = def.topic;
 
                 if (!_subscriptions[channel] || !_subscriptions[channel][topic]) {
                     return;
@@ -126,21 +124,19 @@ function Sandbox (sym) {
                      });
                 });
 
-
                 return subs;
             }
         };
     };
 
-    api.create = function (name) {
-        return new SandboxDefinition(name);
+    sym.sandbox = {
+        create: function (name) {
+            return new SandboxDefinition(name);
+        },
+        getSubscriptions: function () {
+            return _subscriptions;
+        }
     };
-
-    api.getSubscriptions = function () {
-        return _subscriptions;
-    };
-
-    sym.sandbox = api;
 }
 
 module.exports = Sandbox;
