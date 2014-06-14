@@ -1,136 +1,79 @@
-define(['symposia'], function (symposia) {
+/* global Symposia */
+describe('Sandbox', function () {
+    var sym = new Symposia();
+    var box = sym.sandbox.create('example');
+    var sub = {};
 
-    'use strict';
+    describe('subscribe()', function () {
 
-    suite('Sandbox', function () {
+        before(function () {
+            sub.channel = 'inbox';
+            sub.topic =  'my.subscription';
+            sub.callback = sinon.spy();
 
-        var sandboxes       = [],
-            container       = document.getElementById('container'),
-            tagName         = 'div',
-            total           = 100,
-            topic_string    = 'nyan.cat',
-            template        = '<div id="<%= id %>"><span><%= id %></span></div>';
-
-        suite('#create', function () {
-
-            suiteSetup(function () {
-                sandboxes.push(symposia.sandbox.create());
-            });
-
-            test("should create inboxes with unique id", function () {
-                expect(sandboxes[0].getId()).to.match(/sandbox-[0-9]+/g);
-            });
-
-            suiteTeardown(function () {
-                sandboxes = [];
-            });
-
+            box.subscribe(sub);
         });
 
-        suite('$', function () {
-            var $el = $(container);
+        it('should create a new cache entry', function () {
+            var subs = box.subscriptions();
 
-            suiteSetup(function () {
-                _(total).times(function (i) {
-                    var _id = _.uniqueId('module-');
+            subs.should.have.property(sub.channel);
+            subs[sub.channel].should.have.members([sub.topic]);
+        });
 
-                    $el.append(_.template(template, { id: _id }));
-                    sandboxes.push(symposia.sandbox.create(_id));
-                });
-            });
+        it('should create a new subscription', function () {
+            var subs = sym.sandbox.getSubscriptions();
 
-            test('should return DOM element that matches sandbox name', function () {
-                _.each(sandboxes, function (sb) {
-                    var element = sb.$(),
-                        name    = sb.getModuleName();
+            subs.should.have.property(sub.channel);
+            subs[sub.channel].should.have.property(sub.topic);
+            subs[sub.channel][sub.topic].should.have.property(box.id);
+        });
 
-                    expect(element.prop('id')).to.equal(name);
-                });
-            });
+        after(function () {
+        });
 
-            test('should only find elements within the sandbox DOM element', function () {
-                _.each(sandboxes, function (sb) {
-                    var spans = sb.$('span');
+    });
 
-                    expect(spans.length).to.equal(1);
-                    expect(spans.get(0).innerText).to.equal(sb.getModuleName());
-                });
-            });
-
-            suiteTeardown(function () {
-                sandboxes = [];
-                $el.empty();
+    describe('publish()', function () {
+        before(function () {
+            box.publish({
+                 channel: sub.channel,
+                 topic: sub.topic,
+                 data: {
+                    message: "hello"
+                 }
             });
         });
 
-        suite('#getSubscriptions', function () {
-            suiteSetup(function () {
-                var sandbox     = symposia.sandbox.create();
-
-                sandbox.subscribe({ topic: topic_string, callback: $.noop });
-                sandboxes.push(sandbox);
-            });
-
-            test('should have a subscription', function () {
-                var subs = sandboxes[0].getSubscriptions();
-
-                expect(subs[0]).to.have.property('topic');
-                expect(subs[0].topic).to.equal(topic_string);
-            });
-
-            suiteTeardown(function () {
-                sandboxes = [];
-            });
-
+        it('should execute the callback', function () {
+            sub.callback.called.should.be.true;
         });
 
-        suite('#unsubscribeAll', function () {
+        it('should execute with the correct arguments', function () {
+            var args = sub.callback.args[0];
 
-            setup(function () {
-                var sandbox = symposia.sandbox.create();
+            args.should.have.length(2);
+            args[0].should.have.property('message');
+            args[1].should.have.keys('channel','topic','data','timeStamp');
+        });
 
-                _(total).times(function (i) {
-                    sandbox.subscribe({ topic: topic_string + '.' + i, callback: $.noop });
-                });
+        after(function () {
+        });
+    });
 
-                sandboxes.push(sandbox);
-            });
-
-            test("should unsubscribe all subscriptions", function () {
-                var subscriptions = sandboxes[0].getSubscriptions(),
-                    removed = 0;
-
-                subscriptions.should.have.length(total);
-                removed = sandboxes[0].unsubscribeAll();
-                expect(removed).to.equal(total);
-                subscriptions.should.have.length(0);
-            });
-
-            teardown(function () {
-                sandboxes = [];
+    describe('unsubscribe()', function () {
+        before(function () {
+            box.unsubscribe({
+                channel: sub.channel,
+                topic: sub.topic
             });
         });
 
-        suite('#unsubscribe', function () {
-            setup(function () {
-                var sandbox = symposia.sandbox.create();
+        it('should remove the subscription', function () {
+            var subs = sym.sandbox.getSubscriptions();
 
-                _(total).times(function (i) {
-                    sandbox.subscribe({ topic: topic_string + '.' + i, callback: $.noop });
-                });
-
-                sandboxes.push(sandbox);
-            });
-
-            test("should remove a single subscription", function () {
-                var subs    = sandboxes[0].getSubscriptions();
-
-                subs.should.have.length(total);
-                sandboxes[0].unsubscribe(subs[11].topic);
-
-                subs.should.have.length(total - 1);
-
-            });
+            subs[sub.channel][sub.topic].should.not.have.property(box.id);
         });
+    
     });
 });
