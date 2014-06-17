@@ -1,35 +1,27 @@
-/* global Symposia , io*/
+/* global Symposia */
 describe('Modules', function () {
     var mock = Symposia.Mocks;
-    var socket = io.connect(window.location.hostname);
-
-    var sym = new Symposia({
-        modules: {
-            'example': mock.withSubscribe
-        },
-        ws: socket
-    });
+    var sym  = new Symposia();
 
     describe('destroyAll()', function () {
-        it('should destroy all modules', function () {
-            var modules;
-
+        before(function () {
             _.times(100, function () {
                 sym.modules.create(_.uniqueId('module'), mock.withSubscribe);
             });
+        });
 
+        it('should destroy all modules', function () {
             expect(_.size(sym.modules.getModules())).to.equal(100);
-
             sym.modules.destroyAll();
-
             expect(_.size(sym.modules.getModules())).to.equal(0);
         });
     });
 
     describe('destroy()', function () {
+
         it('should destroy a module', function () {
-            var name = _.uniqueId('module');
             var modules;
+            var name = _.uniqueId('module');
 
             sym.modules.create(name, mock.withSubscribe);
 
@@ -66,7 +58,7 @@ describe('Modules', function () {
             modules = sym.modules.getModules();
 
             modules.should.have.property(name);
-            modules[name].should.have.keys(['id','seed','createdAt']);
+            modules[name].should.have.keys(['id','seed','createdAt','options']);
         });
     });
 
