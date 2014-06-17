@@ -11,14 +11,16 @@ function symposiaModule (sym) {
      * @param {string} name
      * @param {function} fn
      */
-    api.create = function (name, fn) {
+    api.create = function (name, fn, options) {
         var module, test, sandbox;
+
+        options = options || {};
 
         if (!_.isFunction(fn)) {
             throw new Error(strings.errors.ERROR_CREATING_MODULE);
         }
 
-        test = fn(sym.sandbox.create(name));
+        test = fn(sym.sandbox.create(name, options));
 
         if (!_.isObject(test) || !_.has(test, 'init')) {
             throw new Error(strings.errors.ERROR_INITIALIZING_MODULE);
@@ -28,6 +30,7 @@ function symposiaModule (sym) {
             id: _.uniqueId('module_'),
             seed: fn,
             createdAt: new Date(),
+            options: options
         };
 
         return _modules[name];
@@ -43,7 +46,7 @@ function symposiaModule (sym) {
             return false;
         }
 
-        _modules[name].instance = _modules[name].seed(sym.sandbox.create(name));
+        _modules[name].instance = _modules[name].seed(sym.sandbox.create(name), _modules[name].options);
     };
 
     api.stop = function (name) {
