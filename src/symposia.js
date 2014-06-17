@@ -2,12 +2,14 @@ var lib         = require('./lib');
 var defaults    = require('./config');
 var _           = require('underscore');
 
-function Symposia (config) {
-    var sym = this;
+function Symposia () {
+    var args    = [].slice.call(arguments, 0);
+    var sym     = this;
+    var list    = args[0] || [];
+    var i, len, name;
 
-    sym.config = _.extend({}, defaults, config);
+    sym.config = _.extend({}, defaults, args[1]);
 
-    // extend
     sym.extend = function (extension) {
         extension(sym, lib);
     };
@@ -21,16 +23,24 @@ function Symposia (config) {
     // symposia.modules
     sym.extend(require('./modules'));
 
-    // symposia.remote
-    sym.extend(require('./remote'));
-
-    if (config && config.modules) {
-        _.each(config.modules, function (fn, name) {
-            this.modules.create(name, fn);
-        }, this);
+    // if no arguments were passed in, do nothing.
+    if (!list.length) {
+        return;
     }
 
-
+    switch (true) {
+    case toString.call(list) === '[object Array]':
+        for (i=0, len=list.length; i<len; i+=1) {
+            this.modules.create(list[i].moduleId, list[i].fn, list[i].options);
+        }
+        break;
+    case toString.call(list) === '[object Object]':
+        for (name in list) {
+            if (list.hasOwnProperty(name)) {
+                this.modules.create(name, list[name]);
+            }
+        }
+    }
 
     return sym;
 }
