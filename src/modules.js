@@ -1,9 +1,19 @@
-var _ = require('underscore');
-
-function symposiaModule (sym) {
+function symposiaModule (sym, lib, _) {
     var api = {};
     var _modules = {};
     var strings = sym.config.strings;
+
+    /**
+     * Create a new module instance
+     *
+     * @param {string} name
+     * @return {object}
+     */
+    function createInstance (name) {
+        var options = _modules[name].options;
+
+        return _modules[name].fn.call(null, sym.sandbox.create(name), options, sym);
+    }
 
     /**
      * Create a module
@@ -16,19 +26,19 @@ function symposiaModule (sym) {
 
         options = options || {};
 
-        if (!_.isFunction(fn)) {
-            throw new Error(strings.errors.ERROR_CREATING_MODULE);
+        if (!_.is('function', fn)) {
+            throw new Error(strings.ERROR_CREATING_MODULE);
         }
 
         test = fn(sym.sandbox.create(name, options));
 
-        if (!_.isObject(test) || !_.has(test, 'init')) {
-            throw new Error(strings.errors.ERROR_INITIALIZING_MODULE);
+        if (!_.is('object', test) || !_.has(test, 'init')) {
+            throw new Error(strings.ERROR_INITIALIZING_MODULE);
         }
 
         _modules[name] = {
             id: _.uniqueId('module_'),
-            seed: fn,
+            fn: fn,
             createdAt: new Date(),
             options: options
         };
@@ -42,15 +52,14 @@ function symposiaModule (sym) {
      * @param {string} name - module to start
      */
     api.start = function (name) {
-        if(!_.has(_modules, name) || _.has(_modules[name], 'instance')) {
-            return false;
+        if (_modules[name] && _modules[name].instance) {
+            return;
         }
 
-        _modules[name].instance = _modules[name].seed(sym.sandbox.create(name), _modules[name].options);
+        _modules[name].instance = createInstance(name);
     };
 
     api.stop = function (name) {
-        console.log('stopping', name);
     };
 
     /**
@@ -71,12 +80,14 @@ function symposiaModule (sym) {
     };
 
     api.destroyAll = function () {
-        _.each(_modules, function (obj, name) {
-            this.destroy(name);
-        }, this);
+        for (var name in _modules) {
+            if (_.has(_modules, name)) {
+                this.destroy(name);
+            }
+        }
     };
 
-    api.getModules = function () {
+    api.get = function () {
         return _modules;
     };
 
