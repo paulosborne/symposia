@@ -3,22 +3,22 @@ var config = require('./config');
 var util = require('./utils');
 
 function Symposia (mods, options) {
-    var sym = this;
+    var symposia = this;
 
-    sym.config = util.extend({}, config, options);
+    symposia.config = util.extend({}, config, options);
 
-    sym.extend = function (extension) {
-        extension(sym, lib, util);
+    symposia.extend = function (extension) {
+        extension(symposia, lib, util);
     };
 
     // symposia.dom
-    sym.extend(require('./dom'));
+    symposia.extend(require('./dom'));
 
     // symposia.sandbox
-    sym.extend(require('./sandbox'));
+    symposia.extend(require('./sandbox'));
 
     // symposia.modules
-    sym.extend(require('./modules'));
+    symposia.extend(require('./modules'));
 
     if (!mods) {
         return;
@@ -38,7 +38,7 @@ function Symposia (mods, options) {
         }
     }
 
-    return sym;
+    return symposia;
 }
 
 module.exports = Symposia;
