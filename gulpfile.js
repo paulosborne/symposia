@@ -1,8 +1,8 @@
 var gulp        = require('gulp');
-var browser     = require('open');
 var browserify  = require('browserify');
 var clean       = require('gulp-clean');
 var gutil       = require('gulp-util');
+var mocha       = require('gulp-mocha');
 var buffer      = require('gulp-buffer');
 var rename      = require('gulp-rename');
 var uglify      = require('gulp-uglify');
@@ -10,7 +10,7 @@ var watch       = require('gulp-watch');
 var source      = require('vinyl-source-stream');
 
 var paths       = {
-    scripts: ['./index.js','./src/**/*.js']
+    scripts: ['src/**','test/**']
 };
 
 gulp.task('browserify', function () {
@@ -27,8 +27,11 @@ gulp.task('browserify', function () {
 });
 
 gulp.task('clean', function () {
-    return gulp.src('./dist/*.js', { read: false})
-    .pipe(clean());
+    return gulp.src('./dist/*.js', { read: false }).pipe(clean());
+});
+
+gulp.task('test', function () {
+   return gulp.src('test/unit/*', { read: false }).pipe(mocha({ reporter: 'dot'}));
 });
 
 gulp.task('watch', function () {
