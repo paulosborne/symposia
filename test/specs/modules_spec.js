@@ -11,21 +11,21 @@ describe('Modules', function () {
         });
 
         it('should destroy all modules', function () {
-            expect(_.size(sym.modules.getModules())).to.equal(100);
+            expect(_.size(sym.modules.get())).to.equal(100);
             sym.modules.destroyAll();
-            expect(_.size(sym.modules.getModules())).to.equal(0);
+            expect(_.size(sym.modules.get())).to.equal(0);
         });
     });
 
     describe('destroy()', function () {
 
         it('should destroy a module', function () {
-            var modules;
             var name = _.uniqueId('module');
+            var modules;
 
             sym.modules.create(name, mock.withSubscribe);
 
-            modules = sym.modules.getModules();
+            modules = sym.modules.get();
 
             modules.should.have.property(name);
             sym.modules.destroy(name);
@@ -55,10 +55,10 @@ describe('Modules', function () {
             
             sym.modules.create(name, mock.withSubscribe);
 
-            modules = sym.modules.getModules();
+            modules = sym.modules.get();
 
             modules.should.have.property(name);
-            modules[name].should.have.keys(['id','seed','createdAt','options']);
+            modules[name].should.have.keys(['id','fn','createdAt','options']);
         });
     });
 
@@ -69,7 +69,7 @@ describe('Modules', function () {
 
             sym.modules.create(name, mock.withSubscribe);
 
-            modules = sym.modules.getModules();
+            modules = sym.modules.get();
             modules.should.have.property(name);
             modules[name].should.not.have.property('instance');
             
@@ -81,7 +81,7 @@ describe('Modules', function () {
 
     describe('stop()', function () {
         it('should stop a module', function () {
-
+            
         });
     });
 
