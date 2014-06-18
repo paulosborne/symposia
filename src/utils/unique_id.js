@@ -1,8 +1,6 @@
 var idCounter = 0;
 
-function uniqueId (prefix) {
+module.exports = function (prefix) {
     var id = ++idCounter + '';
     return prefix ? prefix + id : id;
-}
-
-module.exports = uniqueId;
+};
