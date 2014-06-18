@@ -1,17 +1,14 @@
-var lib         = require('./lib');
-var defaults    = require('./config');
-var _           = require('underscore');
+var lib = require('./lib');
+var config = require('./config');
+var util = require('./utils');
 
-function Symposia () {
-    var args    = [].slice.call(arguments, 0);
-    var sym     = this;
-    var list    = args[0] || [];
-    var i, len, name;
+function Symposia (mods, options) {
+    var sym = this;
 
-    sym.config = _.extend({}, defaults, args[1]);
+    sym.config = util.extend({}, config, options);
 
     sym.extend = function (extension) {
-        extension(sym, lib);
+        extension(sym, lib, util);
     };
 
     // symposia.dom
@@ -23,21 +20,20 @@ function Symposia () {
     // symposia.modules
     sym.extend(require('./modules'));
 
-    // if no arguments were passed in, do nothing.
-    if (!list.length) {
+    if (!mods) {
         return;
     }
 
     switch (true) {
-    case toString.call(list) === '[object Array]':
-        for (i=0, len=list.length; i<len; i+=1) {
-            this.modules.create(list[i].moduleId, list[i].fn, list[i].options);
+    case toString.call(mods) === '[object Array]':
+        for (var i=0, len=mods.length; i<len; i+=1) {
+            this.modules.create(mods[i].moduleId, mods[i].fn, mods[i].options);
         }
         break;
-    case toString.call(list) === '[object Object]':
-        for (name in list) {
-            if (list.hasOwnProperty(name)) {
-                this.modules.create(name, list[name]);
+    case toString.call(mods) === '[object Object]':
+        for (var name in mods) {
+            if (mods.hasOwnProperty(name)) {
+                this.modules.create(name, mods[name]);
             }
         }
     }
