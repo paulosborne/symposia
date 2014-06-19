@@ -41,15 +41,5 @@ describe('ChannelManager', function () {
         assert.equal(channels.length + 1, numCreated);
     });
 
-    describe('_()', function () {
-        it('should start chaining', function () {
-            var manager = new ChannelManager();
-
-            assert.equal(manager._('channel').value(),'channel');
-            assert.equal(manager._('channel').topic('topic').value(), 'topic');
-
-        });
-    });
-
 
 });
