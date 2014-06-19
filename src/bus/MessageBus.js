@@ -16,7 +16,6 @@ function MessageBus(symposia) {
         var i, len;
         var args = [].slice.call(arguments,0);
 
-
         for (i = 0, len = args.length; i < len; i += 1) {
             subscriberFactory.create(args[i]);
         }
