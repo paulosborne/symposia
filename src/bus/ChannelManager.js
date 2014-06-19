@@ -1,14 +1,13 @@
 var _ = require('underscore');
 var cfg = require('../config');
+var Subscription = require('./Subscription');
 
 function ChannelManager () {
     var args = [].slice.call(arguments);
 
     this._channels  = {};
-    this._chaining  = false;
-    this._chain     = [];
 
-    this.add(cfg.DEFAULT_CHANNEL);
+    this.addChannel(cfg.DEFAULT_CHANNEL);
     this.init(args);
 }
 
@@ -23,36 +22,8 @@ ChannelManager.prototype.init = function (args) {
     var channels = _.isArray(args[0]) ? args[0] : args;
 
     for (var i = 0, len = channels.length; i < len; i += 1) {
-        this.add(channels[i]);
+        this.addChannel(channels[i]);
     }
-};
-
-ChannelManager.prototype._ = function (channel) {
-    this._chaining = true;
-    this._chain.push(channel);
-
-    return this.add(channel);
-};
-
-ChannelManager.prototype.topic = function (topic, channel) {
-    channel = this._chaining ? this._chain[0] : channel;
-
-    if (this._chaining) {
-        this._chain.push(topic);
-        return this;
-    }
-};
-
-ChannelManager.prototype.value = function () {
-    var chain = this._chain;
-    var last = chain.length - 1;
-    var prev;
-    
-    if (!this._chaining) return;
-
-    this._chaining = false;
-
-    return chain[last];
 };
 
 /**
@@ -61,7 +32,7 @@ ChannelManager.prototype.value = function () {
  * @param {string} channel
  * @return {object}
  */
-ChannelManager.prototype.add = function (channel) {
+ChannelManager.prototype.addChannel = function (channel) {
 
     if (!this._channels.hasOwnProperty(channel)) {
        this._channels[channel] = {};
@@ -70,14 +41,33 @@ ChannelManager.prototype.add = function (channel) {
     return this;
 };
 
-ChannelManager.prototype.topic = function (channel, topic) {
-    if(!this._channels[channel]) {
-        this.add(channel);
+/**
+ * Add a channel subscription
+ *
+ * @param {Subscription} sub
+ */
+ChannelManager.prototype.addChannelSubscription = function (sub) {
+
+    if (!sub instanceof Subscription) {
+        throw new Error(cfg.strings.ERROR_INVALID_SUBSCRIPTION);
     }
 
-    this._channels[channel][topic] = this._channels[channel][topic] || {};
+    // add channel if it doesnt exist
+    if (!this._channels[sub.channel]) {
+        this._channels[sub.channel] = {};
+    }
 
-    return this;
+    // add topic if it doesnt exist
+    if (!this._channels[sub.channel][sub.topic]) {
+        this._channels[sub.channel][sub.topic] = {};
+    }
+
+    // add subscriber if it doesnt exist
+    if (!this._channels[sub.channel][sub.topic][sub.subscriberId]) {
+        this._channels[sub.channel][sub.topic][sub.subscriberId] = [];
+    }
+
+    this._channels[sub.channel][sub.topic][sub.subscriberId].push(sub.callback);
 };
 
 /**

@@ -1,7 +1,10 @@
 var ChannelManager = require('../../src/bus/ChannelManager');
+var Subscription = require('../../src/bus/Subscription');
+
 var cfg = require('../../src/config');
 var _ = require('underscore');
 var assert = require('assert');
+var sinon = require('sinon');
 
 describe('ChannelManager', function () {
 
@@ -20,14 +23,36 @@ describe('ChannelManager', function () {
         });
     });
 
-    describe('add()', function () {
+    describe('addChannel()', function () {
         it('should add a channel', function () {
             var manager = new ChannelManager();
             var channel = _.uniqueId('channel');
 
-            manager.add(channel);
+            manager.addChannel(channel);
 
             assert.ok(manager._channels.hasOwnProperty(channel));
+        });
+    });
+
+    describe('addChannelSubscription()', function () {
+        it('should add a subscription to the channel', function () {
+            var manager = new ChannelManager();
+            var topic = _.uniqueId('topic');
+            var id = _.uniqueId('id');
+            var channel = _.uniqueId('channel');
+            var subscription = new Subscription({
+                channel: channel,
+                topic: topic,
+                subscriberId: id,
+                callback: sinon.spy()
+            });
+
+            manager.addChannelSubscription(subscription);
+
+            assert.ok(manager._channels[channel].hasOwnProperty, topic);
+            assert.ok(manager._channels[channel][topic].hasOwnProperty, id);
+            assert.ok(_.isArray(manager._channels[channel][topic][id]));
+
         });
     });
 
