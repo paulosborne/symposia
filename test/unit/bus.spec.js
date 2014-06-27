@@ -24,7 +24,6 @@ describe('Bus', function () {
             }, 'a valid subscription object is required');
         });
 
-
         it('should create a new subscription', function () {
             var subscr = {
                 channel: 'beep.boop',
