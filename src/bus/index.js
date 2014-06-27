@@ -1,23 +1,30 @@
 var Subscription = require('./Subscription');
+var Channel = require('./Channel');
 
 function Bus (symposia, config) {
     var bus = {};
-    var subscriptions = {};
+    var channels = {};
 
     /**
      * Creates a new subscriber using the provided object.
      *
      * @param {object}
      */
-    bus.subscribe = function (subscription) {
+    bus.subscribe = function (subscr) {
 
-        if (!subscription || !subscription.topic || !subscription.callback) {
+        if (!subscr || !subscr.topic || !subscr.callback) {
             throw new Error('a valid subscription object is required');
         }
-        
-        subscription.channel = subscription.channel || config.DEFAULT_CHANNEL;
 
-        return subscription;
+        subscr.channel = subscr.channel || config.DEFAULT_CHANNEL;
+
+        if (!channels[subscr.channel]) {
+            channels[subscr.channel] = new Channel();
+        }
+
+        channels[subscr.channel].addSubscription(subscr);
+
+        return channels;
     };
 
     /**

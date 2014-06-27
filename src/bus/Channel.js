@@ -9,7 +9,6 @@ function Channel () {
  * @return Channel
  */
 Channel.prototype.addSubscription = function (subscr) {
-
     var topic   = subscr.topic;
     var sid     = subscr.sid;
     var cb      = subscr.callback;
