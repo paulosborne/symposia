@@ -14,9 +14,8 @@ Channel.prototype.addSubscription = function (subscr) {
     var cb      = subscr.callback;
 
     this[topic] = this[topic] || {};
-    this[topic][sid] = this[topic][sid] || {};
-    this[topic][sid].callbacks = this[topic][sid].callbacks || [];
-    this[topic][sid].callbacks.push(cb);
+    this[topic][sid] = this[topic][sid] || [];
+    this[topic][sid].push(cb);
 
     return this;
 

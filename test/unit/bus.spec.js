@@ -1,4 +1,5 @@
 var assert      = require('chai').assert;
+var sinon       = require('sinon');
 var _           = require('underscore');
 var Symposia    = require('../../index');
 var config      = require('../../src/config');
@@ -38,7 +39,23 @@ describe('Bus', function () {
 
             assert.property(subscribers, subscr.topic);
             assert.property(subscribers[subscr.topic], subscr.sid);
-            assert.property(subscribers[subscr.topic][subscr.sid], 'callbacks');
+        });
+
+        after(function () {
+            symposia = null;
+        });
+    });
+
+    describe('publish()', function () {
+        var symposia = new Symposia();
+
+        it ('should publish a message', function () {
+            var base    = { channel: 'beep', topic: 'boop', sid: _.uniqueId('subscr') };
+            var subscr  = _.extend({}, base, { callback: sinon.spy() });
+            var message = _.extend({}, base, { data: 'nyan' });
+
+            symposia.bus.subscribe(subscr);
+            symposia.bus.publish(message);
         });
     });
 });
