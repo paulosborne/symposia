@@ -7,7 +7,11 @@ function Bus (symposia, config) {
     var regex = {};
 
     /**
-     * Compare a 
+     * Compares channel topic against an envelope topic
+     * 
+     * @param {string} binding
+     * @param {string} topic
+     * @return {boolean}
      */
     function compare (binding, topic) {
         var prev, pattern, rgx;
@@ -73,14 +77,45 @@ function Bus (symposia, config) {
                 });
             }
         });
-        
+
+        return this;
+    };
+
+    bus.getBySubscriberId = function (sid) {
+        var subscriptions = [];
+
+        _.each(channels, function (topic, channel) {
+            _.each(topics, function (callbacks, topic) {
+                console.log(topic, callbacks);
+            });
+        });
+
+        return channels;
     };
 
     /**
      * Unsubscribe a subscriber
+     *
+     * @param {string} topic
+     * @param {string} subscriber
      */
-    bus.unsubscribe = function () {
-        
+    bus.unsubscribe = function (subscr) {
+
+        if (!subscr.channel || !subscr.topic || subscr.sid) {
+            throw new Error('a valid subscription was expected');
+        }
+
+        if (!channels[subscr.channel] || !channels[subscr.channel][subscr.topic]) {
+            throw new Error('channel or topic not found');
+        }
+
+        if (channels[subscr.channel]) {
+            if (channels[subscr.channel][subscr.topic]) {
+                if (channels[subscr.channel][subscr.topic][subcr.sid]) {
+                    delete(channels[subscr.channel][subscr.topic][subscr.sid]);
+                }
+            }
+        }
     };
 
     /**
