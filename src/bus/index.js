@@ -34,7 +34,8 @@ function Bus (symposia, config) {
     /**
      * Creates a new subscriber using the provided object.
      *
-     * @param {object}
+     * @param {object} - subscription definition
+     * @return {object}
      */
     bus.subscribe = function (subscr) {
 
@@ -55,6 +56,9 @@ function Bus (symposia, config) {
 
     /**
      * Publish a message
+     *
+     * @param {object} envelope - message to send
+     * @return {context}
      */
     bus.publish = function (envelope) {
         
@@ -81,6 +85,12 @@ function Bus (symposia, config) {
         return this;
     };
 
+    /**
+     * Return all subscriptions for a given subscriber
+     *
+     * @param {string} sid - subscriber id
+     * @return {object}
+     */
     bus.getBySubscriberId = function (sid) {
         var subscriptions = [];
 
@@ -101,21 +111,25 @@ function Bus (symposia, config) {
      */
     bus.unsubscribe = function (subscr) {
 
-        if (!subscr.channel || !subscr.topic || subscr.sid) {
+        if (!subscr.channel || !subscr.topic || !subscr.sid) {
             throw new Error('a valid subscription was expected');
         }
 
-        if (!channels[subscr.channel] || !channels[subscr.channel][subscr.topic]) {
+        if (!channels[subscr.channel]) {
             throw new Error('channel or topic not found');
         }
 
-        if (channels[subscr.channel]) {
-            if (channels[subscr.channel][subscr.topic]) {
-                if (channels[subscr.channel][subscr.topic][subcr.sid]) {
-                    delete(channels[subscr.channel][subscr.topic][subscr.sid]);
-                }
-            }
+        if (channels[subscr.channel].isSubscriber(subscr)) {
+        
         }
+
+        // if (channels[subscr.channelV]) {
+        //     if (channels[subscr.channel][subscr.topic]) {
+        //         if (channels[subscr.channel][subscr.topic][subcr.sid]) {
+        //             delete(channels[subscr.channel][subscr.topic][subscr.sid]);
+        //         }
+        //     }
+        // }
     };
 
     /**
