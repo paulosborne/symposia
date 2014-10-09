@@ -31,11 +31,11 @@ gulp.task('clean', function () {
 });
 
 gulp.task('test', function () {
-   return gulp.src('test/unit/*', { read: false }).pipe(mocha({ reporter: 'dot'}));
+   return gulp.src('test/unit/*.js', { read: false }).pipe(mocha({ reporter: 'dot'}));
 });
 
 gulp.task('watch', function () {
-    gulp.watch(paths.scripts, ['clean','browserify']);
+    gulp.watch(paths.scripts, ['clean','browserify','test']);
 });
 
 gulp.task('default', ['clean','browserify']);
