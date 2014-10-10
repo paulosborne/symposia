@@ -1,20 +1,31 @@
+'use strict';
+
 var _ = require('underscore');
 
-function Sandbox (symposia) {
+module.exports = function (symposia) {
     var sandbox = {};
 
-    // var el = symposia.dom.find('#'+ name);
-
-    sandbox.create = function (name) {
+    sandbox.create = function (name, options) {
         var _id = _.uniqueId('sandbox_');
-        
+
         return {
+            /**
+             * Find the element with a matching ID
+             */
+            getElement: function () {
+                var element;
+
+                if (symposia.dom) {
+                    element = symposia.dom.find(name);
+                }
+
+                return element;
+            },
             getSubscriptions: function () {
                  return symposia.bus.getBySubscriberId(_id);
             },
             /**
              * Publish a message
-             *
              * @param {object} envelope
              */
             publish: function (message) {
@@ -22,25 +33,26 @@ function Sandbox (symposia) {
             },
             /**
              * Create a new subscription
-             *
              * @param {object} subscription
              */
             subscribe: function (subscription) {
-                subscription.sid = _id;
-
-                symposia.bus.subscribe(subscription);
+                symposia.bus.subscribe(_.extend(subscription, { sid: _id }));
             },
             /**
              * Unsubscribe a subscription
-             *
-             * @param {topic}
+             * @param {subscription}
              */
-            unsubscribe: function () {},
-            find: function ()  {}
+            unsubscribe: function (subscription) {
+                symposia.bus.unsubscribe(_.extend(subscription, { sid: _id }));
+            },
+            /**
+             * Remove all subscriptions
+             */
+            unsubscribeAll: function () {
+                symposia.bus.unsubscribeAll(_id);
+            }
         };
     };
-    
-    symposia.sandbox = sandbox;
-}
 
-module.exports = Sandbox;
+    symposia.sandbox = sandbox;
+};
