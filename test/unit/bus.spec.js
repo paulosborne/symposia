@@ -1,23 +1,17 @@
 var assert      = require('chai').assert;
 var sinon       = require('sinon');
 var _           = require('underscore');
-var Symposia    = require('../../index');
-var config      = require('../../src/config');
+var bus         = require('../../src/bus');
+var extend      = require('./tools/extend')(bus);
 
-describe('Bus', function () {
-
-    it('should extend symposia object', function () {
-        var symposia = new Symposia();
-
-        assert.property(symposia, 'bus');
-        assert.isFunction(symposia.bus.subscribe);
-        assert.isFunction(symposia.bus.publish);
-        assert.isFunction(symposia.bus.unsubscribe);
-        assert.isFunction(symposia.bus.getSubscribersForChannel);
-    });
+describe('bus', function () {
 
     describe('subscribe()', function () {
-        var symposia = Symposia();
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
 
         it('should throw an Error if subscription is invalid', function () {
             assert.throws(function () {
@@ -26,6 +20,7 @@ describe('Bus', function () {
         });
 
         it('should create a new subscription', function () {
+            var subscribers;
             var subscr = {
                 channel: 'beep.boop',
                 topic: 'my.topic',
@@ -47,7 +42,11 @@ describe('Bus', function () {
     });
 
     describe('publish()', function () {
-        var symposia = new Symposia();
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
 
         it ('should publish a message', function () {
             var base    = { channel: 'beep', topic: 'boop', sid: _.uniqueId('subscr') };
@@ -56,6 +55,85 @@ describe('Bus', function () {
 
             symposia.bus.subscribe(subscr);
             symposia.bus.publish(message);
+
+            assert.ok(subscr.callback.called);
+            assert.equal(subscr.callback.callCount, 1);
+        });
+
+        after(function () {
+            symposia = null;
+        });
+    });
+
+    describe('getBySubscriberId', function () {
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
+
+        it ('should return a list of subscriptions for a given subscriber ID', function () {
+            var sid  = _.uniqueId('subscr');
+            var sub1 = { channel: 'meep', topic: 'moop', sid: sid, callback: sinon.spy() };
+            var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
+            var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
+
+            symposia.bus.subscribe(sub1);
+            symposia.bus.subscribe(sub2);
+            symposia.bus.subscribe(sub3);
+
+            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+        });
+    });
+
+    describe('unsubscribe', function () {
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
+
+        it ('should remove a subscription', function () {
+            var sid  = _.uniqueId('subscr');
+            var sub1 = { channel: 'meep', topic: 'moop', sid: sid, callback: sinon.spy() };
+            var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
+            var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
+
+            symposia.bus.subscribe(sub1);
+            symposia.bus.subscribe(sub2);
+            symposia.bus.subscribe(sub3);
+
+            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+
+            symposia.bus.unsubscribe(sub1);
+
+            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 2);
+        });
+
+    });
+
+    describe('unsubscribeAll()', function () {
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
+
+        it ('should remove all subscriptions for a given subscriber', function () {
+            var sid  = _.uniqueId('subscr');
+            var sub1 = { channel: 'meep', topic: 'moop', sid: sid, callback: sinon.spy() };
+            var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
+            var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
+
+            symposia.bus.subscribe(sub1);
+            symposia.bus.subscribe(sub2);
+            symposia.bus.subscribe(sub3);
+
+            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+
+            symposia.bus.unsubscribeAll(sid);
+
+            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 0);
         });
     });
 });
