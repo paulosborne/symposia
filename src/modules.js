@@ -1,23 +1,25 @@
-function symposiaModule (sym, lib, _) {
+'use strict';
+
+var _ = require('underscore');
+
+module.exports = function (symposia) {
     var api = {};
     var _modules = {};
-    var strings = sym.config.strings;
 
     /**
      * Create a new module instance
-     *
      * @param {string} name
      * @return {object}
      */
     function createInstance (name) {
         var options = _modules[name].options;
+        var sandbox = symposia.sandbox.create(name);
 
-        return _modules[name].fn.call(null, sym.sandbox.create(name), options, sym);
+        return _modules[name].creator(sandbox, options, symposia);
     }
 
     /**
      * Create a module
-     *
      * @param {string} name
      * @param {function} fn
      */
@@ -26,20 +28,23 @@ function symposiaModule (sym, lib, _) {
 
         options = options || {};
 
-        if (!_.is('function', fn)) {
-            throw new Error(strings.ERROR_CREATING_MODULE);
+        if (!_.isString(name)) {
+            throw new Error('Please provide a module name');
         }
 
-        test = fn(sym.sandbox.create(name, options));
+        if (!_.isFunction(fn)) {
+            throw new Error('Please provide a valid module constructor');
+        }
 
-        if (!_.is('object', test) || !_.has(test, 'init')) {
-            throw new Error(strings.ERROR_INITIALIZING_MODULE);
+        test = fn(symposia.sandbox.create(name, options));
+
+        if (!_.isObject(test) || !_.has(test, 'init')) {
+            throw new Error('Unable to initialize module');
         }
 
         _modules[name] = {
             id: _.uniqueId('module_'),
-            fn: fn,
-            createdAt: new Date(),
+            creator: fn,
             options: options
         };
 
@@ -48,7 +53,6 @@ function symposiaModule (sym, lib, _) {
 
     /**
      * Start a module
-     *
      * @param {string} name - module to start
      */
     api.start = function (name) {
@@ -59,12 +63,19 @@ function symposiaModule (sym, lib, _) {
         _modules[name].instance = createInstance(name);
     };
 
+    /**
+     * Stop a module, calls the destroy method before deleting the instance
+     * @param {string} name - name of the module to stop
+     */
     api.stop = function (name) {
+        if (_modules.hasOwnProperty(name) && _modules[name].instance) {
+            _modules[name].instance.destroy();
+            return delete _modules[name].instance;
+        }
     };
 
     /**
-     * Destroys a module
-     *
+     * Destroy a module definition
      * @param {string} name - module to destroy
      */
     api.destroy = function (name) {
@@ -79,6 +90,9 @@ function symposiaModule (sym, lib, _) {
         delete(_modules[name]);
     };
 
+    /**
+     * Destroy all module definitions
+     */
     api.destroyAll = function () {
         for (var name in _modules) {
             if (_.has(_modules, name)) {
@@ -87,11 +101,23 @@ function symposiaModule (sym, lib, _) {
         }
     };
 
-    api.get = function () {
-        return _modules;
+    /**
+     * Returns a single or all module definitions
+     * @param {string} name
+     * @return {object}
+     */
+    api.get = function (name) {
+
+        if (arguments.length === 0) {
+            return _modules;
+        }
+
+        if (!_modules.hasOwnProperty(name)) {
+            throw new Error('No module found by that name');
+        }
+
+        return _modules[name];
     };
 
-    sym.modules = api;
-}
-
-module.exports = symposiaModule;
+    symposia.modules = api;
+};
