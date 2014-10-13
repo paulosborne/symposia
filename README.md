@@ -1,7 +1,7 @@
 Symposia 
 ========
 
-<img src="https://travis-ci.org/posbo/symposia.png?branch=master">
+[![Build Status](https://travis-ci.org/paulosborne/symposia.svg?branch=master)](https://travis-ci.org/paulosborne/symposia)
 
 
 ### Introduction
