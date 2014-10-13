@@ -15,7 +15,7 @@
     "url": "git://github.com/paulosborne/symposia.git"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "scripts": {
     "test": "mocha test/unit/*.spec.js",
