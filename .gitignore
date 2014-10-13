@@ -10,6 +10,7 @@ vendor/
 *.exe
 *.o
 *.so
+*.swp
 
 # Packages #
 ############

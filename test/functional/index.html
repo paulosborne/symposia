@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Symposia Test Runner</title>
+        <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+        <script src="../dist/symposia.js"></script>
+        <script src="./mocks/modules.js"></script>
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <div id="example"></div>
+        <script src="../node_modules/mocha/mocha.js"></script>
+        <script src="../node_modules/chai/chai.js"></script>
+        <script src="../node_modules/sinon/lib/sinon.js"></script>
+        <script src="../node_modules/sinon/lib/sinon/spy.js"></script>
+        <script>mocha.setup('bdd');</script>
+        <script>
+            window.should = chai.should();
+            window.expect = chai.expect;
+        </script>
+        <script src="../node_modules/underscore/underscore.js"></script>
+        <script src="./specs/symposia.spec.js"></script>
+        <script src="./specs/sandbox.spec.js"></script>
+        <script src="./specs/modules_spec.js"></script>
+        <script>
+            if (window.mochaPhantomJS) {
+                mochaPhantomJS.run();
+            } else {
+                mocha.run();
+            }
+        </script>
+    </body>
+</html>

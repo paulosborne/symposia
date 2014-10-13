@@ -1,122 +1,65 @@
-define(function (require) {
+'use strict';
 
-    var core        = require('src/core'),
-        $           = require('jquery');
+var _ = require('underscore');
 
-    core.sandbox = {
-        /**
-         * Create a new sandbox
-         *
-         * @param {string} moduleName
-         * @return {object}
-         */
-        create: function (moduleName) {
-            var _id             = _.uniqueId('sandbox-'),
-                _name           = moduleName,
-                _$el            = $('#'+ _name),
-                _subscriptions  = [];
+module.exports = function (symposia) {
+    var sandbox = {};
 
-            return {
-                /**
-                 * Provides a convenient way to query module dom element.
-                 *
-                 * @param {string}
-                 * @return {object}
-                 */
-                $: function (selector) {
-                    return (selector) ? _$el.find(selector) : _$el;
-                },
-                /**
-                 * Publish a message, attaches the sandbox id
-                 *
-                 * @param {object} envelope - message to be sent
-                 */
-                publish: function (envelope) {
-                    core.bus.publish(envelope);
-                },
-                /**
-                 * Add a new message subscription
-                 *
-                 * @param {object} def - subscription definition
-                 */
-                subscribe: function (def) {
-                    var sub;
+    sandbox.create = function (name) {
+        var _id = _.uniqueId('sandbox_');
 
-                    try {
-                        if (!_.has(def, 'topic') && !_.has(def, 'callback')) {
-                            throw new Error('Missing topic or callback for '+ _name);
-                        }
+        return {
+            /**
+             * Find the element with a matching ID
+             */
+            getElement: function () {
+                var element;
 
-                        sub = core.bus.subscribe(def);
-
-                        _subscriptions.push(sub);
-
-                        return sub;
-
-                    } catch (e) {
-                        core.log('info', e.message);
-                    }
-                },
-                /**
-                 * Remove all sandbox subscriptions
-                 */
-                unsubscribeAll: function () {
-                    var i = 0;
-
-                    while(_subscriptions.length) {
-                        _subscriptions.shift().unsubscribe();
-                        i++;
-                    }
-
-                    return i;
-                },
-                /**
-                 * Unsubscribe a single subscription ( not implemented )
-                 *
-                 * @param {string} topic -  subscription to remove
-                 */
-                unsubscribe: function (topic) {
-                    var topics  = _.pluck(_subscriptions, 'topic'),
-                        idx     = topics.indexOf(topic);
-
-                    if (idx !== -1) {
-                        _(_subscriptions.splice(idx, 1)).invoke('unsubscribe');
-                    }
-
-                    return _subscriptions;
-                },
-                /**
-                 * Return all subscriptions for this sandbox
-                 */
-                getSubscriptions: function () {
-                    return _subscriptions;
-                },
-                /**
-                 * Returns the DOM element associated with this sandbox
-                 *
-                 * @param {string} selector
-                 */
-                getElement: function (selector) {
-                    return this.$(selector);
-                },
-                /**
-                 * Returns the ID of this sandbox
-                 */
-                getId: function () {
-                    return _id;
-                },
-                /**
-                 * Returns the name of the module associated with this sandbox.
-                 *
-                 * @return {string}
-                 */
-                getModuleName: function () {
-                    return _name;
+                if (symposia.dom) {
+                    element = symposia.dom.find(name);
                 }
-            };
-        }
+
+                return element;
+            },
+            getSubscriptions: function () {
+                 return symposia.bus.getBySubscriberId(_id);
+            },
+            /**
+             * Publish a message
+             * @param {object} envelope
+             */
+            publish: function (message) {
+                 return symposia.bus.publish(message);
+            },
+            /**
+             * Create a new subscription
+             * @param {object} subscription
+             */
+            subscribe: function (subscription) {
+                symposia.bus.subscribe(_.extend(subscription, { sid: _id }));
+            },
+            /**
+             * Unsubscribe a subscription
+             * @param {subscription}
+             */
+            unsubscribe: function (subscription) {
+                symposia.bus.unsubscribe(_.extend(subscription, { sid: _id }));
+            },
+            /**
+             * Remove all subscriptions
+             */
+            unsubscribeAll: function () {
+                symposia.bus.unsubscribeAll(_id);
+            },
+            /**
+             * Store a single item
+             * @param {object}
+             */
+            storeItem: function (obj) {
+                symposia.store.add(obj);
+            }
+        };
     };
 
-    return core.sandbox;
-
-});
+    symposia.sandbox = sandbox;
+};
