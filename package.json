@@ -1,6 +1,5 @@
 {
   "name": "symposia",
-  "preferGlobal": true,
   "version": "0.3.0",
   "author": "Paul Osborne",
   "description": "JavaScript framework for development of large-scale modular applications.",
@@ -16,36 +15,28 @@
     "url": "git://github.com/paulosborne/symposia.git"
   },
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "mocha test/unit/*.spec.js",
+    "lint": "jshint src/*",
+    "start": "watchify . -o dist/bundle.js",
+    "browserify": "browserify . | uglifyjs -m --noerr > dist/symposia.min.js",
+    "build": "npm run test & npm run lint & npm run browserify"
   },
-  "analyze": false,
   "devDependencies": {
-    "bower": "^1.3.5",
-    "browserify": "^4.1.8",
+    "browserify": "^6.0.3",
+    "chai": "^1.9.2",
     "express": "^4.9.6",
-    "gulp": "^3.7.0",
-    "gulp-buffer": "0.0.2",
-    "gulp-clean": "^0.3.0",
-    "gulp-mocha": "^0.4.1",
-    "gulp-rename": "^1.2.0",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "^0.3.0",
-    "gulp-util": "^2.2.16",
-    "gulp-watch": "^0.6.5",
-    "gulp-watchify": "^0.2.0",
-    "gutil": "^1.1.0",
-    "minified": "0.0.6",
-    "open": "0.0.5",
-    "path": "^0.4.9",
-    "requirejs": "^2.1.14",
-    "underscore": "^1.6.0",
-    "vinyl-source-stream": "^0.1.1",
+    "jshint": "^2.5.6",
+    "mocha": "^1.21.5",
+    "sinon": "^1.10.3",
+    "uglify-js": "^2.4.15",
+    "underscore": "^1.7.0",
     "watchify": "^0.6.4"
   },
   "bundledDependencies": [],
   "license": "MIT",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {}
 }
