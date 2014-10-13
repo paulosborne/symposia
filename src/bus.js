@@ -93,7 +93,7 @@ module.exports = function (symposia) {
      * @param {string} sid - subscriber id
      * @return {object}
      */
-    bus.getBySubscriberId = function (subscriber) {
+    bus.getBySubscriberId = function () {
         var subscriptions = [];
 
         _.each(channels, function (topics, channel) {

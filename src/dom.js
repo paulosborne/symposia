@@ -3,10 +3,8 @@
 module.exports = function (symposia) {
     var dom = {};
 
-    dom.find = function (id) {
-        var element;
-
-        return $(el);
+    dom.find = function () {
+        return;
     };
 
     symposia.dom = dom;

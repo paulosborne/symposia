@@ -5,7 +5,7 @@ var _ = require('underscore');
 module.exports = function (symposia) {
     var sandbox = {};
 
-    sandbox.create = function (name, options) {
+    sandbox.create = function (name) {
         var _id = _.uniqueId('sandbox_');
 
         return {
@@ -56,7 +56,7 @@ module.exports = function (symposia) {
              * @param {object}
              */
             storeItem: function (obj) {
-                symposia.store.add({});
+                symposia.store.add(obj);
             }
         };
     };

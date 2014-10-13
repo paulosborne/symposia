@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 
-function Symposia (options) {
+function Symposia () {
     var symposia = {};
 
     symposia.extend = function (extension) {
@@ -22,7 +22,7 @@ function Symposia (options) {
     symposia.extend(require('./store'));
 
     if (global.document) {
-        //symposia.extend(require('./dom'));
+        symposia.extend(require('./dom'));
     }
 
     // Public API
@@ -33,7 +33,6 @@ function Symposia (options) {
          */
         init: function () {
             var args = [].slice.call(arguments, 0);
-            var options = {};
 
             for (var i = 0, len = args.length; i < len; i += 1) {
                 for (var id in args[i]) {
@@ -67,6 +66,6 @@ function Symposia (options) {
             symposia.modules.destroyAll();
         }
     };
-};
+}
 
 module.exports = Symposia;

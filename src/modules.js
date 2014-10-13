@@ -24,7 +24,7 @@ module.exports = function (symposia) {
      * @param {function} fn
      */
     api.create = function (name, fn, options) {
-        var test, sandbox;
+        var test;
 
         options = options || {};
 
