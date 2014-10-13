@@ -18,10 +18,14 @@ function Symposia (options) {
     // symposia.modules
     symposia.extend(require('./modules'));
 
+    // symposia.store
+    symposia.extend(require('./store'));
+
     if (global.document) {
         //symposia.extend(require('./dom'));
     }
 
+    // Public API
     return {
         /**
          * Create one or more modules
