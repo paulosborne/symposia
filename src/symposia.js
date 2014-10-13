@@ -1,18 +1,16 @@
-var lib = require('./lib');
-var config = require('./config');
-var util = require('./utils');
+'use strict';
 
-function Symposia (mods, options) {
-    var symposia = this;
+var _ = require('underscore');
 
-    symposia.config = util.extend({}, config, options);
+function Symposia (options) {
+    var symposia = {};
 
     symposia.extend = function (extension) {
-        extension(symposia, lib, util);
+        extension(symposia);
     };
 
-    // symposia.dom
-    symposia.extend(require('./dom'));
+    // symposia.bus
+    symposia.extend(require('./bus'));
 
     // symposia.sandbox
     symposia.extend(require('./sandbox'));
@@ -20,25 +18,51 @@ function Symposia (mods, options) {
     // symposia.modules
     symposia.extend(require('./modules'));
 
-    if (!mods) {
-        return;
+    if (global.document) {
+        //symposia.extend(require('./dom'));
     }
 
-    switch (true) {
-    case toString.call(mods) === '[object Array]':
-        for (var i=0, len=mods.length; i<len; i+=1) {
-            this.modules.create(mods[i].moduleId, mods[i].fn, mods[i].options);
-        }
-        break;
-    case toString.call(mods) === '[object Object]':
-        for (var name in mods) {
-            if (mods.hasOwnProperty(name)) {
-                this.modules.create(name, mods[name]);
+    return {
+        /**
+         * Create one or more modules
+         * @param {object} spec - specification object
+         */
+        init: function () {
+            var args = [].slice.call(arguments, 0);
+            var options = {};
+
+            for (var i = 0, len = args.length; i < len; i += 1) {
+                for (var id in args[i]) {
+                    if(args[i].hasOwnProperty(id)) {
+                        switch(({}).toString.call(args[i][id])) {
+                        case '[object Function]':
+                            symposia.modules.create(id, args[i][id]);
+                            break;
+                        case '[object Object]':
+                            if (!args[i][id].hasOwnProperty('main')) {
+                                throw new Error('no module constructor found');
+                            }
+                            symposia.modules.create(id, args[i][id].main);
+                            break;
+                        }
+                    }
+                }
             }
+        },
+        /**
+         * Returns a list of registered modules
+         * @return {object}
+         */
+        list: function () {
+            return symposia.modules.get();
+        },
+        /**
+         * Stops and Destroys all registered modules
+         */
+        reset: function () {
+            symposia.modules.destroyAll();
         }
-    }
-
-    return symposia;
-}
+    };
+};
 
 module.exports = Symposia;
