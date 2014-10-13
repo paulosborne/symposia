@@ -50,6 +50,13 @@ module.exports = function (symposia) {
              */
             unsubscribeAll: function () {
                 symposia.bus.unsubscribeAll(_id);
+            },
+            /**
+             * Store a single item
+             * @param {object}
+             */
+            storeItem: function (obj) {
+                symposia.store.add({});
             }
         };
     };
