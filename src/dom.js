@@ -1,8 +1,11 @@
-module.exports = function (symposia, lib, utils) {
-    var dom = {};
-    var $   = window.jQuery || lib.$;
+'use strict';
 
-    dom.find = function (el) {
+module.exports = function (symposia) {
+    var dom = {};
+
+    dom.find = function (id) {
+        var element;
+
         return $(el);
     };
 
