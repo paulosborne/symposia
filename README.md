@@ -6,76 +6,28 @@ Symposia
 
 ### Introduction
 
-Symposia is a framework for developing loosely coupled, modular applications by bringing together a number of design patterns including the Mediator, Observer, Module and Sandbox. It is based on the [Patterns of Large Scale JavaScript Applications](http://addyosmani.com/largescalejavascript/) by Addy Osmani and Nicholas Zakas.
-
-It contains the following open source libraries in its core.
-
-- [Crossroads](http://millermedeiros.github.io/crossroads.js/) by [Miller Medeiros](https://github.com/millermedeiros)
-- [PostalJS](https://github.com/postaljs/postal.js) by [Jim Cowart](https://github.com/ifandelse)
+Symposia is a framework for developing loosely coupled, modular applications.
 
 ### Installation
 
-Reference Symposia in your RequireJS configuration:
+```
+npm install symposia
+```
+### Usage
 
-```javascript
-paths: {
-  "symposia": 'bower_components/symposia/dist/symposia'
-}
+```
+var Symposia = require('symposia);
 ```
 
-Then simply require it.
+### Anatomy of a Module
 
-```javascript
-define(function (require) {
-  var symposia = require('symposia');
-});
 ```
-
-### Example Module
-
-```javascript
-define(function () {
-  return function (sandbox) {
-    return {
-      init: function () {
-        console.log('woohoo!');
-      },
-      destroy: function () {
-      
-      }
-    }
-  }
-});
+return function (sandbox) {
+	return {
+		init: function () {
+		},
+		destroy: function () {
+		}
+	};
+};
 ```
-
-### Creating Modules
-
-```javascript
-symposia.modules.create({
-  'my-module': { creator: MyModule }
-});
-```
-
-### Subscribing to application events
-
-```javascript
-sandbox.subscribe({
-  topic    : 'todo.create',
-  callback : this.createTodo.bind(this)
-});
-```
-
-### Publishing an event
-
-```javascript
-sandbox.publish({
-  topic: 'todo.create',
-  data: {
-    title : 'my first todo',
-    body  : 'this is my first todo' 
-  }
-});
-```
-
-
-
