@@ -2,8 +2,8 @@ var assert  = require('chai').assert;
 var _       = require('underscore');
 var store   = require('../../src/store');
 var sandbox = require('../../src/sandbox');
-var bus     = require('../../src/bus');
-var extend  = require('./tools/extend')(bus, sandbox, store);
+var dispatcher    = require('../../src/dispatcher');
+var extend  = require('./tools/extend')(dispatcher, sandbox, store);
 var sinon   = require('sinon');
 
 describe('store()', function () {

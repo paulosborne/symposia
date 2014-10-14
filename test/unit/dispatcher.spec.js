@@ -1,10 +1,10 @@
 var assert      = require('chai').assert;
 var sinon       = require('sinon');
 var _           = require('underscore');
-var bus         = require('../../src/bus');
-var extend      = require('./tools/extend')(bus);
+var dispatcher         = require('../../src/dispatcher');
+var extend      = require('./tools/extend')(dispatcher);
 
-describe('bus', function () {
+describe('dispatcher', function () {
 
     describe('subscribe()', function () {
         var symposia = {};
@@ -15,7 +15,7 @@ describe('bus', function () {
 
         it('should throw an Error if subscription is invalid', function () {
             assert.throws(function () {
-                symposia.bus.subscribe();
+                symposia.dispatcher.subscribe();
             }, 'a valid subscription object is required');
         });
 
@@ -28,9 +28,9 @@ describe('bus', function () {
                 sid: _.uniqueId('subscriber_')
             };
 
-            symposia.bus.subscribe(subscr);
+            symposia.dispatcher.subscribe(subscr);
 
-            subscribers = symposia.bus.getSubscribersForChannel(subscr.channel);
+            subscribers = symposia.dispatcher.getSubscribersForChannel(subscr.channel);
 
             assert.property(subscribers, subscr.topic);
             assert.property(subscribers[subscr.topic], subscr.sid);
@@ -53,8 +53,8 @@ describe('bus', function () {
             var subscr  = _.extend({}, base, { callback: sinon.spy() });
             var message = _.extend({}, base, { data: 'nyan' });
 
-            symposia.bus.subscribe(subscr);
-            symposia.bus.publish(message);
+            symposia.dispatcher.subscribe(subscr);
+            symposia.dispatcher.publish(message);
 
             assert.ok(subscr.callback.called);
             assert.equal(subscr.callback.callCount, 1);
@@ -78,11 +78,11 @@ describe('bus', function () {
             var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
             var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
 
-            symposia.bus.subscribe(sub1);
-            symposia.bus.subscribe(sub2);
-            symposia.bus.subscribe(sub3);
+            symposia.dispatcher.subscribe(sub1);
+            symposia.dispatcher.subscribe(sub2);
+            symposia.dispatcher.subscribe(sub3);
 
-            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+            assert.lengthOf(symposia.dispatcher.getBySubscriberId(sid), 3);
         });
     });
 
@@ -99,15 +99,15 @@ describe('bus', function () {
             var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
             var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
 
-            symposia.bus.subscribe(sub1);
-            symposia.bus.subscribe(sub2);
-            symposia.bus.subscribe(sub3);
+            symposia.dispatcher.subscribe(sub1);
+            symposia.dispatcher.subscribe(sub2);
+            symposia.dispatcher.subscribe(sub3);
 
-            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+            assert.lengthOf(symposia.dispatcher.getBySubscriberId(sid), 3);
 
-            symposia.bus.unsubscribe(sub1);
+            symposia.dispatcher.unsubscribe(sub1);
 
-            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 2);
+            assert.lengthOf(symposia.dispatcher.getBySubscriberId(sid), 2);
         });
 
     });
@@ -125,15 +125,15 @@ describe('bus', function () {
             var sub2 = { channel: 'nyan', topic: 'cat', sid: sid, callback: sinon.spy() };
             var sub3 = { channel: 'beep', topic: 'boop', sid: sid, callback: sinon.spy() };
 
-            symposia.bus.subscribe(sub1);
-            symposia.bus.subscribe(sub2);
-            symposia.bus.subscribe(sub3);
+            symposia.dispatcher.subscribe(sub1);
+            symposia.dispatcher.subscribe(sub2);
+            symposia.dispatcher.subscribe(sub3);
 
-            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 3);
+            assert.lengthOf(symposia.dispatcher.getBySubscriberId(sid), 3);
 
-            symposia.bus.unsubscribeAll(sid);
+            symposia.dispatcher.unsubscribeAll(sid);
 
-            assert.lengthOf(symposia.bus.getBySubscriberId(sid), 0);
+            assert.lengthOf(symposia.dispatcher.getBySubscriberId(sid), 0);
         });
     });
 });

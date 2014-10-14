@@ -21,8 +21,8 @@
     "test": "mocha test/unit/*.spec.js",
     "lint": "jshint src/*",
     "start": "watchify . -o dist/bundle.js",
-    "browserify": "browserify . | uglifyjs -m --noerr > dist/symposia.min.js",
-    "build": "npm run test & npm run lint & npm run browserify"
+    "browserify": "browserify . | uglifyjs -m > dist/symposia.min.js",
+    "build": "npm run test; npm run lint; npm run browserify"
   },
   "devDependencies": {
     "browserify": "^6.0.3",
@@ -38,5 +38,7 @@
   "bundledDependencies": [],
   "license": "MIT",
   "keywords": [],
-  "dependencies": {}
+  "dependencies": {
+    "es6-promise": "^2.0.0"
+  }
 }
