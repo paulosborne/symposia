@@ -10,7 +10,7 @@ module.exports = function (symposia) {
     var DEFAULT_CHANNEL = '/';
 
     /**
-     * Compares channel topic against an envelope topic
+     * Compares channel topic against an msg topic
      * @param {string} binding
      * @param {string} topic
      * @return {boolean}
@@ -59,31 +59,45 @@ module.exports = function (symposia) {
 
     /**
      * Publish a message
-     * @param {object} envelope - message to send
-     * @param {string} envelope.channel - the channel to send the message through
-     * @param {string} envelope.topic - the message topic
+     * @param {object} msg - message to send
+     * @param {string} msg.channel - the channel to send the message through
+     * @param {string} msg.topic - the message topic
      * @return {context}
      */
-    dispatcher.publish = function (envelope) {
-        var promises = [];
-        var resolved = [];
-        var rejected = [];
+    dispatcher.publish = function (msg) {
+        var promises    = [];
+        var resolves    = [];
+        var rejects     = [];
 
-        if (!envelope || !envelope.topic) {
-            throw new Error('a valid envelope is required');
+        if (!msg || !msg.topic) {
+            throw new Error('a valid msg is required');
         }
 
-        envelope.channel = envelope.channel || DEFAULT_CHANNEL;
+        msg.channel = msg.channel || DEFAULT_CHANNEL;
 
-        if (!bus[envelope.channel]) {
+        if (!bus[msg.channel]) {
             return;
         }
 
-        _.each(bus[envelope.channel], function (subscribers, topic) {
-            if (this.compare(topic, envelope.topic)) {
+        _.each(bus[msg.channel], function (subscribers, topic) {
+            if (this.compare(topic, msg.topic)) {
                 _.each(subscribers, function (callbacks) {
-                    _.each(callbacks, function (cb) {
-                        cb(envelope.data, envelope);
+
+                    promises = callbacks.map(function (cb, i) {
+                        return new Promise(function (resolve, reject) {
+                            resolves[i] = resolve;
+                            rejects[i] = reject;
+                        });
+                    });
+
+                    callbacks.forEach(function (callback, i) {
+                        Promise.resolve(callback(msg.data, msg)).then(function (result) {
+                            if (result) {
+                                resolves[i](msg.data);
+                            } else {
+                                rejects[i](new Error('Didnt call'));
+                            }
+                        });
                     });
                 });
             }
