@@ -1,10 +1,11 @@
 'use strict';
 
 var _ = require('underscore');
+var Promise = require('es6-promise').Promise;
 
 module.exports = function (symposia) {
+    var dispatcher = {};
     var bus = {};
-    var channels = {};
     var regex = {};
     var DEFAULT_CHANNEL = '/';
 
@@ -14,7 +15,7 @@ module.exports = function (symposia) {
      * @param {string} topic
      * @return {boolean}
      */
-    bus.compare = function (binding, topic) {
+    dispatcher.compare = function (binding, topic) {
         var prev, pattern, rgx;
 
         if (!(rgx = regex[binding])) {
@@ -35,9 +36,9 @@ module.exports = function (symposia) {
     /**
      * Creates a new subscriber using the provided object.
      * @param {object} obj - subscription definition
-     * @return {object} channels
+     * @return {object} bus
      */
-    bus.subscribe = function (obj) {
+    dispatcher.subscribe = function (obj) {
 
         if (!obj || !obj.topic || !obj.callback || !obj.sid) {
             throw new Error('a valid subscription object is required');
@@ -45,15 +46,15 @@ module.exports = function (symposia) {
 
         obj.channel = obj.channel || DEFAULT_CHANNEL;
 
-        if (!channels[obj.channel]) {
-            channels[obj.channel] = {};
+        if (!bus[obj.channel]) {
+            bus[obj.channel] = {};
         }
 
-        channels[obj.channel][obj.topic] = channels[obj.channel][obj.topic] || {};
-        channels[obj.channel][obj.topic][obj.sid] = channels[obj.channel][obj.topic][obj.sid] || [];
-        channels[obj.channel][obj.topic][obj.sid].push(obj.callback);
+        bus[obj.channel][obj.topic] = bus[obj.channel][obj.topic] || {};
+        bus[obj.channel][obj.topic][obj.sid] = bus[obj.channel][obj.topic][obj.sid] || [];
+        bus[obj.channel][obj.topic][obj.sid].push(obj.callback);
 
-        return channels;
+        return bus;
     };
 
     /**
@@ -63,7 +64,10 @@ module.exports = function (symposia) {
      * @param {string} envelope.topic - the message topic
      * @return {context}
      */
-    bus.publish = function (envelope) {
+    dispatcher.publish = function (envelope) {
+        var promises = [];
+        var resolved = [];
+        var rejected = [];
 
         if (!envelope || !envelope.topic) {
             throw new Error('a valid envelope is required');
@@ -71,11 +75,11 @@ module.exports = function (symposia) {
 
         envelope.channel = envelope.channel || DEFAULT_CHANNEL;
 
-        if (!channels[envelope.channel]) {
+        if (!bus[envelope.channel]) {
             return;
         }
 
-        _.each(channels[envelope.channel], function (subscribers, topic) {
+        _.each(bus[envelope.channel], function (subscribers, topic) {
             if (this.compare(topic, envelope.topic)) {
                 _.each(subscribers, function (callbacks) {
                     _.each(callbacks, function (cb) {
@@ -93,10 +97,10 @@ module.exports = function (symposia) {
      * @param {string} sid - subscriber id
      * @return {object}
      */
-    bus.getBySubscriberId = function () {
+    dispatcher.getBySubscriberId = function () {
         var subscriptions = [];
 
-        _.each(channels, function (topics, channel) {
+        _.each(bus, function (topics, channel) {
             _.each(topics, function (callbacks, topic) {
                 _.each(callbacks, function (cb, sid) {
                     subscriptions.push({
@@ -116,7 +120,7 @@ module.exports = function (symposia) {
      * Removes all subscriptions for a given subscriber id
      * @param {string} subscriberId
      */
-    bus.unsubscribeAll = function (subscriberId) {
+    dispatcher.unsubscribeAll = function (subscriberId) {
         var subscriptions = this.getBySubscriberId(subscriberId);
 
         _.each(subscriptions, function (sub) {
@@ -128,27 +132,27 @@ module.exports = function (symposia) {
      * Unsubscribe a single subscription
      * @param {object} subscription
      */
-    bus.unsubscribe = function (sub) {
+    dispatcher.unsubscribe = function (sub) {
 
         if (!sub.channel || !sub.topic || !sub.sid) {
             return;
         }
 
-        if (!channels[sub.channel] || !channels[sub.channel][sub.topic]) {
+        if (!bus[sub.channel] || !bus[sub.channel][sub.topic]) {
             return;
         }
 
-        delete channels[sub.channel][sub.topic][sub.sid];
+        delete bus[sub.channel][sub.topic][sub.sid];
     };
 
     /**
      * Returns all subscribers for a channel
      * @param {string} channel
      */
-    bus.getSubscribersForChannel = function (channel) {
-        return channels[channel];
+    dispatcher.getSubscribersForChannel = function (channel) {
+        return bus[channel];
     };
 
-    symposia.bus = bus;
+    symposia.dispatcher = dispatcher;
 
 };

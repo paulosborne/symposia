@@ -22,34 +22,34 @@ module.exports = function (symposia) {
                 return element;
             },
             getSubscriptions: function () {
-                 return symposia.bus.getBySubscriberId(_id);
+                 return symposia.dispatcher.getBySubscriberId(_id);
             },
             /**
              * Publish a message
              * @param {object} envelope
              */
             publish: function (message) {
-                 return symposia.bus.publish(message);
+                 return symposia.dispatcher.publish(message);
             },
             /**
              * Create a new subscription
              * @param {object} subscription
              */
             subscribe: function (subscription) {
-                symposia.bus.subscribe(_.extend(subscription, { sid: _id }));
+                symposia.dispatcher.subscribe(_.extend(subscription, { sid: _id }));
             },
             /**
              * Unsubscribe a subscription
              * @param {subscription}
              */
             unsubscribe: function (subscription) {
-                symposia.bus.unsubscribe(_.extend(subscription, { sid: _id }));
+                symposia.dispatcher.unsubscribe(_.extend(subscription, { sid: _id }));
             },
             /**
              * Remove all subscriptions
              */
             unsubscribeAll: function () {
-                symposia.bus.unsubscribeAll(_id);
+                symposia.dispatcher.unsubscribeAll(_id);
             },
             /**
              * Store a single item
