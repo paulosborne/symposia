@@ -1,6 +1,6 @@
 {
   "name": "symposia",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Paul Osborne",
   "description": "JavaScript framework for development of large-scale modular applications.",
   "contributors": [
@@ -27,7 +27,6 @@
   "devDependencies": {
     "browserify": "^6.0.3",
     "chai": "^1.9.2",
-    "express": "^4.9.6",
     "jshint": "^2.5.6",
     "mocha": "^1.21.5",
     "sinon": "^1.10.3",
