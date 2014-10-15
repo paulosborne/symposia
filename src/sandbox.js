@@ -1,24 +1,14 @@
 'use strict';
 
 module.exports = function (symposia) {
+    var _       = symposia.util;
     var sandbox = {};
 
     sandbox.create = function (name) {
-        var _id = symposia.util.generate_uuid();
+        var _id = _.uuid();
+        var _stores = [];
 
         return {
-            /**
-             * Find the element with a matching ID
-             */
-            getElement: function () {
-                var element;
-
-                if (symposia.dom) {
-                    element = symposia.dom.find(name);
-                }
-
-                return element;
-            },
             getSubscriptions: function () {
                  return symposia.dispatcher.getBySubscriberId(_id);
             },
@@ -34,14 +24,18 @@ module.exports = function (symposia) {
              * @param {object} subscription
              */
             subscribe: function (subscription) {
-                symposia.dispatcher.subscribe(_.extend(subscription, { sid: _id }));
+                symposia.dispatcher.subscribe(_.extend(subscription, {
+                    sid: _id
+                }));
             },
             /**
              * Unsubscribe a subscription
              * @param {subscription}
              */
             unsubscribe: function (subscription) {
-                symposia.dispatcher.unsubscribe(_.extend(subscription, { sid: _id }));
+                symposia.dispatcher.unsubscribe(_.extend(subscription, {
+                    sid: _id
+                }));
             },
             /**
              * Remove all subscriptions
@@ -50,11 +44,23 @@ module.exports = function (symposia) {
                 symposia.dispatcher.unsubscribeAll(_id);
             },
             /**
-             * Store a single item
+             * Create a new store
              * @param {object}
+             * @return {Store}
              */
-            storeItem: function (obj) {
-                symposia.store.add(obj);
+            createStore: function (data) {
+                var store = symposia.store.create(data);
+                _stores.push(store._id);
+                return store;
+            },
+            /**
+             * Returns all stores created by this sandbox
+             * @return {array}
+             */
+            getStores: function () {
+                return _stores.map(function (id) {
+                    return symposia.store.getById(id);
+                });
             }
         };
     };
