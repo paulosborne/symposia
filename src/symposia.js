@@ -1,9 +1,11 @@
 'use strict';
 
-var _ = require('underscore');
-
-function Symposia () {
+function Symposia (options) {
     var symposia = {};
+
+    if (!(this instanceof Symposia)) {
+        return new Symposia(options);
+    }
 
     symposia.extend = function (extension) {
         extension(symposia);

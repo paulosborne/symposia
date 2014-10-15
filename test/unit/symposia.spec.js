@@ -1,21 +1,19 @@
-var Symposia    = require('../../index');
+var Symposia    = require('../../index')();
 var mocks       = require('./mock/modules');
 var assert      = require('chai').assert;
 
-describe('symposia', function () {
-
+describe('Symposia', function () {
     describe('init()', function () {
-        var symposia = new Symposia();
 
         it('should accept multiple modules as seperate objects', function () {
-            symposia.init(
+            Symposia.init(
                 { 'A': mocks.withPublish },
                 { 'APPLE': mocks.withSubscribe },
                 { 'B': mocks.withSubscribe },
                 { 'C': mocks.withPublish }
             );
 
-            var keys = Object.keys(symposia.list());
+            var keys = Object.keys(Symposia.list());
 
             assert.lengthOf(keys, 4);
             assert.equal(keys[0], 'A');
@@ -26,7 +24,7 @@ describe('symposia', function () {
         });
 
         it ('should accept multiple modules as a single object', function () {
-            symposia.init(
+            Symposia.init(
                 {
                     'A': mocks.withSubscribe,
                     'B': mocks.withPublish,
@@ -35,24 +33,24 @@ describe('symposia', function () {
                 }
             );
 
-            assert.lengthOf(Object.keys(symposia.list()), 4);
+            assert.lengthOf(Object.keys(Symposia.list()), 4);
         });
 
         it('should allow each module to be created from a main property', function () {
-            symposia.init({
+            Symposia.init({
                 'A': {
                     'main': mocks.withPublish
                 }
             });
 
-            var modules = symposia.list();
+            var modules = Symposia.list();
             var keys = Object.keys(modules);
 
             assert.equal(keys[0], 'A');
         });
 
         afterEach(function () {
-            symposia.reset();
+            Symposia.reset();
         });
     });
 });
