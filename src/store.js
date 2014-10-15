@@ -49,7 +49,9 @@ module.exports = function (symposia) {
 
 
     api.create = function (initialData) {
-        return new Store(initialData);
+        var store = new Store(initialData);
+        _stores[store._id] = store;
+        return store;
     };
 
     symposia.store = api;
