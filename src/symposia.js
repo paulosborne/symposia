@@ -26,11 +26,6 @@ function Symposia (options) {
     // symposia.store
     symposia.extend(require('./store'));
 
-    if (global.document) {
-        symposia.extend(require('./dom'));
-    }
-
-    // Public API
     return {
         /**
          * Create one or more modules
@@ -38,19 +33,21 @@ function Symposia (options) {
          */
         init: function () {
             var args = [].slice.call(arguments, 0);
+            var _ = symposia.util;
+            var i, key;
 
-            for (var i = 0, len = args.length; i < len; i += 1) {
-                for (var id in args[i]) {
-                    if(args[i].hasOwnProperty(id)) {
-                        switch(({}).toString.call(args[i][id])) {
-                        case '[object Function]':
-                            symposia.modules.create(id, args[i][id]);
+            for (i = 0; i < args.length; i += 1) {
+                for (key in args[i]) {
+                    if(args[i].hasOwnProperty(key)) {
+                        switch(true) {
+                        case _.isType(args[i][key], 'function'):
+                            symposia.modules.create(key, args[i][key]);
                             break;
-                        case '[object Object]':
-                            if (!args[i][id].hasOwnProperty('main')) {
+                        case _.isType(args[i][key], 'object'):
+                            if (!args[i][key].hasOwnProperty('main')) {
                                 throw new Error('no module constructor found');
                             }
-                            symposia.modules.create(id, args[i][id].main);
+                            symposia.modules.create(key, args[i][key].main);
                             break;
                         }
                     }
