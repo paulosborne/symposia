@@ -51,6 +51,10 @@
     "rhino"         : false,
     "wsh"           : false,
     "globals"       : {
-        "Promise": true
+        "Promise": true,
+        "describe": true,
+        "before": true,
+        "after": true,
+        "it": true
     }
 }
