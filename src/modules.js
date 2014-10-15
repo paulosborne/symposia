@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('underscore');
-
 module.exports = function (symposia) {
     var api = {};
     var _modules = {};
@@ -23,28 +21,27 @@ module.exports = function (symposia) {
      * @param {string} name
      * @param {function} fn
      */
-    api.create = function (name, fn, options) {
+    api.create = function (name, func, options) {
         var test;
 
         options = options || {};
 
-        if (!_.isString(name)) {
+        if (typeof name !== 'string') {
             throw new Error('Please provide a module name');
         }
 
-        if (!_.isFunction(fn)) {
+        if (typeof func !== 'function') {
             throw new Error('Please provide a valid module constructor');
         }
 
-        test = fn(symposia.sandbox.create(name, options));
+        test = func(symposia.sandbox.create(name, options));
 
-        if (!_.isObject(test) || !_.has(test, 'init')) {
+        if (typeof test !== 'object' || !test.hasOwnProperty('init')) {
             throw new Error('Unable to initialize module');
         }
 
         _modules[name] = {
-            id: _.uniqueId('module_'),
-            creator: fn,
+            creator: func,
             options: options
         };
 
@@ -78,25 +75,28 @@ module.exports = function (symposia) {
      * Destroy a module definition
      * @param {string} name - module to destroy
      */
-    api.destroy = function (name) {
-        if (!_.has(_modules, name)) {
+    api.destroy = function (key) {
+        if (!_modules.hasOwnProperty(key)) {
             return false;
         }
 
-        if (_.has(_modules[name],'instance')) {
-            this.stop(name);
+        if (_modules[key].hasOwnProperty('instance')) {
+            this.stop(key);
         }
 
-        delete(_modules[name]);
+        delete(_modules[key]);
+
+        return _modules;
     };
 
     /**
      * Destroy all module definitions
      */
     api.destroyAll = function () {
-        for (var name in _modules) {
-            if (_.has(_modules, name)) {
-                this.destroy(name);
+        var key;
+        for (key in _modules) {
+            if (_modules.hasOwnProperty(key)) {
+                this.destroy(key);
             }
         }
     };

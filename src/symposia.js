@@ -9,6 +9,9 @@ function Symposia () {
         extension(symposia);
     };
 
+    // symposia.util
+    symposia.extend(require('./util'));
+
     // symposia.dispatcher
     symposia.extend(require('./dispatcher'));
 

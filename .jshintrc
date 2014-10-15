@@ -1,5 +1,4 @@
 {
-
     "curly"         : false,
     "eqeqeq"        : true,
     "forin"         : true,
@@ -15,7 +14,6 @@
     "undef"         : true,
     "strict"        : false,
     "trailing"      : true,
-
     "asi"           : false,
     "boss"          : false,
     "debug"         : false,
@@ -41,7 +39,6 @@
     "sub"           : false,
     "supernew"      : false,
     "validthis"     : false,
-
     "browser"       : true,
     "couch"         : false,
     "devel"         : false,
@@ -54,27 +51,10 @@
     "rhino"         : false,
     "wsh"           : false,
     "globals"       : {
-        "console": true,
-        "require": true,
-        "define": true,
-        "module": true,
-        "_": true,
-        "$": true,
-        "mocha": true,
-        "test": true,
-        "setup": true,
-        "teardown": true,
-        "suite":true,
-        "sinon": true,
-        "suiteSetup": true,
-        "suiteTeardown": true,
-        "expect": true,
-        "assert": true,
-        "it": true,
-        "after": true,
+        "Promise": true,
         "describe": true,
-        "afterEach": true,
-        "beforeEach": true,
-        "before": true
+        "before": true,
+        "after": true,
+        "it": true
     }
 }

@@ -20,7 +20,9 @@ describe('store()', function () {
 
         before(function () {
             sandbox = symposia.sandbox.create();
-            callback = sinon.spy()
+            callback = sinon.spy(function () {
+                return false;
+            });
 
             sandbox.subscribe({
                 channel: '_store',
@@ -33,7 +35,6 @@ describe('store()', function () {
 
         it ('should add one item to the store', function () {
             var list = symposia.store.list();
-
             assert.lengthOf(list,1);
         });
 
