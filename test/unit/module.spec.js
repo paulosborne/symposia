@@ -24,7 +24,6 @@ describe('modules', function () {
             var module = symposia.modules.create('module1', mocks.withPublish);
 
             assert.property(module, 'creator');
-            assert.property(module, 'id');
             assert.typeOf(module.creator, 'function');
             assert.notProperty(module, 'instance')
         });
