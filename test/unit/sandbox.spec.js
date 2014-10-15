@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 var _ = require('underscore');
 var sandbox = require('../../src/sandbox');
-var extend = require('./tools/extend')(sandbox);
+var util    = require('../../src/util');
+var extend = require('./tools/extend')(util,sandbox);
 
 describe('sandbox()', function () {
     describe('create()', function () {

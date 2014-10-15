@@ -1,9 +1,10 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var mocks = require('./mock/modules');
+var util = require('../../src/util');
 var sandbox = require('../../src/sandbox');
 var _modules = require('../../src/modules');
-var extend = require('./tools/extend')(sandbox, _modules);
+var extend = require('./tools/extend')(util, sandbox, _modules);
 
 describe('modules', function () {
 
