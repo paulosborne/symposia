@@ -49,5 +49,15 @@ module.exports = function (symposia) {
         return obj;
     };
 
+    /**
+     * Convenience method for hasOwnProperty
+     * @param {objecy} object
+     * @param {string} prop
+     * @return {boolean}
+     */
+    util.has = function (object, prop) {
+        return object.hasOwnProperty(prop);
+    };
+
     symposia.util = util;
 };
