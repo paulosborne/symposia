@@ -1,12 +1,10 @@
 'use strict';
 
-var _ = require('underscore');
-
 module.exports = function (symposia) {
     var sandbox = {};
 
     sandbox.create = function (name) {
-        var _id = _.uniqueId('sandbox_');
+        var _id = symposia.util.generate_uuid();
 
         return {
             /**
