@@ -17,16 +17,36 @@ npm install symposia
 ### Anatomy of a Module
 
 ```javascript
-var TodoApp = function (sandbox) {
+var TodoCounter = function (sandbox) {
 	return {
+		/**
+		 * Triggered when module is started
+		 */
 		init: function () {
+			sandbox.subscribe({
+				channel: 'todo',
+				topic: 'item.added',
+				callback: this.onItemAdded.bind(this)
+			});
 		},
+		/**
+		 * Triggered when module is stopped, used to clean up UI
+		 */
 		destroy: function () {
+			// logic to cleanup views
+		},
+		/**
+		 * Rotate a document
+		 * @param {object} data - payload of received message
+		 * @param {number} data.direction - degrees to rotate document
+		 */
+		onItemAdded: function (data) {
+			// logic for updating counter
 		}
 	};
 };
 
-module.exports = TodoApp;
+module.exports = Document;
 ```
 ### Usage
 
