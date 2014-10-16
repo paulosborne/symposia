@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (symposia) {
+    var _ = symposia.util;
     var api = {};
     var _modules = {};
 
@@ -58,6 +59,16 @@ module.exports = function (symposia) {
         }
 
         _modules[name].instance = createInstance(name);
+        _modules[name].instance.init();
+    };
+
+    api.startAll = function () {
+        var key;
+        for (key in _modules) {
+            if (_.has(_modules, key)) {
+                this.start(key);
+            }
+        }
     };
 
     /**

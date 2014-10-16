@@ -5,6 +5,12 @@ var assert      = require('chai').assert;
 describe('Symposia', function () {
     describe('init()', function () {
 
+        it('should throw an error if no modules specifications are supplied', function () {
+            assert.throw(function () {
+                Symposia.init();
+            }, Error, /No module specifications supplied/);
+        });
+
         it('should accept multiple modules as seperate objects', function () {
             Symposia.init(
                 { 'A': mocks.withPublish },
@@ -47,6 +53,26 @@ describe('Symposia', function () {
             var keys = Object.keys(modules);
 
             assert.equal(keys[0], 'A');
+        });
+
+        it ('should throw an error if a specification object does not contain a main property', function (){
+            assert.throw(function () {
+                Symposia.init({ 'todo-app': { 'no-main': {} } });
+            }, Error, /no module constructor found/);
+        });
+
+        it('should automatically start modules', function () {
+            Symposia.init({
+                'A': {
+                    'main': mocks.withPublish
+                }
+            });
+
+            var modules = Symposia.list();
+            var keys = Object.keys(modules);
+
+            assert.lengthOf(keys,1);
+            assert.property(modules[keys[0]],'instance');
         });
 
         afterEach(function () {
