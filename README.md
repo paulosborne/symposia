@@ -46,7 +46,7 @@ var TodoCounter = function (sandbox) {
 	};
 };
 
-module.exports = Document;
+module.exports = TodoCounter;
 ```
 ### Usage
 
