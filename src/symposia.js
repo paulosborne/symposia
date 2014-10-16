@@ -1,10 +1,10 @@
 'use strict';
 
-function Symposia (options) {
+function Symposia () {
     var symposia = {};
 
     if (!(this instanceof Symposia)) {
-        return new Symposia(options);
+        return new Symposia();
     }
 
     symposia.extend = function (extension) {
@@ -33,26 +33,31 @@ function Symposia (options) {
          */
         init: function () {
             var args = [].slice.call(arguments, 0);
+            var i, key, specification;
             var _ = symposia.util;
-            var i, key;
+
+            if (!args.length) {
+                throw new Error('No module specifications supplied');
+            }
 
             for (i = 0; i < args.length; i += 1) {
                 for (key in args[i]) {
-                    if(args[i].hasOwnProperty(key)) {
+                    if(_.has(args[i], key)) {
+                        specification = args[i][key];
                         switch(true) {
-                        case _.isType(args[i][key], 'function'):
-                            symposia.modules.create(key, args[i][key]);
+                        case _.isType(specification, 'function'):
+                            symposia.modules.create(key, specification);
                             break;
-                        case _.isType(args[i][key], 'object'):
-                            if (!args[i][key].hasOwnProperty('main')) {
+                        case _.isType(specification, 'object'):
+                            if (!_.has(specification,'main'))
                                 throw new Error('no module constructor found');
-                            }
-                            symposia.modules.create(key, args[i][key].main);
+                            symposia.modules.create(key, specification.main);
                             break;
                         }
                     }
                 }
             }
+            symposia.modules.startAll();
         },
         /**
          * Returns a list of registered modules
