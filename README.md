@@ -6,23 +6,18 @@ Symposia
 
 ### Introduction
 
-Symposia is a framework for developing loosely coupled, modular applications.
+Symposia is a framework for developing loosely coupled, modular applications. It's library agnostic, giving you the freedom to use something like Backbone for your data store, or React for your view layer. It is work in progress and there may be breaking  changes.
 
 ### Installation
 
 ```javascript
 npm install symposia
 ```
-### Usage
-
-```javascript
-var Symposia = require('symposia);
-```
 
 ### Anatomy of a Module
 
 ```javascript
-return function (sandbox) {
+var TodoApp = function (sandbox) {
 	return {
 		init: function () {
 		},
@@ -30,4 +25,17 @@ return function (sandbox) {
 		}
 	};
 };
+
+module.exports = TodoApp;
+```
+### Usage
+
+```javascript
+var TodoApp = require('./components/TodoApp');
+var Symposia = require('symposia')();
+
+
+Symposia.init({
+	'todo-app': TodoApp
+});
 ```
