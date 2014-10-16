@@ -43,6 +43,7 @@ describe('modules', function () {
             assert.notProperty(module, 'instance');
             symposia.modules.start('module1');
             assert.property(module, 'instance');
+            assert.ok(module.instance.init.called);
         });
     });
 
