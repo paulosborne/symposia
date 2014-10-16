@@ -38,7 +38,6 @@ var TodoCounter = function (sandbox) {
 		/**
 		 * Update counter when a todo item is added
 		 * @param {object} data - payload of received message
-		 * @param {number} data.direction - degrees to rotate document
 		 */
 		onItemAdded: function (data) {
 			// logic for updating counter
