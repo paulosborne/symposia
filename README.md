@@ -36,7 +36,7 @@ var TodoCounter = function (sandbox) {
 			// logic to cleanup views
 		},
 		/**
-		 * Rotate a document
+		 * Update counter when a todo item is added
 		 * @param {object} data - payload of received message
 		 * @param {number} data.direction - degrees to rotate document
 		 */
