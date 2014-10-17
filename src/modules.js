@@ -54,14 +54,17 @@ module.exports = function (symposia) {
      * @param {string} name - module to start
      */
     api.start = function (name) {
-        if (_modules[name] && _modules[name].instance) {
-            return;
-        }
+        var dom = global.document;
 
+        if (_modules[name] && _modules[name].instance) return;
         _modules[name].instance = createInstance(name);
+        _modules[name].instance.el = dom ? dom.getElementById(name) : null;
         _modules[name].instance.init();
     };
 
+    /**
+     * Start All Modules
+     */
     api.startAll = function () {
         var key;
         for (key in _modules) {
