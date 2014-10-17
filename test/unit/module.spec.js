@@ -44,6 +44,7 @@ describe('modules', function () {
             symposia.modules.start('module1');
             assert.property(module, 'instance');
             assert.ok(module.instance.init.called);
+            assert.equal(module.instance.el, null);
         });
     });
 

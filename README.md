@@ -6,7 +6,7 @@ Symposia
 
 ### Introduction
 
-Symposia is a framework for developing loosely coupled, modular applications.
+Symposia is an application architecture for developing loosely coupled, modular applications.
 
 ### Installation
 
@@ -21,7 +21,7 @@ var Symposia = require('symposia);
 
 ### Anatomy of a Module
 
-```
+```javascript
 return function (sandbox) {
 	return {
 		init: function () {
