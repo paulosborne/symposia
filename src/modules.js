@@ -1,7 +1,9 @@
 'use strict';
 
-module.exports = function (symposia) {
-    var _ = symposia.util;
+var Promise = require('es6-promise').Promise;
+
+module.exports = function (sym) {
+    var _ = sym.util;
     var api = {};
     var _modules = {};
 
@@ -12,9 +14,9 @@ module.exports = function (symposia) {
      */
     function createInstance (name) {
         var options = _modules[name].options;
-        var sandbox = symposia.sandbox.create(name);
+        var sandbox = sym.sandbox.create(name);
 
-        return _modules[name].creator(sandbox, options, symposia);
+        return _modules[name].creator(sandbox, options, sym);
     }
 
     /**
@@ -35,7 +37,7 @@ module.exports = function (symposia) {
             throw new Error('Please provide a valid module constructor');
         }
 
-        test = func(symposia.sandbox.create(name, options));
+        test = func(sym.sandbox.create(name, options));
 
         if (typeof test !== 'object' || !test.hasOwnProperty('init')) {
             throw new Error('Unable to initialize module');
@@ -56,22 +58,36 @@ module.exports = function (symposia) {
     api.start = function (name) {
         var dom = global.document;
 
-        if (_modules[name] && _modules[name].instance) return;
-        _modules[name].instance = createInstance(name);
-        _modules[name].instance.el = dom ? dom.getElementById(name) : null;
-        _modules[name].instance.init();
+        return new Promise(function (resolve, reject) {
+            if (_modules[name] && _modules[name].instance)
+                throw new Error('module has already been started');
+
+            _modules[name].instance = createInstance(name);
+            _modules[name].instance.el = dom ? dom.getElementById(name) : null;
+            _modules[name].instance.init();
+
+            resolve(name);
+        });
     };
 
     /**
      * Start All Modules
      */
     api.startAll = function () {
+        var promises = [];
         var key;
+
         for (key in _modules) {
             if (_.has(_modules, key)) {
-                this.start(key);
+                promises.push(this.start(key));
             }
         }
+
+        Promise.all(promises).then(function () {
+            sym.dispatcher.enable();
+        }, function (e) {
+            sym.log(e.message);
+        });
     };
 
     /**
@@ -133,5 +149,5 @@ module.exports = function (symposia) {
         return _modules[name];
     };
 
-    symposia.modules = api;
+    sym.modules = api;
 };
