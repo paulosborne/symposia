@@ -8,6 +8,37 @@ module.exports = function (symposia) {
     var bus = {};
     var regex = {};
     var DEFAULT_CHANNEL = '/';
+    var _enabled = false;
+    var _queue = [];
+
+    /**
+     * Is the queue enabled?
+     * return {boolean}
+     */
+    dispatcher.isEnabled = function () {
+        return _enabled;
+    };
+
+    /**
+     * Returns the message queue
+     * @return {array}
+     */
+    dispatcher.getQueue = function () {
+        return _queue;
+    };
+
+    /**
+     * Allow messages to be delivered and delivers any queued.
+     */
+    dispatcher.enable = function () {
+        if (_enabled) return;
+        _enabled = true;
+        if (_queue.length) {
+            while(_queue.length) {
+                _queue.shift(this.publish);
+            }
+        }
+    };
 
     /**
      * Compares channel topic against an msg topic
@@ -21,10 +52,8 @@ module.exports = function (symposia) {
         if (!(rgx = regex[binding])) {
             pattern = "^"+ binding.split('.').map(function (segment) {
                 var res = (!!prev) ? "\\.\\b" : "";
-
                 res += (segment === '*') ? "[^.+]" : segment;
                 prev = segment;
-
                 return res;
             }).join("") + '$';
 
@@ -39,16 +68,13 @@ module.exports = function (symposia) {
      * @return {object} bus
      */
     dispatcher.subscribe = function (obj) {
-
-        if (!obj || !obj.topic || !obj.callback || !obj.sid) {
+        if (!obj || !obj.topic || !obj.callback || !obj.sid)
             throw new Error('a valid subscription object is required');
-        }
 
         obj.channel = obj.channel || DEFAULT_CHANNEL;
 
-        if (!bus[obj.channel]) {
+        if (!bus[obj.channel])
             bus[obj.channel] = {};
-        }
 
         bus[obj.channel][obj.topic] = bus[obj.channel][obj.topic] || {};
         bus[obj.channel][obj.topic][obj.sid] = bus[obj.channel][obj.topic][obj.sid] || [];
@@ -69,14 +95,15 @@ module.exports = function (symposia) {
         var resolves    = [];
         var rejects     = [];
 
-        if (!msg || !msg.topic) {
+        if (!msg || !msg.topic)
             throw new Error('a valid msg is required');
-        }
 
         msg.channel = msg.channel || DEFAULT_CHANNEL;
 
-        if (!bus[msg.channel]) {
-            return;
+        if (!bus[msg.channel]) return;
+
+        if (!_enabled) {
+            return _queue.push(msg);
         }
 
         _.each(bus[msg.channel], function (subscribers, topic) {
@@ -158,6 +185,7 @@ module.exports = function (symposia) {
 
         delete bus[sub.channel][sub.topic][sub.sid];
     };
+
 
     /**
      * Returns all subscribers for a channel
