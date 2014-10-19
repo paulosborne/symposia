@@ -41,6 +41,23 @@ describe('dispatcher', function () {
         });
     });
 
+    describe('enable()', function () {
+        var symposia = {};
+
+        before(function () {
+            extend(symposia);
+        });
+
+        it ('should be disabled by default', function () {
+            assert.isFalse(symposia.dispatcher.isEnabled());
+        });
+
+        it('should enable message publishing', function () {
+            symposia.dispatcher.enable();
+            assert.isTrue(symposia.dispatcher.isEnabled());
+        });
+    });
+
     describe('publish()', function () {
         var symposia = {};
 
@@ -54,6 +71,7 @@ describe('dispatcher', function () {
             var message = _.extend({}, base, { data: 'nyan' });
 
             symposia.dispatcher.subscribe(subscr);
+            symposia.dispatcher.enable();
             symposia.dispatcher.publish(message);
 
             assert.ok(subscr.callback.called);

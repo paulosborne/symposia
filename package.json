@@ -27,6 +27,7 @@
   "devDependencies": {
     "browserify": "^6.0.3",
     "chai": "^1.9.2",
+    "jsdom": "^1.0.3",
     "jshint": "^2.5.6",
     "mocha": "^1.21.5",
     "sinon": "^1.10.3",

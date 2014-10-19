@@ -1,5 +1,7 @@
 'use strict';
 
+var Promise = require('es6-promise').Promise;
+
 function Symposia () {
     var symposia = {};
 
@@ -57,7 +59,11 @@ function Symposia () {
                     }
                 }
             }
-            symposia.modules.startAll();
+
+            Promise.all(symposia.modules.startAll()).then(function () {
+                symposia.dispatcher.enable();
+            }, function (err) {
+            });
         },
         /**
          * Returns a list of registered modules
