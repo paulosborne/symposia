@@ -13,6 +13,9 @@ Symposia is an application architecture for developing loosely coupled, modular 
 npm install symposia
 ```
 
+var Symposia = require('symposia')();
+
+
 ### Anatomy of a Module
 
 ```javascript
