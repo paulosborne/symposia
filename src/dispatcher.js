@@ -52,7 +52,7 @@ module.exports = function (symposia) {
         if (!(rgx = regex[binding])) {
             pattern = "^"+ binding.split('.').map(function (segment) {
                 var res = (!!prev) ? "\\.\\b" : "";
-                res += (segment === '*') ? "[^.+]" : segment;
+                res += (segment === '*') ? "[^.+]+" : segment;
                 prev = segment;
                 return res;
             }).join("") + '$';
