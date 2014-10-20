@@ -35,7 +35,7 @@ module.exports = function (symposia) {
         _enabled = true;
         if (_queue.length) {
             while(_queue.length) {
-                _queue.shift(this.publish);
+                this.publish(_queue.shift());
             }
         }
     };
