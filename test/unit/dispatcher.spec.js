@@ -1,8 +1,10 @@
 var assert      = require('chai').assert;
 var sinon       = require('sinon');
 var _           = require('underscore');
+var util        = require('../../src/util');
+var sandbox     = require('../../src/sandbox');
 var dispatcher         = require('../../src/dispatcher');
-var extend      = require('./tools/extend')(dispatcher);
+var extend      = require('./tools/extend')(util, sandbox, dispatcher);
 
 describe('dispatcher', function () {
 
@@ -43,18 +45,53 @@ describe('dispatcher', function () {
 
     describe('enable()', function () {
         var symposia = {};
+        var sandboxA, sandboxB;
+        var queue = [];
+        var callback;
 
         before(function () {
             extend(symposia);
+            sandboxA = symposia.sandbox.create();
+            sandboxB = symposia.sandbox.create();
+            queue   = symposia.dispatcher.getQueue();
+            callback = sinon.spy();
+
+            sandboxA.publish({ channel: '/', topic: 'message.o', data: {} });
+            sandboxA.publish({ channel: '/', topic: 'message.two', data: {} });
+            sandboxA.publish({ channel: '/', topic: 'message.three', data: {} });
+            sandboxB.subscribe({ channel: '/', topic: 'message.*', callback: callback });
         });
 
         it ('should be disabled by default', function () {
             assert.isFalse(symposia.dispatcher.isEnabled());
         });
 
-        it('should enable message publishing', function () {
+        it('should queue messages when disabled', function () {
+            assert.lengthOf(queue, 3);
+        });
+
+        it('should respect the order in which messages were sent', function () {
+            assert.equal(queue[0].topic, 'message.o');
+            assert.equal(queue[1].topic, 'message.two');
+            assert.equal(queue[2].topic, 'message.three');
+        });
+
+        it('should not have been called', function () {
+            assert.isFalse(callback.called);
+        });
+
+        it('should toggle the value of `enabled`', function () {
             symposia.dispatcher.enable();
             assert.isTrue(symposia.dispatcher.isEnabled());
+        });
+
+        it('should have sent queued messages', function () {
+            assert.lengthOf(queue, 0);
+        });
+
+        it('should have triggered the callback', function () {
+            assert.isTrue(callback.called);
+            assert.equal(callback.callCount,3);
         });
     });
 
