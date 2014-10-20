@@ -35,7 +35,7 @@ module.exports = function (symposia) {
         _enabled = true;
         if (_queue.length) {
             while(_queue.length) {
-                _queue.shift(this.publish);
+                this.publish(_queue.shift());
             }
         }
     };
@@ -52,7 +52,7 @@ module.exports = function (symposia) {
         if (!(rgx = regex[binding])) {
             pattern = "^"+ binding.split('.').map(function (segment) {
                 var res = (!!prev) ? "\\.\\b" : "";
-                res += (segment === '*') ? "[^.+]" : segment;
+                res += (segment === '*') ? "[^.+]+" : segment;
                 prev = segment;
                 return res;
             }).join("") + '$';
@@ -100,31 +100,17 @@ module.exports = function (symposia) {
 
         msg.channel = msg.channel || DEFAULT_CHANNEL;
 
-        if (!bus[msg.channel]) return;
-
         if (!_enabled) {
             return _queue.push(msg);
         }
 
+        if (!bus[msg.channel]) return;
+
         _.each(bus[msg.channel], function (subscribers, topic) {
             if (this.compare(topic, msg.topic)) {
                 _.each(subscribers, function (callbacks) {
-
-                    promises = callbacks.map(function (cb, i) {
-                        return new Promise(function (resolve, reject) {
-                            resolves[i] = resolve;
-                            rejects[i] = reject;
-                        });
-                    });
-
-                    callbacks.forEach(function (callback, i) {
-                        Promise.resolve(callback(msg.data, msg)).then(function (result) {
-                            if (result) {
-                                resolves[i](msg.data);
-                            } else {
-                                rejects[i](new Error('Didnt call'));
-                            }
-                        });
+                    _.each(callbacks, function (callback, i) {
+                        callback(msg.data, msg);
                     });
                 });
             }
