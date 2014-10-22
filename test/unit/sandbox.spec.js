@@ -25,26 +25,6 @@ describe('sandbox()', function () {
                 assert.isFunction(sandbox.unsubscribeAll);
                 assert.isFunction(sandbox.getSubscriptions);
             });
-
-            describe("createStore()", function () {
-                var sandbox;
-
-                before(function () {
-                    sandbox = symposia.sandbox.create();
-                });
-
-                it('should create an empty store', function () {
-                    var store = sandbox.createStore();
-
-                    assert.equal(store.length, 0);
-                });
-
-                it('should accept an optional set of initial data', function () {
-                    var customerData = mockJSON;
-                    var customers = sandbox.createStore(customerData);
-                    assert.equal(customers.length, 5192);
-                });
-            });
         });
     });
 });

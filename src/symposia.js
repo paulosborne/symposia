@@ -9,7 +9,7 @@ function Symposia () {
         return new Symposia();
     }
 
-    symposia.extend = function (extension) {
+    symposia.extend = function extend (extension) {
         extension(symposia);
     };
 
@@ -33,7 +33,7 @@ function Symposia () {
          * Create one or more modules
          * @param {object} spec - specification object
          */
-        init: function () {
+        init: function init () {
             var args = [].slice.call(arguments, 0);
             var i, key, specification;
             var _ = symposia.util;
@@ -69,13 +69,13 @@ function Symposia () {
          * Returns a list of registered modules
          * @return {object}
          */
-        list: function () {
+        list: function list () {
             return symposia.modules.get();
         },
         /**
          * Stops and Destroys all registered modules
          */
-        reset: function () {
+        reset: function reset () {
             symposia.modules.destroyAll();
         }
     };

@@ -24,7 +24,7 @@ module.exports = function (sym) {
      * @param {string} name
      * @param {function} fn
      */
-    api.create = function (name, func, options) {
+    api.create = function create (name, func, options) {
         var test;
 
         options = options || {};
@@ -55,7 +55,7 @@ module.exports = function (sym) {
      * Start a module
      * @param {string} name - module to start
      */
-    api.start = function (name) {
+    api.start = function start (name) {
         var dom = global.document;
 
         return new Promise(function (resolve, reject) {
@@ -73,7 +73,7 @@ module.exports = function (sym) {
     /**
      * Start All Modules
      */
-    api.startAll = function () {
+    api.startAll = function startAll () {
         var promises = [];
         var key;
 
@@ -94,7 +94,7 @@ module.exports = function (sym) {
      * Stop a module, calls the destroy method before deleting the instance
      * @param {string} name - name of the module to stop
      */
-    api.stop = function (name) {
+    api.stop = function stop (name) {
         if (_modules.hasOwnProperty(name) && _modules[name].instance) {
             _modules[name].instance.destroy();
             return delete _modules[name].instance;
@@ -105,7 +105,7 @@ module.exports = function (sym) {
      * Destroy a module definition
      * @param {string} name - module to destroy
      */
-    api.destroy = function (key) {
+    api.destroy = function destroy (key) {
         if (!_modules.hasOwnProperty(key)) {
             return false;
         }
@@ -122,7 +122,7 @@ module.exports = function (sym) {
     /**
      * Destroy all module definitions
      */
-    api.destroyAll = function () {
+    api.destroyAll = function destroyAll () {
         var key;
         for (key in _modules) {
             if (_modules.hasOwnProperty(key)) {
@@ -136,7 +136,7 @@ module.exports = function (sym) {
      * @param {string} name
      * @return {object}
      */
-    api.get = function (name) {
+    api.get = function get (name) {
 
         if (arguments.length === 0) {
             return _modules;

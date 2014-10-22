@@ -5,7 +5,7 @@ module.exports = function (symposia) {
      * Generate a UUID
      * @return {string}
      */
-    util.uuid = function () {
+    util.uuid = function uuid () {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = (d + Math.random()*16)%16 | 0;
@@ -23,7 +23,7 @@ module.exports = function (symposia) {
      * @param {expected}
      * @return {boolean}
      */
-    util.isType = function (obj, expected) {
+    util.isType = function isType (obj, expected) {
         if (!obj || !expected) return;
         return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase() === expected;
     };
@@ -34,7 +34,7 @@ module.exports = function (symposia) {
      * @param {object}
      * @return {object}
      */
-    util.extend = function(obj) {
+    util.extend = function extend (obj) {
         var source, prop;
 
         if (!this.isType(obj, 'object')) return obj;
@@ -55,7 +55,7 @@ module.exports = function (symposia) {
      * @param {string} prop
      * @return {boolean}
      */
-    util.has = function (object, prop) {
+    util.has = function has (object, prop) {
         return object.hasOwnProperty(prop);
     };
 

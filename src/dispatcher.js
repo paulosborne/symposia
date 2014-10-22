@@ -15,7 +15,7 @@ module.exports = function (symposia) {
      * Is the queue enabled?
      * return {boolean}
      */
-    dispatcher.isEnabled = function () {
+    dispatcher.isEnabled = function isEnabled () {
         return _enabled;
     };
 
@@ -23,14 +23,14 @@ module.exports = function (symposia) {
      * Returns the message queue
      * @return {array}
      */
-    dispatcher.getQueue = function () {
+    dispatcher.getQueue = function getQueue () {
         return _queue;
     };
 
     /**
      * Allow messages to be delivered and delivers any queued.
      */
-    dispatcher.enable = function () {
+    dispatcher.enable = function enable () {
         if (_enabled) return;
         _enabled = true;
         if (_queue.length) {
@@ -46,7 +46,7 @@ module.exports = function (symposia) {
      * @param {string} topic
      * @return {boolean}
      */
-    dispatcher.compare = function (binding, topic) {
+    dispatcher.compare = function compare (binding, topic) {
         var prev, pattern, rgx;
 
         if (!(rgx = regex[binding])) {
@@ -67,7 +67,7 @@ module.exports = function (symposia) {
      * @param {object} obj - subscription definition
      * @return {object} bus
      */
-    dispatcher.subscribe = function (obj) {
+    dispatcher.subscribe = function subscribe (obj) {
         if (!obj || !obj.topic || !obj.callback || !obj.sid)
             throw new Error('a valid subscription object is required');
 
@@ -90,7 +90,7 @@ module.exports = function (symposia) {
      * @param {string} msg.topic - the message topic
      * @return {context}
      */
-    dispatcher.publish = function (msg) {
+    dispatcher.publish = function publish (msg) {
         var promises    = [];
         var resolves    = [];
         var rejects     = [];
@@ -124,7 +124,7 @@ module.exports = function (symposia) {
      * @param {string} sid - subscriber id
      * @return {object}
      */
-    dispatcher.getBySubscriberId = function () {
+    dispatcher.getBySubscriberId = function getBySubscriberId () {
         var subscriptions = [];
 
         _.each(bus, function (topics, channel) {
@@ -147,7 +147,7 @@ module.exports = function (symposia) {
      * Removes all subscriptions for a given subscriber id
      * @param {string} subscriberId
      */
-    dispatcher.unsubscribeAll = function (subscriberId) {
+    dispatcher.unsubscribeAll = function unsubscribeAll (subscriberId) {
         var subscriptions = this.getBySubscriberId(subscriberId);
 
         _.each(subscriptions, function (sub) {
@@ -159,7 +159,7 @@ module.exports = function (symposia) {
      * Unsubscribe a single subscription
      * @param {object} subscription
      */
-    dispatcher.unsubscribe = function (sub) {
+    dispatcher.unsubscribe = function unsubscribe (sub) {
 
         if (!sub.channel || !sub.topic || !sub.sid) {
             return;
@@ -177,7 +177,7 @@ module.exports = function (symposia) {
      * Returns all subscribers for a channel
      * @param {string} channel
      */
-    dispatcher.getSubscribersForChannel = function (channel) {
+    dispatcher.getSubscribersForChannel = function getSubscribersForChannel (channel) {
         return bus[channel];
     };
 

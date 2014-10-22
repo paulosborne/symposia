@@ -9,21 +9,21 @@ module.exports = function (symposia) {
         var _stores = [];
 
         return {
-            getSubscriptions: function () {
+            getSubscriptions: function getSubscriptions () {
                  return symposia.dispatcher.getBySubscriberId(_id);
             },
             /**
              * Publish a message
              * @param {object} envelope
              */
-            publish: function (message) {
+            publish: function publish (message) {
                  return symposia.dispatcher.publish(message);
             },
             /**
              * Create a new subscription
              * @param {object} subscription
              */
-            subscribe: function (subscription) {
+            subscribe: function subscribe (subscription) {
                 symposia.dispatcher.subscribe(_.extend(subscription, {
                     sid: _id
                 }));
@@ -32,7 +32,7 @@ module.exports = function (symposia) {
              * Unsubscribe a subscription
              * @param {subscription}
              */
-            unsubscribe: function (subscription) {
+            unsubscribe: function unsubscribe (subscription) {
                 symposia.dispatcher.unsubscribe(_.extend(subscription, {
                     sid: _id
                 }));
@@ -40,27 +40,8 @@ module.exports = function (symposia) {
             /**
              * Remove all subscriptions
              */
-            unsubscribeAll: function () {
+            unsubscribeAll: function unsubscribeAll () {
                 symposia.dispatcher.unsubscribeAll(_id);
-            },
-            /**
-             * Create a new store
-             * @param {object}
-             * @return {Store}
-             */
-            createStore: function (data) {
-                var store = symposia.store.create(data);
-                _stores.push(store._id);
-                return store;
-            },
-            /**
-             * Returns all stores created by this sandbox
-             * @return {array}
-             */
-            getStores: function () {
-                return _stores.map(function (id) {
-                    return symposia.store.getById(id);
-                });
             }
         };
     };
