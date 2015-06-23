@@ -5,7 +5,7 @@ module.exports = function (symposia) {
      * Generate a UUID
      * @return {string}
      */
-    util.uuid = function uuid () {
+    util.uuid = function () {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = (d + Math.random()*16)%16 | 0;

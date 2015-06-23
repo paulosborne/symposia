@@ -60,9 +60,11 @@ function Symposia () {
                 }
             }
 
+            /** Enable dispatcher when all modules have finished loading */
             Promise.all(symposia.modules.startAll()).then(function () {
                 symposia.dispatcher.enable();
             }, function (err) {
+                throw new Error('Error starting modules');
             });
         },
         /**

@@ -17,6 +17,11 @@ function symposiaRemote (sym) {
     });
 
     ws.on('disconnect', function () {
+        sym.dispatch({
+            channel: 'websocket',
+            topic: 'disconnect'
+        });
+
         connected = false;
     });
 
@@ -41,6 +46,13 @@ function symposiaRemote (sym) {
         } else {
             this.queue(ev, data);
         }
+    };
+
+    /**
+     * Configure the websocket connection
+     * @param {object} options
+     */
+    remote.configure = function (options) {
     };
 
     remote.queue = function (ev, data) {
